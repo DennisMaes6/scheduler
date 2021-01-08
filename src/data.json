@@ -1,0 +1,48 @@
+{
+    "nb_days": 7,
+    "employees": [
+        {
+            "number": 1,
+            "type": "JA" 
+        },
+        {
+            "numer": 2,
+            "type": "SA"
+        }
+    ],
+    "shift_types": [
+        "JA_E",
+        "JA_NW",
+        "JA_WH",
+        "SA_EW",
+        "SA_WH",
+        "TS",
+        "C"
+    ],
+    "assignments": [
+        {
+            "employee_nb": 1,
+            "shifts": [
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E"
+            ]
+        },
+        {
+            "employee_nb": 2,
+            "shifts": [
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW"
+            ]
+        }
+    ]
+}
