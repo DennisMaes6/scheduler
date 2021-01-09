@@ -19,10 +19,10 @@
         "TS",
         "C"
     ],
-    "assignments": [
+    "individual_schedules": [
         {
             "employee_nb": 1,
-            "shifts": [
+            "assignments": [
                 "JA_E",
                 "JA_E",
                 "JA_E",
@@ -34,7 +34,7 @@
         },
         {
             "employee_nb": 2,
-            "shifts": [
+            "assignments": [
                 "SA_EW",
                 "SA_EW",
                 "SA_EW",
