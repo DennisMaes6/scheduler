@@ -32,9 +32,9 @@
 
 <!-- TODO: Make first column sticky -->
 <main>
-    <div class="mb-40 mr-40">
+    <div>
         <div class="flex-col">
-            <div class="sticky top-0 flex flex-row w-screen space-x-5 items-center bg-white">
+            <div class="mb-2 sticky top-0 flex flex-row w-screen space-x-5 items-center bg-white">
                 <div class="flex flex-none w-24 h-8 bg-white"></div>
                 {#each days as day}
                     <div class="flex flex-none w-16 h-8 justify-center place-items-center bg-white">
@@ -52,8 +52,12 @@
                         <p class="text-sm font-bold text-white"> {assignment}</p>
                     </div>
                 {/each}
+                <div class="bg-white w-20 text-white">
+                    spacing
+                </div>
             </div>
         {/each}
         </div>
+        <div class="bg-white h-20"></div>
     </div>
 </main>
