@@ -8,6 +8,30 @@
         {
             "numer": 2,
             "type": "SA"
+        },
+        {
+            "number": 3,
+            "type": "JA" 
+        },
+        {
+            "numer": 4,
+            "type": "SA"
+        },
+        {
+            "number": 5,
+            "type": "JA" 
+        },
+        {
+            "numer": 6,
+            "type": "SA"
+        },
+        {
+            "number": 7,
+            "type": "JA" 
+        },
+        {
+            "numer": 8,
+            "type": "SA"
         }
     ],
     "shift_types": [
@@ -34,6 +58,78 @@
         },
         {
             "employee_nb": 2,
+            "assignments": [
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW"
+            ]
+        },
+        {
+            "employee_nb": 3,
+            "assignments": [
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E"
+            ]
+        },
+        {
+            "employee_nb": 4,
+            "assignments": [
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW"
+            ]
+        },
+        {
+            "employee_nb": 5,
+            "assignments": [
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E"
+            ]
+        },
+        {
+            "employee_nb": 6,
+            "assignments": [
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW",
+                "SA_EW"
+            ]
+        },
+        {
+            "employee_nb": 7,
+            "assignments": [
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E",
+                "JA_E"
+            ]
+        },
+        {
+            "employee_nb": 8,
             "assignments": [
                 "SA_EW",
                 "SA_EW",
