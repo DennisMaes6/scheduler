@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  description: Basic API for retrieving schedules, based on a ScheduleInput object.
+  title: Scheduler API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080
+paths:
+  /schedule:
+    get:
+      operationId: scheduleGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns a generated schedule.
+      x-eov-operation-handler: controllers/DefaultController
+components:
+  schemas:
+    Schedule:
+      description: Holds all data of a generated schedule.
+      example:
+        nb_days: 0
+        individual_schedules:
+        - assistant_id: 1
+          assignments:
+          - null
+          - null
+        - assistant_id: 1
+          assignments:
+          - null
+          - null
+        assistants:
+        - id: 6
+        - id: 6
+      properties:
+        nb_days:
+          description: The number of days for which this schedule is generated.
+          type: integer
+        assistants:
+          description: The assistants involved in this schedule.
+          items:
+            $ref: '#/components/schemas/Assistant'
+          type: array
+        shift_types:
+          $ref: '#/components/schemas/ShiftType'
+        individual_schedules:
+          items:
+            $ref: '#/components/schemas/IndividualSchedule'
+          type: array
+      type: object
+    Assistant:
+      description: Represents an assistant.
+      example:
+        id: 6
+      properties:
+        id:
+          description: The identification number of this assistant.
+          type: integer
+        type:
+          $ref: '#/components/schemas/AssistantType'
+      type: object
+    IndividualSchedule:
+      description: Represents the work schedule of an individual assistant.
+      example:
+        assistant_id: 1
+        assignments:
+        - null
+        - null
+      properties:
+        assistant_id:
+          description: The identification number of the assistant for which this is
+            an individual schedule.
+          type: integer
+        assignments:
+          description: An array as long as the number of days of this schedule. Contains
+            all the assignments that have been scheduled to this assistant.
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
+      type: object
+    AssistantType:
+      description: The different assistant types.
+      enum:
+      - JA
+      - JA_F
+      - SA
+      - SA_F
+      - SA_NEO
+      - SA_F_NEO
+      type: string
+    ShiftType:
+      description: The different shift types that can be scheduled, including the
+        free shift.
+      enum:
+      - JA_E
+      - JA_WH
+      - JA_NW
+      - SA_EW
+      - SA_WH
+      - TS
+      - C
+      - F
+      type: string
