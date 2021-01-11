@@ -68,13 +68,13 @@ constraint forall(s in S_prime, p in P, d in D)(X[p, s, d] = 1 -> not (d in F[p]
 
 % HC7 - no consecutive week assignements
 constraint forall(p in P, s in S_week, w in 2..nb_weeks)(
-             exists(s_prev in S_week)(X[p, s_prev, 7*w - 8] = 1) -> X[p, s, 7*w - 6] = 0
+             exists(s_prev in S_prime)(X[p, s_prev, 7*w - 7] = 1) -> X[p, s, 7*w - 6] = 0
            );
            
                            
 % HC8 - no consecutive weekday assignements
 constraint forall(p in P, s in S_weekday, d in 2..nb_days)(
-             exists(s_prev in S_weekday)(X[p, s_prev, d - 1] = 1) -> X[p, s, d] = 0
+             exists(s_prev in S_prime)(X[p, s_prev, d - 1] = 1) -> X[p, s, d] = 0
            );
            
 
