@@ -30,7 +30,7 @@ export enum ShiftType {
     SA_WH = "SA_WH",
     TS = "TS",
     C = "C",
-    F = "F",
+    O = "O",
 }
 
 export type IndividualSchedule = {

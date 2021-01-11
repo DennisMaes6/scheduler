@@ -24,6 +24,8 @@
                 return "bg-green-600";
             case ShiftType.TS:
                 return "bg-red-700";
+            case ShiftType.O:
+                return "bg-white";
         }
     }
 </script>
