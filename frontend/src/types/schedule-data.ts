@@ -4,8 +4,6 @@ export type ScheduleData = {
     employees: Employee[];
     shift_types: ShiftType[];
     individual_schedules: IndividualSchedule[];
-    
-
 }
 
 export type Employee = {
