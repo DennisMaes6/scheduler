@@ -32,26 +32,28 @@
 
 <!-- TODO: Make first column sticky -->
 <main>
-    <div class="flex-col">
-        <div class="sticky top-0 flex flex-row w-screen space-x-10 items-center bg-white">
-            <div class="flex flex-none w-24 h-16 bg-white"></div>
-            {#each days as day}
-                <div class="flex flex-none w-16 h-16 justify-center place-items-center bg-white">
-                    <p class="font-bold text-black"> day {day}</p>
-                </div>
-            {/each} 
-        </div>
-        {#each schedule_data.individual_schedules as individual_schedule}
-        <div class="mb-5 flex flex-row flex-none space-x-10 items-center">
-            <div class="sticky flex flex-none w-24 h-16 justify-center place-items-center">
-                <p class="font-bold text-black"> assistant { individual_schedule.employee_nb }</p>
+    <div class="mb-40 mr-40">
+        <div class="flex-col">
+            <div class="sticky top-0 flex flex-row w-screen space-x-5 items-center bg-white">
+                <div class="flex flex-none w-24 h-8 bg-white"></div>
+                {#each days as day}
+                    <div class="flex flex-none w-16 h-8 justify-center place-items-center bg-white">
+                        <p class="text-sm font-bold text-black"> day {day}</p>
+                    </div>
+                {/each} 
             </div>
-            {#each individual_schedule.assignments as assignment}
-                <div class="flex flex-none w-16 h-16 {getColor(assignment)} rounded-lg justify-center place-items-center">
-                    <p class="font-bold text-white"> {assignment}</p>
+            {#each schedule_data.individual_schedules as individual_schedule}
+            <div class="mb-3 flex flex-row flex-none space-x-5 items-center">
+                <div class="sticky flex flex-none w-24 h-8 justify-center place-items-center">
+                    <p class="text-sm font-bold text-black"> assistant { individual_schedule.assistant_id }</p>
                 </div>
-            {/each}
+                {#each individual_schedule.assignments as assignment}
+                    <div class="flex flex-none w-16 h-8 {getColor(assignment)} rounded-lg justify-center place-items-center">
+                        <p class="text-sm font-bold text-white"> {assignment}</p>
+                    </div>
+                {/each}
+            </div>
+        {/each}
         </div>
-    {/each}
     </div>
 </main>

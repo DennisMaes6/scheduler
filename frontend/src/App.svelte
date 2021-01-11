@@ -6,8 +6,12 @@
     let schedule_data: ScheduleData;
     let loaded: boolean = false;
 
-    fetch("data.json")
+    fetch("http://localhost:8080/schedule")
         .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            return result
+        })
         .then(result => {
             schedule_data = result;
             loaded = true; 

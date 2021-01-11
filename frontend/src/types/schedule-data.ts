@@ -32,7 +32,7 @@ export enum ShiftType {
 }
 
 export type IndividualSchedule = {
-    employee_nb: number,
+    assistant_id: number,
     assignments: ShiftType[],
 }
 
