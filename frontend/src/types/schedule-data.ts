@@ -1,17 +1,17 @@
 // interface that represents a schedule
 export type ScheduleData = {
     nb_days: number;
-    employees: Employee[];
+    assistants: Assistant[];
     shift_types: ShiftType[];
     individual_schedules: IndividualSchedule[];
 }
 
-export type Employee = {
-    number: number;
-    type: EmployeeType;
+export type Assistant = {
+    id: number;
+    type: AssistantType;
 }
 
-export enum EmployeeType {
+export enum AssistantType {
     JA = "JA",
     JA_F = "JA_F",
     SA = "SA",
