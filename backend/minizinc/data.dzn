@@ -1,7 +1,7 @@
 % instance-specific data
 
 
-nb_weeks = 3;
+nb_weeks = 4;
 
 nb_personnel = 18;
 T = [JA, JA, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO];
