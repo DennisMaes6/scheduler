@@ -28,36 +28,75 @@
                 return "bg-white";
         }
     }
+
+    function getDay(dayNb: number): string {
+        switch (dayNb % 7) {
+            case 0:
+                return "Thu";
+            case 1:
+                return "Fri";
+            case 2:
+                return "Sat";
+            case 3:
+                return "Sun";
+            case 4:
+                return "Mon";
+            case 5:
+                return "Tue";
+            case 6:
+                return "Wed";
+        }
+    }
+
 </script>
 
 <!-- TODO: Make first column sticky -->
 <main>
-    <div>
-        <div class="flex-col">
-            <div class="mb-2 sticky top-0 flex flex-row w-screen space-x-5 items-center bg-white">
-                <div class="flex flex-none w-24 h-8 bg-white"></div>
-                {#each days as day}
-                    <div class="flex flex-none w-16 h-8 justify-center place-items-center bg-white">
-                        <p class="text-sm font-bold text-black"> day {day}</p>
-                    </div>
-                {/each} 
-            </div>
-            {#each schedule_data.individual_schedules as individual_schedule}
-            <div class="mb-3 flex flex-row flex-none space-x-5 items-center">
-                <div class="sticky flex flex-none w-24 h-8 justify-center place-items-center">
-                    <p class="text-sm font-bold text-black"> assistant { individual_schedule.assistant_id }</p>
+    <div class="flex flex-col overflow-scroll">
+        <!-- Header with days of scheduling period -->
+        <div class="sticky top-0 flex flex-row bg-white">
+            <div class="flex-none w-32"></div>
+            <div class="flex flex-col h-20 justify-center space-y-4">
+                <div class="flex flex-row justify-center">
+                    {#each days as day}
+                        <div class="flex flex-none mx-1 w-16 items-center">
+                            <p class="text-sm font-bold text-black"> {day % 7 == 1 ? "WEEK " + (Math.floor(day/7) + 1) : ""}</p>
+                        </div>
+                    {/each} 
                 </div>
-                {#each individual_schedule.assignments as assignment}
-                    <div class="flex flex-none w-16 h-8 {getColor(assignment)} rounded-lg justify-center place-items-center">
-                        <p class="text-sm font-bold text-white"> {assignment}</p>
+                <div class="flex flex-row items-center">
+                    {#each days as day}
+                        <div class="flex flex-none mx-1 w-16 items-center">
+                            <p class="text-sm font-bold text-black"> {getDay(day)}</p>
+                        </div>
+                    {/each} 
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row">
+            <!-- Assistant list -->
+            <div class="flex flex-col w-24 mr-8">
+                {#each schedule_data.assistants as assistant}
+                    <div class="flex h-10 items-center justify-end">
+                        <p class="text-black font-sm font-bold"> {assistant.type} </p>
                     </div>
                 {/each}
-                <div class="bg-white w-20 text-white">
-                    spacing
-                </div>
             </div>
-        {/each}
+            <!-- Schedule -->
+            <div class="flex flex-col">
+                {#each schedule_data.individual_schedules as individual_schedule}
+                    <div class="flex flex-row items-center">
+                        {#each individual_schedule.assignments as assignment}
+                            <div class="flex mx-1 my-1 w-16 h-8 {getColor(assignment)} rounded-lg justify-center items-center">
+                                <p class="text-sm font-bold text-white"> {assignment}</p>
+                            </div>
+                        {/each}
+                        <div class="bg-white w-20 text-white">
+                            spacing
+                        </div>
+                    </div>
+                {/each}
+            </div>
         </div>
-        <div class="bg-white h-20"></div>
     </div>
 </main>
