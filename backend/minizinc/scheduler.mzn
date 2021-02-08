@@ -46,7 +46,7 @@ array[1..nb_personnel, S, D] of var 0..1: X;
 
 
 % HC1 - shift requirements met for every shift on every day
-constraint forall(s in S_prime, d in D)((sum(p in P)(X[p, s, d])) = R[1 + (d mod 7), s]);
+constraint forall(s in S_prime, d in D)((sum(p in P)(X[p, s, d])) = R[1 + ((d+3) mod 7), s]);
 
 % HC2 - only qualified personnel allowed
 constraint forall(s in S_prime, p in P, d in D)(X[p, s, d] = 1 -> T[p] in Q[s]);
@@ -59,7 +59,7 @@ constraint forall(p in P, d in D)(sum(s in S)(X[p, s, d]) = 1);
 constraint forall(w in 1..nb_weeks, s in S_week)(exists(p in P)(forall(d in 7*w-6..7*w)(X[p, s, d] = 1)));
 
 % HC5 - same person for weekend shifts
-constraint forall(w in 1..nb_weeks, s in S_weekend, p in P)(X[p, s, 7*w-2] = X[p, s, 7*w-1]);
+constraint forall(w in 1..nb_weeks, s in S_weekend, p in P)(X[p, s, 7*w-5] = X[p, s, 7*w-4]);
 
 
 % HC6 - no assignments on free days
@@ -87,7 +87,7 @@ constraint forall(s in S_prime, p in P)(workload[s, p] == (sum(d in D)(X[p, s, d
 
 var 0..1.0: fairness_score;
 constraint fairness_score == max(fairness_per_shift_type);
-constraint fairness_score < 0.35;
+constraint fairness_score < 0.30;
 
 
 % optimization objective: balance
