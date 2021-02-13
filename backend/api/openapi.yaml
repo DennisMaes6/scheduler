@@ -8,7 +8,6 @@ servers:
 paths:
   /schedule:
     get:
-      operationId: scheduleGET
       responses:
         "200":
           content:
@@ -17,7 +16,19 @@ paths:
                 $ref: '#/components/schemas/Schedule'
           description: A schedule.
       summary: Returns a generated schedule.
-      x-eov-operation-handler: controllers/DefaultController
+  /set-model-params:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelParameters'
+        description: The model parameters to be set.
+        required: true
+      responses:
+        "204":
+          description: Models parameters updated succesfully.
+      summary: Sets the model paramters in the backend.
 components:
   schemas:
     Schedule:
@@ -105,3 +116,39 @@ components:
       - C
       - F
       type: string
+    ModelParameters:
+      description: Holds all model parameters to generate a schedule.
+      example:
+        balance_minimum: 0
+        fairness_shift_weights:
+        - weight: 6.027456183070403
+        - weight: 6.027456183070403
+        balance_shifts:
+        - null
+        - null
+      properties:
+        balance_minimum:
+          description: The minimal balance score for an acceptable solution
+          type: integer
+        balance_shifts:
+          description: The shifts to be included when calculating the balance score.
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
+        fairness_shift_weights:
+          items:
+            $ref: '#/components/schemas/ModelParameters_fairness_shift_weights'
+          type: array
+      type: object
+    ModelParameters_fairness_shift_weights:
+      description: A shift type - weight pair that specifies the weight each shift
+        type should have in the model.
+      example:
+        weight: 6.027456183070403
+      properties:
+        shift_type:
+          $ref: '#/components/schemas/ShiftType'
+        weight:
+          description: The weight of this shift type
+          type: number
+      type: object

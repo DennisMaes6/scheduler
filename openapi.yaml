@@ -98,7 +98,7 @@ components:
         - F  
     ModelParameters: 
       type: object
-      description: Holds all model parameters to generate a schedule
+      description: Holds all model parameters to generate a schedule.
       properties:
         balance_minimum:
           type: integer
@@ -117,5 +117,5 @@ components:
                 $ref: "#/components/schemas/ShiftType"
               weight:
                 type: number
-                description: The weight of this shift type.
+                description: The weight of this shift type
             description: A shift type - weight pair that specifies the weight each shift type should have in the model.

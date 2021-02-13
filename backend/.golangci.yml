@@ -1,0 +1,4 @@
+run:
+  skip-files:
+    - go/api_default_service.go
+    - go/api_default.go

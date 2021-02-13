@@ -1,11 +1,11 @@
 generate-backend:
-	openapi-generator generate -i openapi.yaml -g nodejs-express-server -o backend
+	openapi-generator generate -i openapi.yaml -g go-server -o backend
 
 run-solver:
 	minizinc --solver gurobi  backend/minizinc/scheduler.mzn backend/minizinc/data.dzn
 
 run-backend:
-	cd backend; npm run start
+	cd backend; go run main.go
 
 run-frontend:
 	cd frontend; npm run dev
