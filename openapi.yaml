@@ -16,7 +16,17 @@ paths:
             application/json:
               schema: 
                 $ref: "#/components/schemas/Schedule"
-  /set-model-params:
+  /model-parameters/get:
+    get:
+      summary: Returns the current model parameters.
+      responses:
+        '200':
+          description: The model parameters.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ModelParameters"
+  /model-parameters/set:
     post:
       summary: Sets the model paramters in the backend.
       requestBody:
