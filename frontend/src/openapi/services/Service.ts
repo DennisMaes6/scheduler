@@ -21,6 +21,19 @@ export class Service {
     }
 
     /**
+     * Returns the current model parameters.
+     * @returns ModelParameters The model parameters.
+     * @throws ApiError
+     */
+    public static async getService1(): Promise<ModelParameters> {
+        const result = await __request({
+            method: 'GET',
+            path: `/model-parameters/get`,
+        });
+        return result.body;
+    }
+
+    /**
      * Sets the model paramters in the backend.
      * @param requestBody The model parameters to be set.
      * @returns any Models parameters updated succesfully.
@@ -31,7 +44,7 @@ export class Service {
     ): Promise<any> {
         const result = await __request({
             method: 'POST',
-            path: `/set-model-params`,
+            path: `/model-parameters/set`,
             body: requestBody,
         });
         return result.body;
