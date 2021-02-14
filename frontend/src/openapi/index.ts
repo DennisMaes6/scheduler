@@ -10,5 +10,6 @@ export type { IndividualSchedule } from './models/IndividualSchedule';
 export type { ModelParameters } from './models/ModelParameters';
 export type { Schedule } from './models/Schedule';
 export { ShiftType } from './models/ShiftType';
+export type { ShiftTypeModelParameters } from './models/ShiftTypeModelParameters';
 
 export { Service } from './services/Service';
