@@ -8,16 +8,20 @@
 
 <main>
     <div class="flex flex-row">
-        <ModelInput/>
-        {#await Service.getService()}
-            <p>loading...</p>
-        {:then schedule}
-            <ScheduleView {schedule}/>
-        {:catch error}
-            <div>
-                <p style="color: red">! {error.message}: </p> 
-                <p style="color: red">{error.body} </p>
-            </div>
-        {/await}
+        <div class="flex-none w-24 mt-10">
+            <ModelInput/>
+        </div>
+        <div class="container">
+            {#await Service.getService()}
+                <p>loading...</p>
+            {:then schedule}
+                <ScheduleView {schedule}/>
+            {:catch error}
+                <div>
+                    <p style="color: red">! {error.message}: </p> 
+                    <p style="color: red">{error.body} </p>
+                </div>
+            {/await}
+        </div>
     </div>
 </main>

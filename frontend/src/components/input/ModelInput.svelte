@@ -1,7 +1,11 @@
 <script lang=typescript>
     
-    import { ModelParameters, ShiftType } from "../../openapi";
+    import type { ModelParameters } from "../../openapi";
+    import { ShiftType } from "../../openapi";
 
+    import InputField from "./InputField.svelte";
+
+    // mock data
     let modelParams: ModelParameters = {
         balance_minimum: 3,
         shift_type_params: [
@@ -47,5 +51,7 @@
 
 <main>
     
-    <p> test </p>
+    <div class="flex flex-col w-30"> 
+        <InputField label='Minimun balance score' value={3} step={0.01} />
+    </div>
 </main>
