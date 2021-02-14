@@ -1,30 +1,29 @@
 <script lang=typescript>
 
-    import type { ScheduleData } from '../types/schedule-data';
-    import { ShiftType } from '../types/schedule-data';
+    import type { Schedule } from '../openapi';
+    import { ShiftType } from '../openapi';
 
+    export let schedule: Schedule;
 
-    export let schedule_data: ScheduleData;
-
-    let days: number[] = Array.from({length: schedule_data.nb_days}, (_, i) => i + 1);
+    let days: number[] = Array.from({length: schedule.nb_days}, (_, i) => i + 1);
 
     function getColor(assignment: ShiftType): string {
         switch (assignment) {
-            case ShiftType.JA_E:
+            case ShiftType.JAEV:
                 return "bg-yellow-400";
-            case ShiftType.JA_NW:
+            case ShiftType.JANW:
                 return "bg-green-400";
-            case ShiftType.JA_WH:
+            case ShiftType.JAWH:
                 return "bg-red-500";
-            case ShiftType.SA_EW:
+            case ShiftType.SAEW:
                 return "bg-green-500";
-            case ShiftType.SA_WH:
+            case ShiftType.SAWH:
                 return "bg-red-600";
-            case ShiftType.C:
+            case ShiftType.CALL:
                 return "bg-green-600";
-            case ShiftType.TS:
+            case ShiftType.TSPT:
                 return "bg-red-700";
-            case ShiftType.O:
+            case ShiftType.FREE:
                 return "bg-white";
         }
     }
@@ -76,7 +75,7 @@
         <div class="flex flex-row">
             <!-- Assistant list -->
             <div class="flex flex-col w-24 mr-8">
-                {#each schedule_data.assistants as assistant}
+                {#each schedule.assistants as assistant}
                     <div class="flex h-10 items-center justify-end">
                         <p class="text-black font-sm font-bold"> {assistant.type} </p>
                     </div>
@@ -84,7 +83,7 @@
             </div>
             <!-- Schedule -->
             <div class="flex flex-col">
-                {#each schedule_data.individual_schedules as individual_schedule}
+                {#each schedule.individual_schedules as individual_schedule}
                     <div class="flex flex-row items-center">
                         {#each individual_schedule.assignments as assignment}
                             <div class="flex mx-1 my-1 w-16 h-8 {getColor(assignment)} rounded-lg justify-center items-center">

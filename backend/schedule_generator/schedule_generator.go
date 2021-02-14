@@ -32,7 +32,7 @@ func (scheduleGenerator ScheduleGenerator) GenerateSchedule() (model.Schedule, e
 
 	res, err := parseSchedule(resStr)
 	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed parsin,g schedule")
+		return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
 	}
 
 	return res, nil

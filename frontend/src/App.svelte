@@ -1,28 +1,23 @@
 <script lang=typescript>
 
-    import type { ScheduleData } from './types/schedule-data';
-    import Schedule from './components/Schedule.svelte';
-    
-    let schedule_data: ScheduleData;
-    let loaded: boolean = false;
+    import ScheduleView from './components/ScheduleView.svelte';
 
-    fetch("http://localhost:8080/schedule")
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            return result
-        })
-        .then(result => {
-            schedule_data = result;
-            loaded = true; 
-        });
+    import type { Schedule } from './openapi';
+    import { Service } from './openapi';
+    
+    let schedule: Schedule;
+    let loaded: boolean = false;
+    
 
 </script>
 
 <main>
-    {#if !loaded}
-        <p> loading... </p>
-    {:else}
-        <Schedule {schedule_data}/>
-    {/if}
+    {#await Service.getService()}
+	    <p>loading...</p>
+    {:then schedule}
+	    <ScheduleView {schedule}/>
+    {:catch error}
+	    <p style="color: red">! {error.message}: </p> 
+        <p style="color: red">{error.body} </p>
+    {/await}
 </main>

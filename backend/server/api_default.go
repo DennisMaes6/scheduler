@@ -47,13 +47,15 @@ func (c *DefaultApiController) Routes() Routes {
 
 // ScheduleGet - Returns a generated schedule.
 func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	result, err := c.service.ScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
 		return
 	}
-	//If no error, encode the body and the result code
+	//If no error, encode the body and the result code``
 	EncodeJSONResponse(result.Body, &result.Code, w)
 
 }

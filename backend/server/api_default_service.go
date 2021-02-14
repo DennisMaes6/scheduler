@@ -32,7 +32,6 @@ func NewDefaultApiService() *DefaultApiService {
 
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, error) {
-
 	res, err := s.scheduleGenerator.GenerateSchedule()
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
