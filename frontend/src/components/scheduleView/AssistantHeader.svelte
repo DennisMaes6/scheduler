@@ -1,6 +1,6 @@
 <script lang=typescript>
 
-    import type { Assistant, AssistantType } from '../openapi'
+    import type { Assistant } from '../../openapi'
     
     export let assistant: Assistant
 

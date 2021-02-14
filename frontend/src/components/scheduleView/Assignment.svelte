@@ -1,6 +1,6 @@
 <script lang=typescript>
 
-    import {ShiftType} from '../openapi'
+    import {ShiftType} from '../../openapi'
 
     export let assignment: ShiftType
 

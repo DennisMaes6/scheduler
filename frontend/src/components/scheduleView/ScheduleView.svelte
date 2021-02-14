@@ -1,8 +1,8 @@
 <script lang=typescript>
 
-    import type { Schedule } from '../openapi';
+    import type { Schedule } from '../../openapi';
     
-    import AssistantHeader from './assistantHeader.svelte'
+    import AssistantHeader from './AssistantHeader.svelte'
     import Assignment from './Assignment.svelte';
     import DayHeader from './DayHeader.svelte';
 
