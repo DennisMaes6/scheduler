@@ -48,7 +48,10 @@ components:
           items:
             $ref: "#/components/schemas/Assistant"
         shift_types:
-            $ref: "#/components/schemas/ShiftType"
+            description: The shift_types that were considered when generating this schedule.
+            type: array
+            items:
+              $ref: "#/components/schemas/ShiftType"
         individual_schedules: 
             type: array
             items:
@@ -88,14 +91,14 @@ components:
       type: string
       description: The different shift types that can be scheduled, including the free shift.
       enum:
-        - JA_E
-        - JA_WH
-        - JA_NW
-        - SA_EW
-        - SA_WH
-        - TS
-        - C
-        - F  
+        - JAEV
+        - JAWH
+        - JANW
+        - SAEW
+        - SAWH
+        - TSPT
+        - CALL
+        - FREE  
     ModelParameters: 
       type: object
       description: Holds all model parameters to generate a schedule.

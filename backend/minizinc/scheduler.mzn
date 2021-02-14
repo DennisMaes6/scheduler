@@ -3,14 +3,14 @@ int: nb_days;
 set of int: D;                % days
 
 enum ShiftType = {
-  O,
-  JA_NW,
-  SA_EW,
-  JA_E,
-  JA_WH,
-  SA_WH,
-  TS,
-  C
+  FREE,
+  JANW,
+  SAEW,
+  JAEV,
+  JAWH,
+  SAWH,
+  TSPT,
+  CALL
 };
 
 set of ShiftType: S;          % shift types
@@ -124,17 +124,18 @@ constraint min(z) >= 5;
 solve satisfy;
 
 output 
-       ["day:" ++ show(d) ++ " " | d in D] ++ ["\n"] ++
+       ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
+       ["shift_types:"] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
        [
          if d == 1 then "assistant:" ++ show(p) ++ " " ++ "type:" ++ show(T[p]) ++ " " else "" endif ++
-         if fix(X[p, O, d])     == 1 then "O " else "" endif ++
-         if fix(X[p, JA_NW, d]) == 1 then "JA_NW " else "" endif ++
-         if fix(X[p, SA_EW, d]) == 1 then "SA_EW " else "" endif ++
-         if fix(X[p, JA_E, d])  == 1 then "JA_E " else "" endif ++
-         if fix(X[p, JA_WH, d]) == 1 then "JA_WH " else "" endif ++
-         if fix(X[p, SA_WH, d]) == 1 then "SA_WH " else "" endif ++
-         if fix(X[p, TS, d])    == 1 then "TS " else "" endif ++
-         if fix(X[p, C, d])     == 1 then "C " else "" endif ++
+         if fix(X[p, FREE, d]) == 1 then "FREE " else "" endif ++
+         if fix(X[p, JANW, d]) == 1 then "JANW " else "" endif ++
+         if fix(X[p, SAEW, d]) == 1 then "SAEW " else "" endif ++
+         if fix(X[p, JAEV, d]) == 1 then "JAEV " else "" endif ++
+         if fix(X[p, JAWH, d]) == 1 then "JAWH " else "" endif ++
+         if fix(X[p, SAWH, d]) == 1 then "SAWH " else "" endif ++
+         if fix(X[p, TSPT, d]) == 1 then "TSPT " else "" endif ++
+         if fix(X[p, CALL, d]) == 1 then "CALL " else "" endif ++
          if d == nb_days then "\n" else "" endif 
          | p in P, d in D
        ];

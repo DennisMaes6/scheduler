@@ -12,7 +12,6 @@ package openapi
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/jorensjongers/scheduler/backend/model"
@@ -34,10 +33,11 @@ func NewDefaultApiService() *DefaultApiService {
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, error) {
 
-	var test model.Schedule = s.scheduleGenerator.GenerateSchedule()
-	fmt.Print(test.NbDays)
-	//return Response(200, Schedule{}), nil
-	return Response(http.StatusNotImplemented, nil), errors.New("SetModelParamsPost method not implemented")
+	res, err := s.scheduleGenerator.GenerateSchedule()
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
 }
 
 // SetModelParamsPost - Sets the model paramters in the backend.

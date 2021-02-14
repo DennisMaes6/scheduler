@@ -32,11 +32,11 @@ F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},
 nb_days =  7 * nb_weeks;
 D = 1..nb_days;
 
-S         = {O, JA_NW, SA_EW, JA_E, JA_WH, SA_WH, TS, C};
-S_prime   = {JA_NW, SA_EW, JA_E, JA_WH, SA_WH, TS, C};
-S_week    = {JA_NW, SA_EW, C};
-S_weekend = {JA_WH, SA_WH, TS};
-S_weekday = {JA_E};
+S         = {FREE, JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
+S_prime   = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
+S_week    = {JANW, SAEW, CALL};
+S_weekend = {JAWH, SAWH, TSPT};
+S_weekday = {JAEV};
 
                                 
 R = [| 0, 1, 1, 1, 0, 0, 0, 1 |        % Mon

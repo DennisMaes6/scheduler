@@ -14,12 +14,12 @@ type ShiftType string
 
 // List of ShiftType
 const (
-	JA_E  ShiftType = "JA_E"
-	JA_WH ShiftType = "JA_WH"
-	JA_NW ShiftType = "JA_NW"
-	SA_EW ShiftType = "SA_EW"
-	SA_WH ShiftType = "SA_WH"
-	TS    ShiftType = "TS"
-	C     ShiftType = "C"
-	F     ShiftType = "F"
+	JAEV ShiftType = "JAEV"
+	JAWH ShiftType = "JAWH"
+	JANW ShiftType = "JANW"
+	SAEW ShiftType = "SAEW"
+	SAWH ShiftType = "SAWH"
+	TSPT ShiftType = "TSPT"
+	CALL ShiftType = "CALL"
+	FREE ShiftType = "FREE"
 )

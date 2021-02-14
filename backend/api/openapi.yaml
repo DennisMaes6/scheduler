@@ -47,6 +47,9 @@ components:
         assistants:
         - id: 6
         - id: 6
+        shift_types:
+        - null
+        - null
       properties:
         nb_days:
           description: The number of days for which this schedule is generated.
@@ -57,7 +60,10 @@ components:
             $ref: '#/components/schemas/Assistant'
           type: array
         shift_types:
-          $ref: '#/components/schemas/ShiftType'
+          description: The shift_types that were considered when generating this schedule.
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
         individual_schedules:
           items:
             $ref: '#/components/schemas/IndividualSchedule'
@@ -107,14 +113,14 @@ components:
       description: The different shift types that can be scheduled, including the
         free shift.
       enum:
-      - JA_E
-      - JA_WH
-      - JA_NW
-      - SA_EW
-      - SA_WH
-      - TS
-      - C
-      - F
+      - JAEV
+      - JAWH
+      - JANW
+      - SAEW
+      - SAWH
+      - TSPT
+      - CALL
+      - FREE
       type: string
     ModelParameters:
       description: Holds all model parameters to generate a schedule.
