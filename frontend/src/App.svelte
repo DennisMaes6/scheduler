@@ -1,14 +1,8 @@
 <script lang=typescript>
 
     import ScheduleView from './components/ScheduleView.svelte';
-
-    import type { Schedule } from './openapi';
     import { Service } from './openapi';
-    
-    let schedule: Schedule;
-    let loaded: boolean = false;
-    
-
+     
 </script>
 
 <main>

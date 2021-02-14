@@ -20,22 +20,30 @@ var generateScheduleArgs []string = []string{
 	"minizinc/data.dzn",
 }
 
+var schedule model.Schedule = model.Schedule{}
+var cached bool = false
+
 type ScheduleGenerator struct {
 }
 
 func (scheduleGenerator ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
-	resStr, err := executeGenerateScheduleCmd()
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+	if !cached {
+		resStr, err := executeGenerateScheduleCmd()
+		if err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+		}
+
+		res, err := parseSchedule(resStr)
+		if err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
+		}
+
+		schedule = res
+		cached = true
 	}
 
-	res, err := parseSchedule(resStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
-	}
-
-	return res, nil
+	return schedule, nil
 }
 
 func executeGenerateScheduleCmd() (string, error) {
