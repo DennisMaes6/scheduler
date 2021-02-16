@@ -7,7 +7,7 @@
 </script>
 
 <main>
-    <div class="flex h-8 w-20 items-center justify-end">
-        <p class="text-black font-sm font-bold"> {assistant.type} </p>
+    <div class="flex h-6 w-20 items-center justify-end">
+        <p class="text-black text-xs font-bold"> {assistant.type} </p>
     </div>
 </main>

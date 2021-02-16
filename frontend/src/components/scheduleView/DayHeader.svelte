@@ -25,10 +25,10 @@
 
 
 <main>
-    <div class="flex flex-col h-12 w-16 justify-end">
+    <div class="flex flex-col h-12 w-12 justify-end">
         {#if day % 7 == 1}
-            <p class="text-sm font-bold text-black"> WEEK {(Math.floor(day/7) + 1)}</p>
+            <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day/7) + 1)}</p>
         {/if}
-        <p class="text-sm font-bold text-black"> {getDay(day)}</p>
+        <p class="text-xs font-bold text-black"> {getDay(day)}</p>
     </div>
 </main>

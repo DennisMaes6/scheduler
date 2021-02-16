@@ -13,7 +13,7 @@
 </script>
 
 <main>
-    <div class="flex flex-row">
+    <div class="flex flex-row pr-2">
         <!-- Assistant list -->
         <div class="flex flex-col mx-4 space-y-2">
             <div class="h-12"></div> <!-- spacing -->

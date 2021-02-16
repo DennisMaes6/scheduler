@@ -8,10 +8,10 @@
 
 <main>
     <div class="flex flex-row">
-        <div class="flex-none w-24 mt-10">
+        <div class="flex-none w-36 mt-10 ml-2">
             <ModelInput/>
         </div>
-        <div class="container">
+        <div class="flex-grow container">
             {#await Service.getService()}
                 <p>loading...</p>
             {:then schedule}

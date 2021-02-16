@@ -2,8 +2,10 @@
     
     import type { ModelParameters } from "../../openapi";
     import { ShiftType } from "../../openapi";
-
+    
+    import Assignment from "../scheduleView/Assignment.svelte";
     import InputField from "./InputField.svelte";
+import Toggle from "./Toggle.svelte";
 
     // mock data
     let modelParams: ModelParameters = {
@@ -20,7 +22,7 @@
                 fairness_weight: 0,
             },
             {
-                shift_type: ShiftType.JANW,
+                shift_type: ShiftType.JAWH,
                 included_in_balance: true,
                 fairness_weight: 0,
             },
@@ -50,8 +52,21 @@
 </script>
 
 <main>
-    
-    <div class="flex flex-col w-30"> 
-        <InputField label='Minimun balance score' value={3} step={0.01} />
+    <div class="flex flex-col"> 
+        <p class="font-semibold text-sm"> Minimun balance score: </p>
+        <InputField value={modelParams.balance_minimum} step={1} />
+
+        <p class="mt-12 font-semibold text-sm"> Shift type specific paramaters: </p>
+        <p class="mt-2 font-semibold text-xs text-gray-500"> fairness weight + included in balance </p>
+        <div class="mt-2 flex flex-col space-y-2">
+            {#each modelParams.shift_type_params as stp}
+                <div class="flex flex-row space-x-1 items-center">
+                    <Assignment assignment={stp.shift_type}/>
+                    <InputField value={stp.fairness_weight} step={0.01}/>
+                    <Toggle id={stp.shift_type}/>
+                </div>
+            {/each}
+        </div>
     </div>
+
 </main>
