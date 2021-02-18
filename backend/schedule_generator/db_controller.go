@@ -21,7 +21,10 @@ func createDB() *sql.DB {
 	}
 
 	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db") // Open the created SQLite File                   // Defer Closing the database
+
 	createTables(sqliteDatabase)
+
+	initializeData(sqliteDatabase)
 
 	return sqliteDatabase // Create Database Tables
 }
@@ -36,5 +39,32 @@ func newDBController() DbController {
 }
 
 func createTables(db *sql.DB) {
-	print("here create tables \n")
+
+	queries := []string{
+		`
+			CREATE TABLE IF NOT EXISTS min_balance_score (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				score INTEGER NOT NULL
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS modelshift_type_params (
+				shift_type TEXT PRIMARY KEY,
+				fairness_weight REAL,
+				included_in_balance BOOL
+			)
+		`,
+	}
+
+	for _, query := range queries {
+		statement, err := db.Prepare(query)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		statement.Exec()
+	}
+}
+
+func initializeData(db *sql.DB) {
+
 }
