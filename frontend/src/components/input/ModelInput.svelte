@@ -4,7 +4,7 @@
     import { ShiftType } from "../../openapi";
     
     import { Service } from '../../openapi';
-    
+
     import Assignment from "../scheduleView/Assignment.svelte";
     import Button from "./Button.svelte";
     import InputField from "./InputField.svelte";
@@ -61,7 +61,7 @@
 <main>
     <form class="flex flex-col"> 
         <p class="font-semibold text-sm cursor-default"> Minimun balance score: </p>
-        <InputField value={modelParams.balance_minimum} step={1} />
+        <InputField bind:value={modelParams.balance_minimum} step={1} />
 
         <p class="mt-12 font-semibold text-sm cursor-default"> Shift type specific paramaters: </p>
         <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> fairness weight + included in balance </p>
