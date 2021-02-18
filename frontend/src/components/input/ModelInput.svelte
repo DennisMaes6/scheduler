@@ -1,11 +1,12 @@
 <script lang=typescript>
     
-    import type { ModelParameters } from "../../openapi";
+    import { stop_propagation } from "svelte/internal";
+import type { ModelParameters } from "../../openapi";
     import { ShiftType } from "../../openapi";
     
     import Assignment from "../scheduleView/Assignment.svelte";
     import InputField from "./InputField.svelte";
-import Toggle from "./Toggle.svelte";
+    import Toggle from "./Toggle.svelte";
 
     // mock data
     let modelParams: ModelParameters = {
@@ -43,10 +44,14 @@ import Toggle from "./Toggle.svelte";
             },
             {
                 shift_type: ShiftType.TSPT,
-                included_in_balance: true,
+                included_in_balance: false,
                 fairness_weight: 0,
             },
         ]
+    }
+
+    function handlePrint() {
+        console.log(modelParams)
     }
 
 </script>
@@ -62,11 +67,12 @@ import Toggle from "./Toggle.svelte";
             {#each modelParams.shift_type_params as stp}
                 <div class="flex flex-row space-x-1 items-center">
                     <Assignment assignment={stp.shift_type}/>
-                    <InputField value={stp.fairness_weight} step={0.01}/>
-                    <Toggle id={stp.shift_type}/>
+                    <InputField bind:value={stp.fairness_weight} step={0.01}/>
+                    <Toggle bind:checked={stp.included_in_balance} id={stp.shift_type}/>
                 </div>
             {/each}
         </div>
+        <button on:click={handlePrint}> print </button>
     </div>
 
 </main>
