@@ -25,7 +25,7 @@
 
 
 <main>
-    <div class="flex flex-col h-12 w-12 justify-end">
+    <div class="flex flex-col h-12 w-12 justify-end items-center">
         {#if day % 7 == 1}
             <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day/7) + 1)}</p>
         {/if}
