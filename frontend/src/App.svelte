@@ -9,7 +9,16 @@
 <main>
     <div class="flex flex-row">
         <div class="flex-none w-36 mt-10 ml-2">
-            <ModelInput/>
+            {#await Service.getService1()}
+                <p> loading... </p>
+            {:then modelParams} 
+                <ModelInput {modelParams}/>
+            {:catch error}
+                <div>
+                    <p style="color: red">! {error}: </p> 
+                    <p style="color: red">{error.body} </p>
+                </div>
+            {/await}
         </div>
         <div class="flex-grow container">
             {#await Service.getService()}
