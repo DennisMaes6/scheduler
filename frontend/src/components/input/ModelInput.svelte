@@ -1,11 +1,12 @@
 <script lang=typescript>
     
-    import { loop_guard, stop_propagation } from "svelte/internal";
-import type { ModelParameters } from "../../openapi";
+    import type { ModelParameters} from "../../openapi";
     import { ShiftType } from "../../openapi";
     
+    import { Service } from '../../openapi';
+    
     import Assignment from "../scheduleView/Assignment.svelte";
-import Button from "./Button.svelte";
+    import Button from "./Button.svelte";
     import InputField from "./InputField.svelte";
     import Toggle from "./Toggle.svelte";
 
@@ -51,8 +52,8 @@ import Button from "./Button.svelte";
         ]
     }
 
-    function handlePrint() {
-        console.log(modelParams)
+    function handleSubmit() {
+        Service.postService(modelParams)
     }
 
 </script>
@@ -75,7 +76,7 @@ import Button from "./Button.svelte";
         </div>
 
         <div class="my-5 mx-auto">
-            <Button callback={handlePrint}> Submit </Button>
+            <Button callback={handleSubmit}> Submit </Button>
         </div>
     </form>
 

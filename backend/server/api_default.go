@@ -31,44 +31,83 @@ func NewDefaultApiController(s DefaultApiServicer) Router {
 func (c *DefaultApiController) Routes() Routes {
 	return Routes{
 		{
+			"ModelParametersGetGet",
+			strings.ToUpper("Get"),
+			"/model-parameters/get",
+			c.ModelParametersGetGet,
+		},
+		{
+			"ModelParametersSetPost",
+			strings.ToUpper("Post"),
+			"/model-parameters/set",
+			c.ModelParametersSetPost,
+		},
+		{
+			"ModelParametersSetOptions",
+			strings.ToUpper("Options"),
+			"/model-parameters/set",
+			c.ModelParametersSetOptions,
+		},
+		{
 			"ScheduleGet",
 			strings.ToUpper("Get"),
 			"/schedule",
 			c.ScheduleGet,
 		},
-		{
-			"SetModelParamsPost",
-			strings.ToUpper("Post"),
-			"/set-model-params",
-			c.SetModelParamsPost,
-		},
 	}
 }
 
-// ScheduleGet - Returns a generated schedule.
-func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
+// ModelParametersGetGet - Returns the current model parameters.
+func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
-	result, err := c.service.ScheduleGet(r.Context())
+	result, err := c.service.ModelParametersGetGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
 		return
 	}
-	//If no error, encode the body and the result code``
+	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
 
 }
 
-// SetModelParamsPost - Sets the model paramters in the backend.
-func (c *DefaultApiController) SetModelParamsPost(w http.ResponseWriter, r *http.Request) {
+// ModelParametersSetPost - Sets the model paramters in the backend.
+func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
+	w.Header().Add("Content-Type", "application/json")
+
 	modelParameters := &model.ModelParameters{}
 	if err := json.NewDecoder(r.Body).Decode(&modelParameters); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	result, err := c.service.SetModelParamsPost(r.Context(), *modelParameters)
+	result, err := c.service.ModelParametersSetPost(r.Context(), *modelParameters)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+
+}
+
+// ModelParametersSetOptions
+func (c *DefaultApiController) ModelParametersSetOptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+// ScheduleGet - Returns a generated schedule.
+func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
+
+	result, err := c.service.ScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

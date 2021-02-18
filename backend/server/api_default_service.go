@@ -11,7 +11,7 @@ package openapi
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/jorensjongers/scheduler/backend/model"
@@ -40,12 +40,22 @@ func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, erro
 }
 
 // SetModelParamsPost - Sets the model paramters in the backend.
-func (s *DefaultApiService) SetModelParamsPost(ctx context.Context, modelParameters model.ModelParameters) (ImplResponse, error) {
+func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelParameters model.ModelParameters) (ImplResponse, error) {
 	// TODO - update SetModelParamsPost with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(204, {}) or use other options such as http.Ok ...
 	//return Response(204, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("SetModelParamsPost method not implemented")
+	fmt.Print(modelParameters)
+	return Response(204, "{}"), nil
+}
+
+// ScheduleGet - Returns a generated schedule.
+func (s *DefaultApiService) ModelParametersGetGet(ctx context.Context) (ImplResponse, error) {
+	res, err := s.scheduleGenerator.GenerateSchedule()
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
 }

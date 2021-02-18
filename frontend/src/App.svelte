@@ -18,7 +18,7 @@
                 <ScheduleView {schedule}/>
             {:catch error}
                 <div>
-                    <p style="color: red">! {error.message}: </p> 
+                    <p style="color: red">! {error}: </p> 
                     <p style="color: red">{error.body} </p>
                 </div>
             {/await}

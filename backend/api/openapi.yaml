@@ -16,7 +16,17 @@ paths:
                 $ref: '#/components/schemas/Schedule'
           description: A schedule.
       summary: Returns a generated schedule.
-  /set-model-params:
+  /model-parameters/get:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelParameters'
+          description: The model parameters.
+      summary: Returns the current model parameters.
+  /model-parameters/set:
     post:
       requestBody:
         content:
@@ -126,35 +136,33 @@ components:
       description: Holds all model parameters to generate a schedule.
       example:
         balance_minimum: 0
-        fairness_shift_weights:
-        - weight: 6.027456183070403
-        - weight: 6.027456183070403
-        balance_shifts:
-        - null
-        - null
+        shift_type_params:
+        - included_in_balance: true
+          fairness_weight: 6.027456183070403
+        - included_in_balance: true
+          fairness_weight: 6.027456183070403
       properties:
         balance_minimum:
           description: The minimal balance score for an acceptable solution
           type: integer
-        balance_shifts:
-          description: The shifts to be included when calculating the balance score.
+        shift_type_params:
           items:
-            $ref: '#/components/schemas/ShiftType'
-          type: array
-        fairness_shift_weights:
-          items:
-            $ref: '#/components/schemas/ModelParameters_fairness_shift_weights'
+            $ref: '#/components/schemas/ShiftTypeModelParameters'
           type: array
       type: object
-    ModelParameters_fairness_shift_weights:
-      description: A shift type - weight pair that specifies the weight each shift
-        type should have in the model.
+    ShiftTypeModelParameters:
+      description: Holds the shift type specific model parameters.
       example:
-        weight: 6.027456183070403
+        included_in_balance: true
+        fairness_weight: 6.027456183070403
       properties:
         shift_type:
           $ref: '#/components/schemas/ShiftType'
-        weight:
-          description: The weight of this shift type
+        fairness_weight:
+          description: The weight of this shift type in the fairness score.
           type: number
+        included_in_balance:
+          description: Whether or not this shift type is included when computing the
+            balaance score.
+          type: boolean
       type: object
