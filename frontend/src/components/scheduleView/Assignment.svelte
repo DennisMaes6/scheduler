@@ -28,7 +28,7 @@
 </script>
 
 <main>
-    <div class="flex w-12 h-6 {getColor(assignment)} rounded-lg justify-center items-center">
-        <p class="text-xs font-bold text-white"> {assignment}</p>
+    <div class="flex w-12 h-6 {getColor(assignment)} rounded-lg justify-center items-center cursor-default">
+        <div class="text-xs font-bold text-white"> {assignment}</div>
     </div>
 </main>
