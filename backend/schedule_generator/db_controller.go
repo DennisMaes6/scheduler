@@ -20,13 +20,11 @@ func createDB() *sql.DB {
 		log.Println("sqlite-database.db file created")
 	}
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db") // Open the created SQLite File                   // Defer Closing the database
-
+	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
 	createTables(sqliteDatabase)
-
 	initializeData(sqliteDatabase)
 
-	return sqliteDatabase // Create Database Tables
+	return sqliteDatabase
 }
 
 type DbController struct {
@@ -43,12 +41,12 @@ func createTables(db *sql.DB) {
 	queries := []string{
 		`
 			CREATE TABLE IF NOT EXISTS min_balance_score (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				id INTEGER PRIMARY KEY,
 				score INTEGER NOT NULL
 			)
 		`,
 		`
-			CREATE TABLE IF NOT EXISTS modelshift_type_params (
+			CREATE TABLE IF NOT EXISTS shift_type_params (
 				shift_type TEXT PRIMARY KEY,
 				fairness_weight REAL,
 				included_in_balance BOOL
@@ -67,4 +65,33 @@ func createTables(db *sql.DB) {
 
 func initializeData(db *sql.DB) {
 
+	initializeMinBalanceScoreSQL := `
+		INSERT or IGNORE INTO min_balance_score(id, score)
+		VALUES (1, ?)
+	`
+
+	statement, err := db.Prepare(initializeMinBalanceScoreSQL)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	if _, err := statement.Exec(initialModelParameters.BalanceMinimum); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	for _, stp := range initialModelParameters.ShiftTypeParams {
+		initializeShiftTypeParamsSQL := `
+			INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
+			VALUES (?, ?, ?)
+		`
+
+		statement, err := db.Prepare(initializeShiftTypeParamsSQL)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		if _, err := statement.Exec(stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
+			log.Fatal(err.Error())
+		}
+	}
 }
