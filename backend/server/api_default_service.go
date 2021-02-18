@@ -52,7 +52,7 @@ func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelPar
 
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) ModelParametersGetGet(ctx context.Context) (ImplResponse, error) {
-	res, err := s.scheduleGenerator.GenerateSchedule()
+	res, err := s.scheduleGenerator.GetModelParameters()
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
 	}

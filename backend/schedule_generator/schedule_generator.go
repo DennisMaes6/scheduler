@@ -37,6 +37,10 @@ func (scheduleGenerator ScheduleGenerator) UpdateModelParameters(model.ModelPara
 	return nil
 }
 
+func (scheduleGenerator ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
+	return scheduleGenerator.dbController.GetModelParameters()
+}
+
 func (scheduleGenerator ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {

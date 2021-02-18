@@ -2,30 +2,11 @@ package schedule_generator
 
 import (
 	"database/sql"
-	"log"
-	"os"
 
+	"github.com/jorensjongers/scheduler/backend/model"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pkg/errors"
 )
-
-func createDB() *sql.DB {
-	if _, err := os.Stat("sqlite-database.db"); os.IsNotExist(err) {
-
-		file, err := os.Create("sqlite-database.db") // Create SQLite file
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-
-		file.Close()
-		log.Println("sqlite-database.db file created")
-	}
-
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
-	createTables(sqliteDatabase)
-	initializeData(sqliteDatabase)
-
-	return sqliteDatabase
-}
 
 type DbController struct {
 	db *sql.DB
@@ -36,62 +17,85 @@ func newDBController() DbController {
 	return DbController{db}
 }
 
-func createTables(db *sql.DB) {
+// GetModelParameters -- returns the model parameters a stored in the DB
+func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 
-	queries := []string{
-		`
-			CREATE TABLE IF NOT EXISTS min_balance_score (
-				id INTEGER PRIMARY KEY,
-				score INTEGER NOT NULL
-			)
-		`,
-		`
-			CREATE TABLE IF NOT EXISTS shift_type_params (
-				shift_type TEXT PRIMARY KEY,
-				fairness_weight REAL,
-				included_in_balance BOOL
-			)
-		`,
+	balanceMinimum, err := c.getMinBalanceScore()
+	if err != nil {
+		return model.ModelParameters{}, errors.Wrap(err, "failed getting min balance score from db")
 	}
 
-	for _, query := range queries {
-		statement, err := db.Prepare(query)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-		statement.Exec()
+	shiftTypeParams, err := c.getShiftTypeParams()
+	if err != nil {
+		return model.ModelParameters{}, errors.Wrap(err, "failed getting shift type parameters from db")
 	}
+
+	result := model.ModelParameters{
+		BalanceMinimum:  int32(balanceMinimum),
+		ShiftTypeParams: shiftTypeParams,
+	}
+
+	return result, nil
 }
 
-func initializeData(db *sql.DB) {
+// SetModelParameters -- updates the model parameters in teh DB
+func (c DbController) SetModelParameters() error {
 
-	initializeMinBalanceScoreSQL := `
-		INSERT or IGNORE INTO min_balance_score(id, score)
-		VALUES (1, ?)
+	return nil
+}
+
+func (c DbController) getMinBalanceScore() (int, error) {
+
+	minBalanceScoreQuery := `
+		SELECT score
+		FROM min_balance_score
+		WHERE id = 1
 	`
 
-	statement, err := db.Prepare(initializeMinBalanceScoreSQL)
+	var score int
+	if err := c.db.QueryRow(minBalanceScoreQuery).Scan(&score); err != nil {
+		return 0, err
+	}
+
+	return score, nil
+}
+
+func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, error) {
+
+	shiftTypeParamsQuery := `
+		SELECT shift_type, fairness_weight, included_in_balance
+		FROM shift_type_params
+	`
+
+	rows, err := c.db.Query(shiftTypeParamsQuery)
 	if err != nil {
-		log.Fatal(err.Error())
+		return []model.ShiftTypeModelParameters{}, err
 	}
 
-	if _, err := statement.Exec(initialModelParameters.BalanceMinimum); err != nil {
-		log.Fatal(err.Error())
-	}
+	result := []model.ShiftTypeModelParameters{}
+	for rows.Next() {
+		var (
+			shiftType         string
+			fairnessWeight    float32
+			includedInBalance bool
+		)
 
-	for _, stp := range initialModelParameters.ShiftTypeParams {
-		initializeShiftTypeParamsSQL := `
-			INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
-			VALUES (?, ?, ?)
-		`
-
-		statement, err := db.Prepare(initializeShiftTypeParamsSQL)
-		if err != nil {
-			log.Fatal(err.Error())
+		if err := rows.Scan(&shiftType, &fairnessWeight, &includedInBalance); err != nil {
+			return []model.ShiftTypeModelParameters{}, err
 		}
 
-		if _, err := statement.Exec(stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
-			log.Fatal(err.Error())
+		stp := model.ShiftTypeModelParameters{
+			ShiftType:         model.ShiftType(shiftType),
+			FairnessWeight:    fairnessWeight,
+			IncludedInBalance: includedInBalance,
 		}
+
+		result = append(result, stp)
 	}
+
+	if err := rows.Err(); err != nil {
+		return []model.ShiftTypeModelParameters{}, err
+	}
+
+	return result, nil
 }
