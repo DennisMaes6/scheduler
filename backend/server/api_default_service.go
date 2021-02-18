@@ -11,7 +11,6 @@ package openapi
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/jorensjongers/scheduler/backend/model"
@@ -27,7 +26,7 @@ type DefaultApiService struct {
 
 // NewDefaultApiService creates a default api service
 func NewDefaultApiService() *DefaultApiService {
-	return &DefaultApiService{}
+	return &DefaultApiService{schedule_generator.NewScheduleGenberator()}
 }
 
 // ScheduleGet - Returns a generated schedule.
@@ -47,8 +46,8 @@ func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelPar
 	//TODO: Uncomment the next line to return response Response(204, {}) or use other options such as http.Ok ...
 	//return Response(204, nil),nil
 
-	fmt.Print(modelParameters)
-	return Response(204, "{}"), nil
+	s.scheduleGenerator.UpdateModelParameters(modelParameters)
+	return Response(204, nil), nil
 }
 
 // ScheduleGet - Returns a generated schedule.

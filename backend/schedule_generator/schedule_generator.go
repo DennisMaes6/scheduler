@@ -24,6 +24,17 @@ var schedule model.Schedule = model.Schedule{}
 var cached bool = false
 
 type ScheduleGenerator struct {
+	dbController DbController
+}
+
+func NewScheduleGenberator() ScheduleGenerator {
+	return ScheduleGenerator{newDBController()}
+}
+
+func (scheduleGenerator ScheduleGenerator) UpdateModelParameters(model.ModelParameters) error {
+	// update DB
+	// regenerate minizinc
+	return nil
 }
 
 func (scheduleGenerator ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
