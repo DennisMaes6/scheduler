@@ -1,10 +1,11 @@
 <script lang=typescript>
     
-    import { stop_propagation } from "svelte/internal";
+    import { loop_guard, stop_propagation } from "svelte/internal";
 import type { ModelParameters } from "../../openapi";
     import { ShiftType } from "../../openapi";
     
     import Assignment from "../scheduleView/Assignment.svelte";
+import Button from "./Button.svelte";
     import InputField from "./InputField.svelte";
     import Toggle from "./Toggle.svelte";
 
@@ -57,12 +58,12 @@ import type { ModelParameters } from "../../openapi";
 </script>
 
 <main>
-    <div class="flex flex-col"> 
-        <p class="font-semibold text-sm"> Minimun balance score: </p>
+    <form class="flex flex-col"> 
+        <p class="font-semibold text-sm cursor-default"> Minimun balance score: </p>
         <InputField value={modelParams.balance_minimum} step={1} />
 
-        <p class="mt-12 font-semibold text-sm"> Shift type specific paramaters: </p>
-        <p class="mt-2 font-semibold text-xs text-gray-500"> fairness weight + included in balance </p>
+        <p class="mt-12 font-semibold text-sm cursor-default"> Shift type specific paramaters: </p>
+        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> fairness weight + included in balance </p>
         <div class="mt-2 flex flex-col space-y-2">
             {#each modelParams.shift_type_params as stp}
                 <div class="flex flex-row space-x-1 items-center">
@@ -72,7 +73,10 @@ import type { ModelParameters } from "../../openapi";
                 </div>
             {/each}
         </div>
-        <button on:click={handlePrint}> print </button>
-    </div>
+
+        <div class="my-5 mx-auto">
+            <Button callback={handlePrint}> Submit </Button>
+        </div>
+    </form>
 
 </main>
