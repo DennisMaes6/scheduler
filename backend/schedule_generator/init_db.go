@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"os"
+
+	"github.com/pkg/errors"
 )
 
 func createDB() *sql.DB {
@@ -15,18 +17,24 @@ func createDB() *sql.DB {
 		}
 
 		file.Close()
-		log.Println("sqlite-database.db file created")
+		log.Printf("New db file created")
 	}
 
 	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
-	createTables(sqliteDatabase)
-	initializeData(sqliteDatabase)
 
-	log.Printf("Database initialized")
+	if err := createTables(sqliteDatabase); err != nil {
+		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
+	}
+
+	if err := initializeData(sqliteDatabase); err != nil {
+		log.Fatal(errors.Wrap(err, "failed initializing data in db"))
+	}
+
+	log.Printf("Database initialized succesfully")
 	return sqliteDatabase
 }
 
-func createTables(db *sql.DB) {
+func createTables(db *sql.DB) error {
 
 	queries := []string{
 		`
@@ -45,43 +53,35 @@ func createTables(db *sql.DB) {
 	}
 
 	for _, query := range queries {
-		statement, err := db.Prepare(query)
-		if err != nil {
-			log.Fatal(err.Error())
+		if _, err := db.Exec(query); err != nil {
+			return errors.Wrap(err, "failed creating creating table")
 		}
-		statement.Exec()
 	}
+
+	return nil
 }
 
-func initializeData(db *sql.DB) {
+func initializeData(db *sql.DB) error {
 
-	initializeMinBalanceScoreSQL := `
+	initMBSQuery := `
 		INSERT or IGNORE INTO min_balance_score(id, score)
 		VALUES (1, ?)
 	`
 
-	statement, err := db.Prepare(initializeMinBalanceScoreSQL)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	if _, err := statement.Exec(initialModelParameters.BalanceMinimum); err != nil {
-		log.Fatal(err.Error())
+	if _, err := db.Exec(initMBSQuery, initialModelParameters.BalanceMinimum); err != nil {
+		return errors.Wrap(err, "failed initailizing minimin balance score")
 	}
 
 	for _, stp := range initialModelParameters.ShiftTypeParams {
-		initializeShiftTypeParamsSQL := `
+		initSTPsQuery := `
 			INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
 			VALUES (?, ?, ?)
 		`
 
-		statement, err := db.Prepare(initializeShiftTypeParamsSQL)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-
-		if _, err := statement.Exec(stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
-			log.Fatal(err.Error())
+		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
+			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
 	}
+
+	return nil
 }
