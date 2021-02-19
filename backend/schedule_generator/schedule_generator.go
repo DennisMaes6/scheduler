@@ -128,18 +128,18 @@ func extractNbDays(scheduleStr string) (int32, error) {
 }
 
 func extractAssistants(scheduleStr string) ([]model.Assistant, error) {
-	lines := strings.Split(scheduleStr, "\n")
+	lines := extractAssistantLines(strings.Split(scheduleStr, "\n"))
 
 	assistants := []model.Assistant{}
-	for i := 2; i < len(lines)-2; i++ {
-		line := strings.Split(lines[i], " ")
+	for _, line := range lines {
+		split_line := strings.Split(line, " ")
 
-		id, err := strconv.Atoi(strings.Split(line[0], ":")[1])
+		id, err := strconv.Atoi(strings.Split(split_line[0], ":")[1])
 		if err != nil {
 			return []model.Assistant{}, err
 		}
 
-		assistantType, err := parseAssistantType(strings.Split(line[1], ":")[1])
+		assistantType, err := parseAssistantType(strings.Split(split_line[1], ":")[1])
 		if err != nil {
 			return []model.Assistant{}, err
 		}
@@ -215,12 +215,12 @@ func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
 }
 
 func extractIndividualSchedules(scheduleStr string) ([]model.IndividualSchedule, error) {
-	lines := strings.Split(scheduleStr, "\n")
+	lines := extractAssistantLines(strings.Split(scheduleStr, "\n"))
 
 	result := []model.IndividualSchedule{}
-	for i := 2; i < len(lines)-2; i++ {
+	for _, line := range lines {
 
-		entries := strings.Split(strings.TrimSpace(lines[i]), " ")
+		entries := strings.Split(strings.TrimSpace(line), " ")
 		assistantId, err := strconv.Atoi(strings.Split(entries[0], ":")[1])
 		if err != nil {
 			return []model.IndividualSchedule{}, err
@@ -244,4 +244,15 @@ func extractIndividualSchedules(scheduleStr string) ([]model.IndividualSchedule,
 	}
 
 	return result, nil
+}
+
+func extractAssistantLines(lines []string) []string {
+	filtered_lines := []string{}
+	for _, line := range lines {
+		if strings.Contains(line, "assistant") {
+			filtered_lines = append(filtered_lines, line)
+		}
+	}
+
+	return filtered_lines
 }
