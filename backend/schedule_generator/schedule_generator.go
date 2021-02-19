@@ -50,13 +50,17 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
 		}
 
+		if strings.Contains(resStr, "UNSATISFIABLE") {
+			return model.Schedule{}, errors.New("model unsatisfiable")
+		}
+
 		res, err := parseSchedule(resStr)
 		if err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
 		}
 
 		schedule = res
-		cached = true
+		//cached = true
 	}
 
 	return schedule, nil
