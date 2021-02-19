@@ -24,24 +24,25 @@ var schedule model.Schedule = model.Schedule{}
 var cached bool = false
 
 type ScheduleGenerator struct {
-	dbController DbController
+	dbc DbController
 }
 
-func NewScheduleGenberator() ScheduleGenerator {
+func NewScheduleGenerator() ScheduleGenerator {
 	return ScheduleGenerator{newDBController()}
 }
 
-func (scheduleGenerator ScheduleGenerator) UpdateModelParameters(model.ModelParameters) error {
-	// update DB
-	// regenerate minizinc
+func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) error {
+	if err := s.dbc.SetModelParameters(params); err != nil {
+		return errors.Wrap(err, "failed updating model parameters")
+	}
 	return nil
 }
 
-func (scheduleGenerator ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
-	return scheduleGenerator.dbController.GetModelParameters()
+func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
+	return s.dbc.GetModelParameters()
 }
 
-func (scheduleGenerator ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
+func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {
 		resStr, err := executeGenerateScheduleCmd()

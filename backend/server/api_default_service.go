@@ -26,7 +26,7 @@ type DefaultApiService struct {
 
 // NewDefaultApiService creates a default api service
 func NewDefaultApiService() *DefaultApiService {
-	return &DefaultApiService{schedule_generator.NewScheduleGenberator()}
+	return &DefaultApiService{schedule_generator.NewScheduleGenerator()}
 }
 
 // ScheduleGet - Returns a generated schedule.
@@ -40,13 +40,9 @@ func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, erro
 
 // SetModelParamsPost - Sets the model paramters in the backend.
 func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelParameters model.ModelParameters) (ImplResponse, error) {
-	// TODO - update SetModelParamsPost with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(204, {}) or use other options such as http.Ok ...
-	//return Response(204, nil),nil
-
-	s.scheduleGenerator.UpdateModelParameters(modelParameters)
+	if err := s.scheduleGenerator.UpdateModelParameters(modelParameters); err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
 	return Response(204, nil), nil
 }
 

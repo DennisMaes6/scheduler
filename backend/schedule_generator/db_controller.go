@@ -39,7 +39,17 @@ func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 }
 
 // SetModelParameters -- updates the model parameters in teh DB
-func (c DbController) SetModelParameters() error {
+func (c DbController) SetModelParameters(params model.ModelParameters) error {
+
+	if err := c.setMinBalanceScore(params.BalanceMinimum); err != nil {
+		return errors.Wrap(err, "failed setting min balance score in db")
+	}
+
+	for _, stps := range params.ShiftTypeParams {
+		if err := c.setShiftTypeParams(stps); err != nil {
+			return errors.Wrap(err, "failed setting shift type parameters in db")
+		}
+	}
 
 	return nil
 }
@@ -68,6 +78,7 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 	`
 
 	rows, err := c.db.Query(shiftTypeParamsQuery)
+	defer rows.Close()
 	if err != nil {
 		return []model.ShiftTypeModelParameters{}, err
 	}
@@ -98,4 +109,36 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 	}
 
 	return result, nil
+}
+
+func (c DbController) setMinBalanceScore(newScore int32) error {
+
+	setMBSQuery := `
+		UPDATE min_balance_score
+		SET score = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setMBSQuery, newScore); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c DbController) setShiftTypeParams(stp model.ShiftTypeModelParameters) error {
+
+	setSTPsQuery := `
+		UPDATE shift_type_params
+		SET fairness_weight = ?,
+		    included_in_balance = ?
+		WHERE shift_type = ?
+	`
+
+	if _, err := c.db.Exec(setSTPsQuery, stp.FairnessWeight, stp.IncludedInBalance, stp.ShiftType); err != nil {
+		return err
+	}
+
+	return nil
+
 }
