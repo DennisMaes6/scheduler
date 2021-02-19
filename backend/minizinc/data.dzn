@@ -1,6 +1,5 @@
 % instance-specific data
 
-
 nb_weeks = 4;
 
 nb_personnel = 18;
@@ -8,54 +7,12 @@ T = [JA, JA, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_
 
 F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
-/*
-nb_weeks = 3;
+S = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
 
-nb_personnel = 24;
-T = [JA, JA, JA, JA, JA, JA, JA, JA_F, JA_F, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO, SA_F_NEO, SA_F_NEO];
 
-F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+% model parameters
 
-*/
-
-/*
-nb_weeks = 3;
-
-nb_personnel = 52;
-T = [JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO, JA, JA, JA, JA];
-
-F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-*/
-
-     
-% fixed data    
-nb_days =  7 * nb_weeks;
-D = 1..nb_days;
-
-S         = {FREE, JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
-S_prime   = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
-S_week    = {JANW, SAEW, CALL};
-S_weekend = {JAWH, SAWH, TSPT};
-S_weekday = {JAEV};
-
-                                
-R = [| 0, 1, 1, 1, 0, 0, 0, 1 |        % Mon
-       0, 1, 1, 1, 0, 0, 0, 1 |        % Tue
-       0, 1, 1, 1, 0, 0, 0, 1 |        % Wed
-       0, 1, 1, 1, 0, 0, 0, 1 |        % Thu
-       0, 1, 1, 1, 0, 0, 0, 1 |        % Fri
-       0, 1, 1, 0, 2, 2, 1, 1 |        % Sat
-       0, 1, 1, 0, 2, 2, 1, 1 |];      % Sun
-                                               
-Q = [{},                               % O
-     {JA},                             % JA_NW
-     {SA, SA_NEO},                     % SA_EW
-     {JA},                             % JA_E
-     {JA, JA_F},                       % JA_WH
-     {SA, SA_F, SA_NEO, SA_F_NEO},     % SA_WH
-     {SA, SA_F, SA_NEO, SA_F_NEO},     % C
-     {SA_NEO, SA_F_NEO}];              % TS
-                                               
-                                                
-
+fairness_weight = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+S_balance =  {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
+min_balance = 3;
 
