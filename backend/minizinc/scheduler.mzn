@@ -155,7 +155,7 @@ constraint forall(p in P, d in D)(
              endif
            );
            
-constraint min(z) >= 5;
+constraint min(z) >= min_balance;
 
 solve minimize fairness_score;
 
