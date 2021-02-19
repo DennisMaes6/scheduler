@@ -3,6 +3,7 @@ package schedule_generator
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -45,6 +46,11 @@ func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {
+
+		if err := s.generateDataFile(); err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed generating data file")
+		}
+
 		resStr, err := executeGenerateScheduleCmd()
 		if err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
@@ -64,6 +70,30 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 	}
 
 	return schedule, nil
+}
+
+func (s ScheduleGenerator) generateDataFile() error {
+
+	file, err := os.Create("minizinc/data.dzn")
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("failed creating file %s", "minizinc/data.dzn"))
+	}
+
+	if err := writeInstanceSpecificData(file); err != nil {
+		return errors.Wrap(err, "failed writning instance specific data")
+	}
+
+	modelParameters, err := s.dbc.GetModelParameters()
+	if err != nil {
+		return errors.Wrap(err, "databse controller error")
+	}
+
+	if err := writeModelParameters(file, modelParameters); err != nil {
+		return errors.Wrap(err, "failed writing model parameters")
+	}
+
+	return nil
+
 }
 
 func executeGenerateScheduleCmd() (string, error) {
