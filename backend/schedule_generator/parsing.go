@@ -16,14 +16,14 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting nb days")
 	}
 
-	assistants, err := extractAssistants(scheduleStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
-	}
-
 	shiftTypes, err := extractShiftTypes(scheduleStr)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting shift types")
+	}
+
+	assistants, err := extractAssistants(scheduleStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
 	}
 
 	individualSchedules, err := extractIndividualSchedules(scheduleStr)
@@ -98,9 +98,28 @@ func parseAssistantType(typeStr string) (model.AssistantType, error) {
 	}
 }
 
-func extractShiftTypes(scheduleStr string) ([]model.ShiftType, error) {
-	lines := filterLines(strings.Split(scheduleStr, "\n"), "shift_types")
-	return parseShiftTypes(strings.Split(lines[0], ":")[1])
+func extractShiftTypes(scheduleStr string) ([]model.ScheduleShiftTypes, error) {
+	lines := filterLines(strings.Split(scheduleStr, "\n"), "fairness_per_shift_type")
+	shiftTypesLine := strings.TrimSpace(strings.Split(lines[0], ":")[1])
+
+	result := []model.ScheduleShiftTypes{}
+	for _, shiftTypeStr := range strings.Split(shiftTypesLine, " ") {
+		shiftType, err := parseShiftType(strings.Split(shiftTypeStr, "=")[0])
+		if err != nil {
+			return []model.ScheduleShiftTypes{}, err
+		}
+
+		fairnessScore, err := strconv.ParseFloat(strings.Split(shiftTypeStr, "=")[1], 32)
+		if err != nil {
+			return []model.ScheduleShiftTypes{}, err
+		}
+
+		result = append(result, model.ScheduleShiftTypes{
+			FairnessScore: float32(fairnessScore),
+			ShiftType:     shiftType,
+		})
+	}
+	return result, nil
 }
 
 func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
