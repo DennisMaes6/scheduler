@@ -48,8 +48,10 @@ components:
       type: object
       description: Holds all data of a generated schedule.
       properties:
-        most_unfair_shift:
-          $ref: "#/components/schemas/ShiftType"
+        most_unfair_shifts:
+          type: array
+          items: 
+            $ref: "#/components/schemas/ShiftType"
         fairness_score:
           type: number
           description: The fairness score of this schedule

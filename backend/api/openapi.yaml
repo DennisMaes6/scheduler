@@ -63,12 +63,17 @@ components:
           lowest_unfair_workload: true
         fairness_score: 0.8008281904610115
         balance_score: 6
+        most_unfair_shifts:
+        - null
+        - null
         shift_types:
         - fairness_score: 5.637376656633329
         - fairness_score: 5.637376656633329
       properties:
-        most_unfair_shift:
-          $ref: '#/components/schemas/ShiftType'
+        most_unfair_shifts:
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
         fairness_score:
           description: The fairness score of this schedule
           type: number
