@@ -11,8 +11,8 @@ package model
 
 // Assignment - Represents a single shift assignment.
 type Assignment struct {
-	ShiftType ShiftType `json:"shift_type,omitempty"`
+	ShiftType ShiftType `json:"shift_type"`
 
 	// whether or not this assignlent is part of a min balance free block.
-	PartOfMinBalance bool `json:"part_of_min_balance,omitempty"`
+	PartOfMinBalance bool `json:"part_of_min_balance"`
 }

@@ -120,6 +120,9 @@ components:
           description: whether or not this assignlent is part of a min balance free
             block.
           type: boolean
+      required:
+      - part_of_min_balance
+      - shift_type
       type: object
     AssistantType:
       description: The different assistant types.
