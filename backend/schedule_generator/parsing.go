@@ -11,6 +11,7 @@ import (
 
 type unfairnessPerShiftType struct {
 	shiftType       model.ShiftType
+	fairnessScore   float32
 	highestWorkload []int32 // assistant IDs
 	lowestWorkload  []int32 // assistant IDs
 }
@@ -26,6 +27,7 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting shift types")
 	}
+	fmt.Print(shiftTypes)
 
 	fairnessScore := getFairnessScore(shiftTypes)
 
@@ -39,7 +41,7 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting individual schedules")
 	}
 
-	assistants, err := extractAssistants(scheduleStr, getUnfairness(individualSchedules, shiftTypes, int(nbDays)))
+	assistants, err := extractAssistants(scheduleStr, getUnfairness(individualSchedules, shiftTypes, int(nbDays)), fairnessScore)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
 	}
@@ -66,7 +68,7 @@ func extractNbDays(scheduleStr string) (int32, error) {
 	return int32(nbDays), nil
 }
 
-func extractAssistants(scheduleStr string, unfairness []unfairnessPerShiftType) ([]model.Assistant, error) {
+func extractAssistants(scheduleStr string, unfairness []unfairnessPerShiftType, fairnessScore float32) ([]model.Assistant, error) {
 	lines := filterLines(strings.Split(scheduleStr, "\n"), "assistant")
 
 	assistants := []model.Assistant{}
@@ -83,11 +85,14 @@ func extractAssistants(scheduleStr string, unfairness []unfairnessPerShiftType) 
 			return []model.Assistant{}, err
 		}
 
+		huw := getHighestUnfairWorkload(unfairness, fairnessScore, int32(id))
+		luw := filterQualifications(getLowestUnfairWorkload(unfairness, fairnessScore, int32(id)), assistantType)
+
 		assistant := model.Assistant{
 			Id:                    int32(id),
 			Type:                  assistantType,
-			HighestUnfairWorkload: getHighestUnfairWorkload(unfairness, int32(id)),
-			LowestUnfairWorkload:  getLowestUnfairWorkload(unfairness, int32(id)),
+			HighestUnfairWorkload: filter(huw, luw),
+			LowestUnfairWorkload:  filter(luw, huw),
 		}
 
 		assistants = append(assistants, assistant)
@@ -305,9 +310,9 @@ func oneOf(test model.ShiftType, sts []model.ShiftType) bool {
 }
 
 func getFairnessScore(shiftTypes []model.ScheduleShiftTypes) float32 {
-	result := float32(100.0)
+	result := float32(0.0)
 	for _, st := range shiftTypes {
-		if st.FairnessScore < result {
+		if st.FairnessScore > result {
 			result = float32(st.FairnessScore)
 		}
 	}
@@ -333,7 +338,7 @@ func getUnfairness(schedules []model.IndividualSchedule,
 				assistantsHighestWorkload = append(assistantsHighestWorkload, schedule.AssistantId)
 			}
 
-			if count > 0 && count < lowestWorkload {
+			if count < lowestWorkload {
 				lowestWorkload = count
 				assistantsLowestWorkload = []int32{schedule.AssistantId}
 			} else if count == lowestWorkload {
@@ -343,6 +348,7 @@ func getUnfairness(schedules []model.IndividualSchedule,
 
 		unfairness := unfairnessPerShiftType{
 			shiftType:       shiftType.ShiftType,
+			fairnessScore:   shiftType.FairnessScore,
 			highestWorkload: assistantsHighestWorkload,
 			lowestWorkload:  assistantsLowestWorkload,
 		}
@@ -362,22 +368,22 @@ func countOccurences(shiftType model.ShiftType, schedule model.IndividualSchedul
 	return count
 }
 
-func getHighestUnfairWorkload(unfairness []unfairnessPerShiftType, id int32) []model.ShiftType {
+func getHighestUnfairWorkload(unfairness []unfairnessPerShiftType, fairnessScore float32, id int32) []model.ShiftType {
 
 	result := []model.ShiftType{}
 	for _, unfairnessShiftType := range unfairness {
-		if contains(unfairnessShiftType.highestWorkload, id) {
+		if contains(unfairnessShiftType.highestWorkload, id) && unfairnessShiftType.fairnessScore == fairnessScore {
 			result = append(result, unfairnessShiftType.shiftType)
 		}
 	}
 	return result
 }
 
-func getLowestUnfairWorkload(unfairness []unfairnessPerShiftType, id int32) []model.ShiftType {
+func getLowestUnfairWorkload(unfairness []unfairnessPerShiftType, fairnessScore float32, id int32) []model.ShiftType {
 
 	result := []model.ShiftType{}
 	for _, unfairnessShiftType := range unfairness {
-		if contains(unfairnessShiftType.lowestWorkload, id) {
+		if contains(unfairnessShiftType.lowestWorkload, id) && unfairnessShiftType.fairnessScore == fairnessScore {
 			result = append(result, unfairnessShiftType.shiftType)
 		}
 	}
@@ -391,4 +397,51 @@ func contains(s []int32, e int32) bool {
 		}
 	}
 	return false
+}
+
+func filter(first []model.ShiftType, second []model.ShiftType) []model.ShiftType {
+
+	result := []model.ShiftType{}
+	for _, firstEl := range first {
+		appears := false
+		for _, secondEl := range second {
+			if firstEl == secondEl {
+				appears = true
+			}
+		}
+		if !appears {
+			result = append(result, firstEl)
+		}
+	}
+
+	return result
+}
+
+func filterQualifications(sts []model.ShiftType, at model.AssistantType) []model.ShiftType {
+	result := []model.ShiftType{}
+	for _, st := range sts {
+		if oneOf(st, getQualifications(at)) {
+			result = append(result, st)
+		}
+	}
+	return result
+}
+
+func getQualifications(at model.AssistantType) []model.ShiftType {
+	switch at {
+	case model.JA:
+		return []model.ShiftType{model.JAEV, model.JAWH, model.JANW}
+	case model.JA_F:
+		return []model.ShiftType{model.JAWH}
+	case model.SA:
+		return []model.ShiftType{model.SAEW, model.CALL, model.SAWH}
+	case model.SA_F:
+		return []model.ShiftType{model.CALL, model.SAWH}
+	case model.SA_NEO:
+		return []model.ShiftType{model.SAEW, model.CALL, model.SAWH, model.TSPT}
+	case model.SA_F_NEO:
+		return []model.ShiftType{model.CALL, model.SAWH, model.TSPT}
+	default:
+		return []model.ShiftType{}
+	}
 }

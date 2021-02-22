@@ -65,7 +65,7 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 		}
 
 		schedule = res
-		//cached = true
+		cached = true
 	}
 
 	return schedule, nil

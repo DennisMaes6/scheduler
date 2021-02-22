@@ -13,10 +13,17 @@
 </script>
 
 <main>
+    <div class="ml-6 my-5 font-bold text-sm">
+        <p> fairness score: {schedule.fairness_score} </p>
+        <p> balance score: {schedule.balance_score} </p>
+    </div>
     <div class="flex flex-row pr-2">
         <!-- Assistant list -->
         <div class="flex flex-col mx-4 space-y-2">
-            <div class="h-12"></div> <!-- spacing -->
+            <div class="flex flex-row h-12">
+                <p class="mx-2 w-16 text-xs"> High workload </p>
+                <p class="mx-2 w-16 text-xs"> Low workload </p>
+            </div> 
             {#each schedule.assistants as assistant}
                 <AssistantHeader {assistant}/>
             {/each}
