@@ -56,24 +56,13 @@ components:
           - part_of_min_balance: true
         assistants:
         - id: 5
-          highest_unfair_workload: true
-          lowest_unfair_workload: true
         - id: 5
-          highest_unfair_workload: true
-          lowest_unfair_workload: true
         fairness_score: 0.8008281904610115
         balance_score: 6
-        most_unfair_shifts:
-        - null
-        - null
         shift_types:
         - fairness_score: 5.637376656633329
         - fairness_score: 5.637376656633329
       properties:
-        most_unfair_shifts:
-          items:
-            $ref: '#/components/schemas/ShiftType'
-          type: array
         fairness_score:
           description: The fairness score of this schedule
           type: number
@@ -102,8 +91,6 @@ components:
       description: Represents an assistant.
       example:
         id: 5
-        highest_unfair_workload: true
-        lowest_unfair_workload: true
       properties:
         id:
           description: The identification number of this assistant.
@@ -111,13 +98,9 @@ components:
         type:
           $ref: '#/components/schemas/AssistantType'
         highest_unfair_workload:
-          description: Indicates that this assistant has the highest workload for
-            the most unfair shift.
-          type: boolean
+          $ref: '#/components/schemas/ShiftType'
         lowest_unfair_workload:
-          description: Indicates that this assistant has the highest workload for
-            the most unfair shift.
-          type: boolean
+          $ref: '#/components/schemas/ShiftType'
       type: object
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.
