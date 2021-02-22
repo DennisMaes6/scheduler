@@ -160,6 +160,7 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output 
+       ["balance_shifts:"] ++ [show(s) ++ " " | s in S_balance] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        ["shift_types:"] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++

@@ -100,18 +100,7 @@ func parseAssistantType(typeStr string) (model.AssistantType, error) {
 
 func extractShiftTypes(scheduleStr string) ([]model.ShiftType, error) {
 	lines := filterLines(strings.Split(scheduleStr, "\n"), "shift_types")
-	shiftTypesLine := strings.Split(strings.TrimSpace(strings.Split(lines[0], ":")[1]), " ")
-
-	shiftTypes := []model.ShiftType{}
-	for i := 0; i < len(shiftTypesLine); i++ {
-		shiftType, err := parseShiftType(shiftTypesLine[i])
-		if err != nil {
-			return []model.ShiftType{}, err
-		}
-		shiftTypes = append(shiftTypes, shiftType)
-	}
-
-	return shiftTypes, nil
+	return parseShiftTypes(strings.Split(lines[0], ":")[1])
 }
 
 func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
@@ -164,9 +153,14 @@ func extractIndividualSchedules(scheduleStr string) ([]model.IndividualSchedule,
 			return []model.IndividualSchedule{}, err
 		}
 
+		balanceShifts, err := extractBalanceShifts(scheduleStr)
+		if err != nil {
+			return []model.IndividualSchedule{}, err
+		}
+
 		is := model.IndividualSchedule{
 			AssistantId: int32(assistantId),
-			Assignments: tagAssignments(assignments, minBalance),
+			Assignments: tagAssignments(assignments, minBalance, balanceShifts),
 		}
 
 		result = append(result, is)
@@ -191,7 +185,7 @@ func extractMinBalance(scheduleStr string) (int, error) {
 	return strconv.Atoi(strings.Split(minBalanceLines[0], ":")[1])
 }
 
-func tagAssignments(assignments []model.ShiftType, minBalance int) []model.Assignment {
+func tagAssignments(assignments []model.ShiftType, minBalance int, balanceShifts []model.ShiftType) []model.Assignment {
 
 	result := []model.Assignment{}
 
@@ -212,7 +206,7 @@ func tagAssignments(assignments []model.ShiftType, minBalance int) []model.Assig
 					firstDay = i
 				}
 				count++
-			} else if assignments[i-1] == model.FREE && shiftType != model.FREE {
+			} else if assignments[i-1] == model.FREE && oneOf(shiftType, balanceShifts) {
 				if count == minBalance {
 					for j := firstDay; j < i; j++ {
 						result[j] = model.Assignment{
@@ -229,18 +223,47 @@ func tagAssignments(assignments []model.ShiftType, minBalance int) []model.Assig
 			firstShiftDone = true
 		}
 
-		if !lastShiftDone && allEqual(assignments[i:], model.FREE) {
+		if !lastShiftDone && allNotOfOneOf(assignments[i:], balanceShifts) {
 			lastShiftDone = true
 		}
 	}
 	return result
 }
 
-func allEqual(shiftTypes []model.ShiftType, condition model.ShiftType) bool {
+func allNotOfOneOf(shiftTypes []model.ShiftType, test []model.ShiftType) bool {
 	for _, shiftType := range shiftTypes {
-		if shiftType != condition {
+		if oneOf(shiftType, test) {
 			return false
 		}
 	}
 	return true
+}
+
+func extractBalanceShifts(scheduleStr string) ([]model.ShiftType, error) {
+	lines := filterLines(strings.Split(scheduleStr, "\n"), "balance_shifts")
+	return parseShiftTypes(strings.Split(lines[0], ":")[1])
+}
+
+func parseShiftTypes(line string) ([]model.ShiftType, error) {
+	shiftTypesLine := strings.Split(strings.TrimSpace(line), " ")
+
+	shiftTypes := []model.ShiftType{}
+	for i := 0; i < len(shiftTypesLine); i++ {
+		shiftType, err := parseShiftType(shiftTypesLine[i])
+		if err != nil {
+			return []model.ShiftType{}, err
+		}
+		shiftTypes = append(shiftTypes, shiftType)
+	}
+
+	return shiftTypes, nil
+}
+
+func oneOf(test model.ShiftType, sts []model.ShiftType) bool {
+	for _, st := range sts {
+		if st == test {
+			return true
+		}
+	}
+	return false
 }
