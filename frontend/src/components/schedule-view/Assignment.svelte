@@ -1,8 +1,9 @@
 <script lang=typescript>
 
+    import type {Assignment} from '../../openapi'
     import {ShiftType} from '../../openapi'
 
-    export let assignment: ShiftType
+    export let assignment: Assignment
 
     function getColor(assignment: ShiftType): string {
         switch (assignment) {
@@ -28,7 +29,13 @@
 </script>
 
 <main>
-    <div class="flex w-12 h-6 {getColor(assignment)} rounded-lg justify-center items-center cursor-default">
-        <div class="text-xs font-bold text-white"> {assignment}</div>
-    </div>
+    {#if assignment.part_of_min_balance}
+        <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default">
+            <div class="text-xs text-red-500 font-bold"> ! </div>
+        </div>
+    {:else}
+        <div class="flex w-12 h-6 {getColor(assignment.shift_type)} rounded-lg justify-center items-center cursor-default">
+            <div class="text-xs font-bold text-white"> {assignment.shift_type}</div>
+        </div>
+    {/if}
 </main>

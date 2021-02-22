@@ -36,11 +36,12 @@ export class Service {
     /**
      * Sets the model paramters in the backend.
      * @param requestBody The model parameters to be set.
+     * @returns any parameters updated in backend
      * @throws ApiError
      */
     public static async postService(
         requestBody: ModelParameters,
-    ): Promise<void> {
+    ): Promise<any> {
         const result = await __request({
             method: 'POST',
             path: `/model-parameters/set`,

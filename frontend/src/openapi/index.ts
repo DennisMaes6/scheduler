@@ -4,6 +4,7 @@
 export { ApiError } from './core/ApiError';
 export { OpenAPI } from './core/OpenAPI';
 
+export type { Assignment } from './models/Assignment';
 export type { Assistant } from './models/Assistant';
 export { AssistantType } from './models/AssistantType';
 export type { IndividualSchedule } from './models/IndividualSchedule';

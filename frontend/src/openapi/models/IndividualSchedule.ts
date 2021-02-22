@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ShiftType } from './ShiftType';
+import type { Assignment } from './Assignment';
 
 /**
  * Represents the work schedule of an individual assistant.
@@ -15,5 +15,5 @@ export type IndividualSchedule = {
     /**
      * An array as long as the number of days of this schedule. Contains all the assignments that have been scheduled to this assistant.
      */
-    assignments?: Array<ShiftType>;
+    assignments?: Array<Assignment>;
 }
