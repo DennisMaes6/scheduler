@@ -36,10 +36,12 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ModelParameters"
+      responses:
+        '204':
+          description: "parameters updated in backend"
       
 
-                
-
+              
 components:
   schemas:
     Schedule:
@@ -83,7 +85,16 @@ components:
           type: array
           description: An array as long as the number of days of this schedule. Contains all the assignments that have been scheduled to this assistant.
           items: 
-            $ref: "#/components/schemas/ShiftType"
+            $ref: "#/components/schemas/Assignment"
+    Assignment:
+      type: object
+      description: Represents a single shift assignment.
+      properties:
+        shift_type:
+          $ref: "#/components/schemas/ShiftType"
+        part_of_min_balance:
+          type: boolean
+          description: whether or not this assignlent is part of a min balance free block.
     AssistantType:
       type: string
       description: The different assistant types.
