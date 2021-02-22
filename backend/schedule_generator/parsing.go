@@ -21,6 +21,13 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting shift types")
 	}
 
+	fairnessScore := getFairnessScore(shiftTypes)
+
+	balanceScore, err := extractMinBalance(scheduleStr)
+	if err != nil {
+		return model.Schedule{}, err
+	}
+
 	assistants, err := extractAssistants(scheduleStr)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
@@ -32,6 +39,8 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 	}
 
 	result := model.Schedule{
+		FairnessScore:       fairnessScore,
+		BalanceScore:        int32(balanceScore),
 		NbDays:              nbDays,
 		Assistants:          assistants,
 		ShiftTypes:          shiftTypes,
@@ -285,4 +294,14 @@ func oneOf(test model.ShiftType, sts []model.ShiftType) bool {
 		}
 	}
 	return false
+}
+
+func getFairnessScore(shiftTypes []model.ScheduleShiftTypes) float32 {
+	result := float32(100.0)
+	for _, st := range shiftTypes {
+		if st.FairnessScore < result {
+			result = float32(st.FairnessScore)
+		}
+	}
+	return result
 }
