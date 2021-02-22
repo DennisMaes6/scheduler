@@ -1,6 +1,6 @@
 <script lang=typescript>
 
-    import ScheduleView from './components/scheduleView/ScheduleView.svelte';
+    import ScheduleView from './components/schedule-view/ScheduleView.svelte';
     import ModelInput from './components/input/ModelInput.svelte';
     import { Service } from './openapi';
 

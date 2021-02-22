@@ -1,11 +1,10 @@
 <script lang=typescript>
     
     import type { ModelParameters} from "../../openapi";
-    import { ShiftType } from "../../openapi";
     
     import { Service } from '../../openapi';
 
-    import Assignment from "../scheduleView/Assignment.svelte";
+    import Assignment from "../schedule-view/Assignment.svelte";
     import Button from "./Button.svelte";
     import InputField from "./InputField.svelte";
     import Toggle from "./Toggle.svelte";
