@@ -89,6 +89,9 @@ components:
     Assignment:
       type: object
       description: Represents a single shift assignment.
+      required:
+        - shift_type
+        - part_of_min_balance
       properties:
         shift_type:
           $ref: "#/components/schemas/ShiftType"
