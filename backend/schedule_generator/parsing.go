@@ -9,6 +9,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+type unfairnessPerShiftType struct {
+	shiftType       model.ShiftType
+	highestWorkload []int32 // assistant IDs
+	lowestWorkload  []int32 // assistant IDs
+}
+
 func parseSchedule(scheduleStr string) (model.Schedule, error) {
 
 	nbDays, err := extractNbDays(scheduleStr)
@@ -28,14 +34,14 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		return model.Schedule{}, err
 	}
 
-	assistants, err := extractAssistants(scheduleStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
-	}
-
 	individualSchedules, err := extractIndividualSchedules(scheduleStr)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting individual schedules")
+	}
+
+	assistants, err := extractAssistants(scheduleStr, getUnfairness(individualSchedules, shiftTypes, int(nbDays)))
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
 	}
 
 	result := model.Schedule{
@@ -60,7 +66,7 @@ func extractNbDays(scheduleStr string) (int32, error) {
 	return int32(nbDays), nil
 }
 
-func extractAssistants(scheduleStr string) ([]model.Assistant, error) {
+func extractAssistants(scheduleStr string, unfairness []unfairnessPerShiftType) ([]model.Assistant, error) {
 	lines := filterLines(strings.Split(scheduleStr, "\n"), "assistant")
 
 	assistants := []model.Assistant{}
@@ -78,8 +84,10 @@ func extractAssistants(scheduleStr string) ([]model.Assistant, error) {
 		}
 
 		assistant := model.Assistant{
-			Id:   int32(id),
-			Type: assistantType,
+			Id:                    int32(id),
+			Type:                  assistantType,
+			HighestUnfairWorkload: getHighestUnfairWorkload(unfairness, int32(id)),
+			LowestUnfairWorkload:  getLowestUnfairWorkload(unfairness, int32(id)),
 		}
 
 		assistants = append(assistants, assistant)
@@ -304,4 +312,83 @@ func getFairnessScore(shiftTypes []model.ScheduleShiftTypes) float32 {
 		}
 	}
 	return result
+}
+
+func getUnfairness(schedules []model.IndividualSchedule,
+	shiftTypes []model.ScheduleShiftTypes, nbDays int) []unfairnessPerShiftType {
+
+	result := []unfairnessPerShiftType{}
+	for _, shiftType := range shiftTypes {
+		highestWorkload := 0
+		assistantsHighestWorkload := []int32{}
+		lowestWorkload := nbDays
+		assistantsLowestWorkload := []int32{}
+
+		for _, schedule := range schedules {
+			count := countOccurences(shiftType.ShiftType, schedule)
+			if count > highestWorkload {
+				highestWorkload = count
+				assistantsHighestWorkload = []int32{schedule.AssistantId}
+			} else if count == highestWorkload {
+				assistantsHighestWorkload = append(assistantsHighestWorkload, schedule.AssistantId)
+			}
+
+			if count > 0 && count < lowestWorkload {
+				lowestWorkload = count
+				assistantsLowestWorkload = []int32{schedule.AssistantId}
+			} else if count == lowestWorkload {
+				assistantsLowestWorkload = append(assistantsLowestWorkload, schedule.AssistantId)
+			}
+		}
+
+		unfairness := unfairnessPerShiftType{
+			shiftType:       shiftType.ShiftType,
+			highestWorkload: assistantsHighestWorkload,
+			lowestWorkload:  assistantsLowestWorkload,
+		}
+		result = append(result, unfairness)
+	}
+
+	return result
+}
+
+func countOccurences(shiftType model.ShiftType, schedule model.IndividualSchedule) int {
+	count := 0
+	for _, assignment := range schedule.Assignments {
+		if assignment.ShiftType == shiftType {
+			count++
+		}
+	}
+	return count
+}
+
+func getHighestUnfairWorkload(unfairness []unfairnessPerShiftType, id int32) []model.ShiftType {
+
+	result := []model.ShiftType{}
+	for _, unfairnessShiftType := range unfairness {
+		if contains(unfairnessShiftType.highestWorkload, id) {
+			result = append(result, unfairnessShiftType.shiftType)
+		}
+	}
+	return result
+}
+
+func getLowestUnfairWorkload(unfairness []unfairnessPerShiftType, id int32) []model.ShiftType {
+
+	result := []model.ShiftType{}
+	for _, unfairnessShiftType := range unfairness {
+		if contains(unfairnessShiftType.lowestWorkload, id) {
+			result = append(result, unfairnessShiftType.shiftType)
+		}
+	}
+	return result
+}
+
+func contains(s []int32, e int32) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

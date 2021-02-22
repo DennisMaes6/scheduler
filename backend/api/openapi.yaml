@@ -56,7 +56,19 @@ components:
           - part_of_min_balance: true
         assistants:
         - id: 5
+          highest_unfair_workload:
+          - null
+          - null
+          lowest_unfair_workload:
+          - null
+          - null
         - id: 5
+          highest_unfair_workload:
+          - null
+          - null
+          lowest_unfair_workload:
+          - null
+          - null
         fairness_score: 0.8008281904610115
         balance_score: 6
         shift_types:
@@ -91,6 +103,12 @@ components:
       description: Represents an assistant.
       example:
         id: 5
+        highest_unfair_workload:
+        - null
+        - null
+        lowest_unfair_workload:
+        - null
+        - null
       properties:
         id:
           description: The identification number of this assistant.
@@ -98,9 +116,13 @@ components:
         type:
           $ref: '#/components/schemas/AssistantType'
         highest_unfair_workload:
-          $ref: '#/components/schemas/ShiftType'
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
         lowest_unfair_workload:
-          $ref: '#/components/schemas/ShiftType'
+          items:
+            $ref: '#/components/schemas/ShiftType'
+          type: array
       type: object
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.

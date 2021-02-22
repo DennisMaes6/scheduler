@@ -85,9 +85,13 @@ components:
         type:
           $ref: "#/components/schemas/AssistantType"
         highest_unfair_workload:
-          $ref: "#/components/schemas/ShiftType"
+          type: array
+          items:
+            $ref: "#/components/schemas/ShiftType"
         lowest_unfair_workload:
-          $ref: "#/components/schemas/ShiftType"
+          type: array
+          items: 
+            $ref: "#/components/schemas/ShiftType"
     IndividualSchedule:
       type: object
       description: Represents the work schedule of an individual assistant.
