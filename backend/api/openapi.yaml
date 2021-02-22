@@ -123,6 +123,11 @@ components:
           items:
             $ref: '#/components/schemas/ShiftType'
           type: array
+      required:
+      - highest_unfair_workload
+      - id
+      - lowest_unfair_workload
+      - type
       type: object
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.

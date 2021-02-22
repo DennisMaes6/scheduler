@@ -12,8 +12,8 @@ export type Assistant = {
     /**
      * The identification number of this assistant.
      */
-    id?: number;
-    type?: AssistantType;
-    highest_unfair_workload?: Array<ShiftType>;
-    lowest_unfair_workload?: Array<ShiftType>;
+    id: number;
+    type: AssistantType;
+    highest_unfair_workload: Array<ShiftType>;
+    lowest_unfair_workload: Array<ShiftType>;
 }

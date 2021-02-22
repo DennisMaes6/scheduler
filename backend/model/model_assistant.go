@@ -13,11 +13,11 @@ package model
 type Assistant struct {
 
 	// The identification number of this assistant.
-	Id int32 `json:"id,omitempty"`
+	Id int32 `json:"id"`
 
-	Type AssistantType `json:"type,omitempty"`
+	Type AssistantType `json:"type"`
 
-	HighestUnfairWorkload []ShiftType `json:"highest_unfair_workload,omitempty"`
+	HighestUnfairWorkload []ShiftType `json:"highest_unfair_workload"`
 
-	LowestUnfairWorkload []ShiftType `json:"lowest_unfair_workload,omitempty"`
+	LowestUnfairWorkload []ShiftType `json:"lowest_unfair_workload"`
 }

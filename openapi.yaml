@@ -78,6 +78,11 @@ components:
     Assistant:
       type: object
       description: Represents an assistant.
+      required:
+        - id
+        - type
+        - highest_unfair_workload
+        - lowest_unfair_workload
       properties:
         id:
           type: integer
