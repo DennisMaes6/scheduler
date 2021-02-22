@@ -11,6 +11,14 @@ import type { ShiftType } from './ShiftType';
  */
 export type Schedule = {
     /**
+     * The fairness score of this schedule
+     */
+    fairness_score?: number;
+    /**
+     * The balance score of this schedule
+     */
+    balance_score?: number;
+    /**
      * The number of days for which this schedule is generated.
      */
     nb_days?: number;
@@ -21,6 +29,12 @@ export type Schedule = {
     /**
      * The shift_types that were considered when generating this schedule.
      */
-    shift_types?: Array<ShiftType>;
+    shift_types?: Array<{
+        /**
+         * The fairness score for this shift type
+         */
+        fairness_score?: number,
+        shift_type?: ShiftType,
+    }>;
     individual_schedules?: Array<IndividualSchedule>;
 }
