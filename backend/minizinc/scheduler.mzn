@@ -164,6 +164,7 @@ output
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        ["shift_types:"] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
+       ["fairness_per_shift_type:"] ++ [show(s) ++ "=" ++ show(weighted_fairness[s]) ++ " " | s in S] ++ ["\n"] ++
        [
          if d == 1 then "assistant:" ++ show(p) ++ " " ++ "type:" ++ show(T[p]) ++ " " else "" endif ++
          if fix(X[p, FREE, d]) == 1 then "FREE " else "" endif ++
