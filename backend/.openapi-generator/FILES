@@ -6,6 +6,7 @@ go/api_default.go
 go/helpers.go
 go/impl.go
 go/logger.go
+go/model_assignment.go
 go/model_assistant.go
 go/model_assistant_type.go
 go/model_individual_schedule.go

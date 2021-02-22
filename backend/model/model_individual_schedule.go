@@ -16,5 +16,5 @@ type IndividualSchedule struct {
 	AssistantId int32 `json:"assistant_id,omitempty"`
 
 	// An array as long as the number of days of this schedule. Contains all the assignments that have been scheduled to this assistant.
-	Assignments []ShiftType `json:"assignments,omitempty"`
+	Assignments []Assignment `json:"assignments,omitempty"`
 }

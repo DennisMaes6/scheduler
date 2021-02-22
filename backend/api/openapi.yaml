@@ -37,7 +37,7 @@ paths:
         required: true
       responses:
         "204":
-          description: Models parameters updated succesfully.
+          description: parameters updated in backend
       summary: Sets the model paramters in the backend.
 components:
   schemas:
@@ -48,12 +48,12 @@ components:
         individual_schedules:
         - assistant_id: 1
           assignments:
-          - null
-          - null
+          - part_of_min_balance: true
+          - part_of_min_balance: true
         - assistant_id: 1
           assignments:
-          - null
-          - null
+          - part_of_min_balance: true
+          - part_of_min_balance: true
         assistants:
         - id: 6
         - id: 6
@@ -95,8 +95,8 @@ components:
       example:
         assistant_id: 1
         assignments:
-        - null
-        - null
+        - part_of_min_balance: true
+        - part_of_min_balance: true
       properties:
         assistant_id:
           description: The identification number of the assistant for which this is
@@ -106,8 +106,20 @@ components:
           description: An array as long as the number of days of this schedule. Contains
             all the assignments that have been scheduled to this assistant.
           items:
-            $ref: '#/components/schemas/ShiftType'
+            $ref: '#/components/schemas/Assignment'
           type: array
+      type: object
+    Assignment:
+      description: Represents a single shift assignment.
+      example:
+        part_of_min_balance: true
+      properties:
+        shift_type:
+          $ref: '#/components/schemas/ShiftType'
+        part_of_min_balance:
+          description: whether or not this assignlent is part of a min balance free
+            block.
+          type: boolean
       type: object
     AssistantType:
       description: The different assistant types.
