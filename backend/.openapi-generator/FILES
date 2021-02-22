@@ -12,6 +12,7 @@ go/model_assistant_type.go
 go/model_individual_schedule.go
 go/model_model_parameters.go
 go/model_schedule.go
+go/model_schedule_shift_types.go
 go/model_shift_type.go
 go/model_shift_type_model_parameters.go
 go/routers.go

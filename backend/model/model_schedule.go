@@ -11,6 +11,13 @@ package model
 
 // Schedule - Holds all data of a generated schedule.
 type Schedule struct {
+	MostUnfairShift ShiftType `json:"most_unfair_shift,omitempty"`
+
+	// The fairness score of this schedule
+	FairnessScore float32 `json:"fairness_score,omitempty"`
+
+	// The balance score of this schedule
+	BalanceScore int32 `json:"balance_score,omitempty"`
 
 	// The number of days for which this schedule is generated.
 	NbDays int32 `json:"nb_days,omitempty"`
@@ -19,7 +26,7 @@ type Schedule struct {
 	Assistants []Assistant `json:"assistants,omitempty"`
 
 	// The shift_types that were considered when generating this schedule.
-	ShiftTypes []ShiftType `json:"shift_types,omitempty"`
+	ShiftTypes []ScheduleShiftTypes `json:"shift_types,omitempty"`
 
 	IndividualSchedules []IndividualSchedule `json:"individual_schedules,omitempty"`
 }

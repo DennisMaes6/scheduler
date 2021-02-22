@@ -16,4 +16,10 @@ type Assistant struct {
 	Id int32 `json:"id,omitempty"`
 
 	Type AssistantType `json:"type,omitempty"`
+
+	// Indicates that this assistant has the highest workload for the most unfair shift.
+	HighestUnfairWorkload bool `json:"highest_unfair_workload,omitempty"`
+
+	// Indicates that this assistant has the highest workload for the most unfair shift.
+	LowestUnfairWorkload bool `json:"lowest_unfair_workload,omitempty"`
 }
