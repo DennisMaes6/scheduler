@@ -48,6 +48,14 @@ components:
       type: object
       description: Holds all data of a generated schedule.
       properties:
+        most_unfair_shift:
+          $ref: "#/components/schemas/ShiftType"
+        fairness_score:
+          type: number
+          description: The fairness score of this schedule
+        balance_score:
+          type: integer
+          description: The balance score of this schedule
         nb_days: 
           type: integer
           description: The number of days for which this schedule is generated.
@@ -60,7 +68,13 @@ components:
             description: The shift_types that were considered when generating this schedule.
             type: array
             items:
-              $ref: "#/components/schemas/ShiftType"
+              type: object
+              properties:
+                fairness_score:
+                  type: number
+                  description: The fairness score for this shift type
+                shift_type:
+                  $ref: "#/components/schemas/ShiftType"
         individual_schedules: 
             type: array
             items:
@@ -73,7 +87,13 @@ components:
           type: integer
           description: The identification number of this assistant.
         type:
-          $ref: "#/components/schemas/AssistantType"     
+          $ref: "#/components/schemas/AssistantType"
+        highest_unfair_workload:
+          type: boolean
+          description: Indicates that this assistant has the highest workload for the most unfair shift.
+        lowest_unfair_workload:
+          type: boolean
+          description: Indicates that this assistant has the highest workload for the most unfair shift.
     IndividualSchedule:
       type: object
       description: Represents the work schedule of an individual assistant.
