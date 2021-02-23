@@ -27,7 +27,6 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting shift types")
 	}
-	fmt.Print(shiftTypes)
 
 	fairnessScore := getFairnessScore(shiftTypes)
 
