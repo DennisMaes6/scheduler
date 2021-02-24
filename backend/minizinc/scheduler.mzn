@@ -155,8 +155,7 @@ constraint min(z) >= min_balance;
 
 solve minimize fairness_score;
 
- output [show(a[p, 1..nb_days]) ++ "\n" | p in P] ++ ["\n"] ++ 
-        [show(z[p, 1..nb_days]) ++ "\n" | p in P] ++ ["\n"] ++    
+ output  
        ["balance_shifts:"] ++ [show(s) ++ " " | s in S_balance] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
