@@ -21,6 +21,6 @@
         </div>
 
         
-        <p class="w-12 text-black text-xs font-bold"> {assistant.type} </p>
+        <p class="mx-2 w-12 text-black text-xs font-bold"> {assistant.type} </p>
     </div>
 </main>
