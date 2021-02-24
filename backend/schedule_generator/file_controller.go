@@ -51,7 +51,7 @@ func buildFairnessWeightsString(stps []model.ShiftTypeModelParameters) string {
 		result += fmt.Sprintf("%f,", stp.FairnessWeight)
 	}
 
-	result += "]"
+	result += "0.0]"
 
 	return result
 
