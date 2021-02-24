@@ -46,33 +46,32 @@ array[1..nb_personnel] of PersonnelType: T;    % mapping from employee to person
 array[1..nb_personnel] of set of D: F;         % granted holidays per employee 
 
 % coverage requirements 
-array[1..7, S_all] of int: R = [|1, 1, 0, 1, 0, 0, 1|      % Fri
-                                 1, 0, 2, 1, 2, 1, 1|      % Sat
-                                 1, 0, 2, 1, 2, 1, 1|      % Sun
-                                 1, 1, 0, 1, 0, 0, 1|      % Mon
-                                 1, 1, 0, 1, 0, 0, 1|      % Tue
-                                 1, 1, 0, 1, 0, 0, 1|      % Wed
-                                 1, 1, 0, 1, 0, 0, 1|];    % Thu 
-                                 
+array[1..7, ShiftType] of int: R = [|1, 1, 0, 1, 0, 0, 1, 0|      % Fri
+                                     1, 0, 2, 1, 2, 1, 1, 0|      % Sat
+                                     1, 0, 2, 1, 2, 1, 1, 0|      % Sun
+                                     1, 1, 0, 1, 0, 0, 1, 0|      % Mon
+                                     1, 1, 0, 1, 0, 0, 1, 0|      % Tue
+                                     1, 1, 0, 1, 0, 0, 1, 0|      % Wed
+                                     1, 1, 0, 1, 0, 0, 1, 0|];    % Thu 
+                            
 % qualifications                                                                                                                                       
-array[S_all] of set of PersonnelType: Q = [{JA},                            % JANW
-                                           {JA},                            % JAEV
-                                           {JA, JA_F},                      % JAWH
-                                           {SA, SA_NEO},                    % SAEW
-                                           {SA, SA_F, SA_NEO, SA_F_NEO},    % SAWH
-                                           {SA_NEO, SA_F_NEO},              % TSPT
-                                           {SA, SA_F, SA_NEO, SA_F_NEO}];   % CALL
-
- 
-                                                                                               
+array[ShiftType] of set of PersonnelType: Q = [{JA},                            % JANW
+                                               {JA},                            % JAEV
+                                               {JA, JA_F},                      % JAWH
+                                               {SA, SA_NEO},                    % SAEW
+                                               {SA, SA_F, SA_NEO, SA_F_NEO},    % SAWH
+                                               {SA_NEO, SA_F_NEO},              % TSPT
+                                               {SA, SA_F, SA_NEO, SA_F_NEO},    % CALL
+                                               PersonnelType];                  % FREE
+                                                                                          
 % model variables
-array[S_all] of float: fairness_weight;
+array[ShiftType] of float: fairness_weight;
 set of ShiftType: S_balance;
 int: min_balance;
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 % decision variables X[p, s, d] == 1 -> employee p is assigned shift of type s on day d
-array[1..nb_personnel, S_full, D] of var 0..1: X;
+array[1..nb_personnel, ShiftType, D] of var 0..1: X;
 
 %%%%%%%%%%%%%%%
 % CONSTRAINTS %
@@ -113,17 +112,17 @@ constraint forall(p in P, s in S_weekday, d in 2..nb_days)(
 
 
 % optimization objective: fairness
-array[S] of var 0..1.0: fairness_per_shift_type;
+array[ShiftType] of var 0..1.0: fairness_per_shift_type;
 constraint forall(s in S)(fairness_per_shift_type[s] == max(p in P where T[p] in Q[s])(workload[s, p]) - min(p in P where T[p] in Q[s])(workload[s, p]));
 
-array[S, P] of var 0..1.0: workload;
+array[ShiftType, P] of var 0..1.0: workload;
 constraint forall(s in S, p in P)(workload[s, p] == (sum(d in D)(X[p, s, d])) / (card(D) - card(F[p])));
 
-array[S] of var float: weighted_fairness;
+array[ShiftType] of var float: weighted_fairness;
 constraint forall(s in S)(weighted_fairness[s] = fairness_per_shift_type[s] * fairness_weight[s]);
 
 var 0..1.0: fairness_score;
-constraint fairness_score == max(fairness_per_shift_type);
+constraint fairness_score == max(s in S)(weighted_fairness[s]);
 
 
 % optimization objective: balance
