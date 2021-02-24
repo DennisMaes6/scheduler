@@ -241,7 +241,7 @@ func tagAssignments(assignments []model.ShiftType, minBalance int, balanceShifts
 		})
 
 		if firstShiftDone && !lastShiftDone {
-			if shiftType == model.FREE {
+			if !oneOf(shiftType, balanceShifts) {
 				if count == 0 {
 					firstDay = i
 				}
