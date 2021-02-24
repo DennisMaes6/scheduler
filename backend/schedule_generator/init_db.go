@@ -9,9 +9,9 @@ import (
 )
 
 func createDB() *sql.DB {
-	if _, err := os.Stat("sqlite-database.db"); os.IsNotExist(err) {
+	if _, err := os.Stat("sqlite-database-no-jaev.db"); os.IsNotExist(err) {
 
-		file, err := os.Create("sqlite-database.db") // Create SQLite file
+		file, err := os.Create("sqlite-database-no-jaev.db") // Create SQLite file
 		if err != nil {
 			log.Fatal(err.Error())
 		}
@@ -20,7 +20,7 @@ func createDB() *sql.DB {
 		log.Printf("New db file created")
 	}
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
+	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database-no-jaev.db")
 
 	if err := createTables(sqliteDatabase); err != nil {
 		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))

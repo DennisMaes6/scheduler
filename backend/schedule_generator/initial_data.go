@@ -6,11 +6,6 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 	BalanceMinimum: 3,
 	ShiftTypeParams: []model.ShiftTypeModelParameters{
 		{
-			ShiftType:         model.JAEV,
-			FairnessWeight:    1,
-			IncludedInBalance: true,
-		},
-		{
 			ShiftType:         model.JANW,
 			FairnessWeight:    1,
 			IncludedInBalance: true,

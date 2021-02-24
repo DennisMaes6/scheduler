@@ -14,7 +14,7 @@ func writeInstanceSpecificData(file *os.File) error {
 		nb_personnel = 18;
 		T = [JA, JA, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO];
 		F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-		S = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
+		S = {JANW, SAEW, JAWH, SAWH, TSPT, CALL};
 	`
 	if _, err := file.WriteString(content); err != nil {
 		return err
