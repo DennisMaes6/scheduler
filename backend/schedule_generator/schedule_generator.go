@@ -42,6 +42,17 @@ func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
 	return s.dbc.GetModelParameters()
 }
 
+func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
+	if err := s.dbc.SetInstanceData(data); err != nil {
+		return errors.Wrap(err, "failed updating instance data")
+	}
+	return nil
+}
+
+func (s ScheduleGenerator) GetInstanceData() (model.InstanceData, error) {
+	return s.dbc.getInstanceData()
+}
+
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {
@@ -78,8 +89,13 @@ func (s ScheduleGenerator) generateDataFile() error {
 		return errors.Wrap(err, fmt.Sprintf("failed creating file %s", "minizinc/data.dzn"))
 	}
 
-	if err := writeInstanceSpecificData(file); err != nil {
-		return errors.Wrap(err, "failed writning instance specific data")
+	instanceData, err := s.dbc.getInstanceData()
+	if err != nil {
+		return errors.Wrap(err, "database controller error")
+	}
+
+	if err := writeInstanceSpecificData(file, instanceData); err != nil {
+		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
 	modelParameters, err := s.dbc.GetModelParameters()

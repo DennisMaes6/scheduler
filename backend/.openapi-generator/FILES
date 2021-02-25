@@ -8,8 +8,10 @@ go/impl.go
 go/logger.go
 go/model_assignment.go
 go/model_assistant.go
+go/model_assistant_instance.go
 go/model_assistant_type.go
 go/model_individual_schedule.go
+go/model_instance_data.go
 go/model_model_parameters.go
 go/model_schedule.go
 go/model_schedule_shift_types.go

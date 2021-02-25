@@ -142,3 +142,106 @@ func (c DbController) setShiftTypeParams(stp model.ShiftTypeModelParameters) err
 	return nil
 
 }
+
+func (c DbController) getInstanceData() (model.InstanceData, error) {
+	nbWeeksQuery := `
+		SELECT nb_weeks
+		FROM nb_weeks
+		WHERE id = 1
+	`
+
+	var nbWeeks int
+	if err := c.db.QueryRow(nbWeeksQuery).Scan(&nbWeeks); err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "failed getting nb weeks from db")
+	}
+
+	assistantInstanceQuery := `
+		SELECT id, type
+		FROM assistant_instance
+	`
+
+	rows, err := c.db.Query(assistantInstanceQuery)
+	defer rows.Close()
+	if err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "query error")
+	}
+
+	ais := []model.AssistantInstance{}
+	for rows.Next() {
+		var (
+			id      int32
+			rawType string
+		)
+
+		if err := rows.Scan(&id, &rawType); err != nil {
+			return model.InstanceData{}, errors.Wrap(err, "scan error")
+		}
+
+		ai := model.AssistantInstance{
+			Id:   id,
+			Type: model.AssistantType(rawType),
+		}
+
+		ais = append(ais, ai)
+	}
+
+	if err := rows.Err(); err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "rows error")
+	}
+
+	result := model.InstanceData{
+		NbWeeks:    int32(nbWeeks),
+		Assistants: ais,
+	}
+
+	return result, nil
+
+}
+
+func (c DbController) SetInstanceData(data model.InstanceData) error {
+
+	if err := c.setNbWeeks(data.NbWeeks); err != nil {
+		return errors.Wrap(err, "failed setting nb weeks in db")
+	}
+
+	if err := c.setAssistantInstances(data.Assistants); err != nil {
+		return errors.Wrap(err, "failed setting assistant instances in db")
+	}
+
+	return nil
+}
+
+func (c DbController) setNbWeeks(nbWeeks int32) error {
+
+	setMBSQuery := `
+		UPDATE nb_weeks
+		SET nb_weeks = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setMBSQuery, nbWeeks); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error {
+	deleteRowsQuery := "DELETE FROM assistant_instance"
+
+	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
+		return errors.Wrap(err, "failed truncating assistant instance table")
+	}
+
+	setAIQuery := `
+		INSERT INTO assistant_instance(id, type)
+		VALUES (?, ?)
+	`
+	for _, ai := range ais {
+		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Type); err != nil {
+			return errors.Wrap(err, "failed initializing assistant instance")
+		}
+	}
+
+	return nil
+}

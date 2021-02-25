@@ -49,6 +49,24 @@ func (c *DefaultApiController) Routes() Routes {
 			c.ModelParametersSetOptions,
 		},
 		{
+			"InstanceDataGetGet",
+			strings.ToUpper("Get"),
+			"/instance-data/get",
+			c.InstanceDataGetGet,
+		},
+		{
+			"InstanceDataSetPost",
+			strings.ToUpper("Post"),
+			"/instance-data/set",
+			c.InstanceDataSetPost,
+		},
+		{
+			"InstanceDataSetOptions",
+			strings.ToUpper("Options"),
+			"/instance-data/set",
+			c.InstanceDataSetOptions,
+		},
+		{
 			"ScheduleGet",
 			strings.ToUpper("Get"),
 			"/schedule",
@@ -100,6 +118,51 @@ func (c *DefaultApiController) ModelParametersSetOptions(w http.ResponseWriter, 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+// ModelParametersSetOptions
+func (c *DefaultApiController) InstanceDataSetOptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+// InstanceDataGetGet - Returns the current instance data.
+func (c *DefaultApiController) InstanceDataGetGet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+
+	result, err := c.service.InstanceDataGetGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+
+}
+
+// InstanceDataSetPost - Sets the insatnce data in the backend.
+func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
+	w.Header().Add("Content-Type", "application/json")
+
+	instanceData := &model.InstanceData{}
+	if err := json.NewDecoder(r.Body).Decode(&instanceData); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	result, err := c.service.InstanceDataSetPost(r.Context(), *instanceData)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+
 }
 
 // ScheduleGet - Returns a generated schedule.
