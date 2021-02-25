@@ -142,3 +142,58 @@ func (c DbController) setShiftTypeParams(stp model.ShiftTypeModelParameters) err
 	return nil
 
 }
+
+func (c DbController) getInstanceData() (model.InstanceData, error) {
+	nbWeeksQuery := `
+		SELECT nb_weeks
+		FROM nb_weeks
+		WHERE id = 1
+	`
+
+	var nbWeeks int
+	if err := c.db.QueryRow(nbWeeksQuery).Scan(&nbWeeks); err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "failed getting nb weeks from db")
+	}
+
+	assistantInstanceQuery := `
+		SELECT id, type
+		FROM assistant_instance
+	`
+
+	rows, err := c.db.Query(assistantInstanceQuery)
+	defer rows.Close()
+	if err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "query error")
+	}
+
+	ais := []model.AssistantInstance{}
+	for rows.Next() {
+		var (
+			id      int32
+			rawType string
+		)
+
+		if err := rows.Scan(&id, &rawType); err != nil {
+			return model.InstanceData{}, errors.Wrap(err, "scan error")
+		}
+
+		ai := model.AssistantInstance{
+			Id:   id,
+			Type: model.AssistantType(rawType),
+		}
+
+		ais = append(ais, ai)
+	}
+
+	if err := rows.Err(); err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "rows error")
+	}
+
+	result := model.InstanceData{
+		NbWeeks:    int32(nbWeeks),
+		Assistants: ais,
+	}
+
+	return result, nil
+
+}

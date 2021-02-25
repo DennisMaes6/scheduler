@@ -48,8 +48,7 @@ func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
 }
 
 func (s ScheduleGenerator) GetInstanceData() (model.InstanceData, error) {
-	// TODO
-	return model.InstanceData{}, nil
+	return s.dbc.getInstanceData()
 }
 
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
