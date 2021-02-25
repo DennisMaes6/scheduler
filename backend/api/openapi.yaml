@@ -24,7 +24,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ModelParameters'
-          description: The model parameters.
+          description: Succesful operation.
       summary: Returns the current model parameters.
   /model-parameters/set:
     post:
@@ -37,8 +37,31 @@ paths:
         required: true
       responses:
         "204":
-          description: parameters updated in backend
+          description: Model parameters succesfully updated in backend.
       summary: Sets the model paramters in the backend.
+  /instance-data/get:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstanceData'
+          description: Succesful operation.
+      summary: Returns the current instance data.
+  /instance-data/set:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstanceData'
+        description: The instance data to be set.
+        required: true
+      responses:
+        "204":
+          description: Instance data succesfully updated in backend.
+      summary: Sets the insatnce data in the backend.
 components:
   schemas:
     Schedule:
@@ -219,6 +242,33 @@ components:
           description: Whether or not this shift type is included when computing the
             balaance score.
           type: boolean
+      type: object
+    InstanceData:
+      description: Holds the instance data for scheduling.
+      example:
+        assistants:
+        - id: 0
+        - id: 0
+        nb_weeks: 6
+      properties:
+        assistants:
+          items:
+            $ref: '#/components/schemas/AssistantInstance'
+          type: array
+        nb_weeks:
+          description: The number of weeks to be scheduled in this instance
+          type: integer
+      type: object
+    AssistantInstance:
+      description: Holds all instance data for one assistant.
+      example:
+        id: 0
+      properties:
+        id:
+          description: The identification number of this assistant.
+          type: integer
+        type:
+          $ref: '#/components/schemas/AssistantType'
       type: object
     Schedule_shift_types:
       example:

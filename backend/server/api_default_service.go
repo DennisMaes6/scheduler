@@ -54,3 +54,20 @@ func (s *DefaultApiService) ModelParametersGetGet(ctx context.Context) (ImplResp
 	}
 	return Response(http.StatusOK, res), nil
 }
+
+// SetModelParamsPost - Sets the model paramters in the backend.
+func (s *DefaultApiService) InstanceDataSetPost(ctx context.Context, instanceData model.InstanceData) (ImplResponse, error) {
+	if err := s.scheduleGenerator.UpdateInstanceData(instanceData); err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(204, nil), nil
+}
+
+// ScheduleGet - Returns a generated schedule.
+func (s *DefaultApiService) InstanceDataGetGet(ctx context.Context) (ImplResponse, error) {
+	res, err := s.scheduleGenerator.GetInstanceData()
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
+}

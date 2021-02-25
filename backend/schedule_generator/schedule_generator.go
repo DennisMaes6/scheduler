@@ -42,6 +42,16 @@ func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
 	return s.dbc.GetModelParameters()
 }
 
+func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
+	// TODO
+	return nil
+}
+
+func (s ScheduleGenerator) GetInstanceData() (model.InstanceData, error) {
+	// TODO
+	return model.InstanceData{}, nil
+}
+
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {
