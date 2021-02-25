@@ -50,6 +50,18 @@ func createTables(db *sql.DB) error {
 				included_in_balance BOOL
 			)
 		`,
+		`
+			CREATE TABLE IF NOT EXISTS nb_weeks (
+				id INTEGER PRIMARY KEY,
+				nb_weeks INTEGER NOT NULL
+			)
+		`,
+		`
+		CREATE TABLE IF NOT EXISTS assistant_instance (
+			id INTEGER PRIMARY KEY,
+			type TEXT NOT NULL
+		)
+	`,
 	}
 
 	for _, query := range queries {
@@ -72,16 +84,33 @@ func initializeData(db *sql.DB) error {
 		return errors.Wrap(err, "failed initailizing minimin balance score")
 	}
 
+	initSTPsQuery := `
+		INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
+		VALUES (?, ?, ?)
+    `
 	for _, stp := range initialModelParameters.ShiftTypeParams {
-		initSTPsQuery := `
-			INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
-			VALUES (?, ?, ?)
-		`
-
 		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
 			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
 	}
 
+	initNbWeeksQuery := `
+		INSERT or IGNORE INTO nb_weeks(id, nb_weeks)
+		VALUES (1, ?)
+	`
+
+	if _, err := db.Exec(initNbWeeksQuery, initialInstanceData.NbWeeks); err != nil {
+		return errors.Wrap(err, "failed initializing number of weeks")
+	}
+
+	initAIQuery := `
+		INSERT or IGNORE INTO assistant_instance(id, type)
+		VALUES (?, ?)
+	`
+	for _, ai := range initialInstanceData.Assistants {
+		if _, err := db.Exec(initAIQuery, ai.Id, ai.Type); err != nil {
+			return errors.Wrap(err, "failed initializing assistant instance")
+		}
+	}
 	return nil
 }
