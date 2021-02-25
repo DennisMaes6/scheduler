@@ -197,3 +197,51 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 	return result, nil
 
 }
+
+func (c DbController) SetInstanceData(data model.InstanceData) error {
+
+	if err := c.setNbWeeks(data.NbWeeks); err != nil {
+		return errors.Wrap(err, "failed setting nb weeks in db")
+	}
+
+	if err := c.setAssistantInstances(data.Assistants); err != nil {
+		return errors.Wrap(err, "failed setting assistant instances in db")
+	}
+
+	return nil
+}
+
+func (c DbController) setNbWeeks(nbWeeks int32) error {
+
+	setMBSQuery := `
+		UPDATE nb_weeks
+		SET nb_weeks = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setMBSQuery, nbWeeks); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error {
+	deleteRowsQuery := "DELETE FROM assistant_instance"
+
+	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
+		return errors.Wrap(err, "failed truncating assistant instance table")
+	}
+
+	setAIQuery := `
+		INSERT INTO assistant_instance(id, type)
+		VALUES (?, ?)
+	`
+	for _, ai := range ais {
+		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Type); err != nil {
+			return errors.Wrap(err, "failed initializing assistant instance")
+		}
+	}
+
+	return nil
+}

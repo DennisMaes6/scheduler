@@ -43,7 +43,9 @@ func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
 }
 
 func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
-	// TODO
+	if err := s.dbc.SetInstanceData(data); err != nil {
+		return errors.Wrap(err, "failed updating instance data")
+	}
 	return nil
 }
 
