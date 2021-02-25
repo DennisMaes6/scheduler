@@ -92,7 +92,7 @@ constraint forall(s in S)(fairness_per_shift_type[s] == max(p in P where T[p] in
 
 function var int: workload_shift_type(var ShiftType: st) =
   if st in S_week then 7 else
-    if st in S_weekend then 2 else 0 endif
+    if st in S_weekend then 7 else 0 endif
   endif;
 
 array[ShiftType, P] of var 0..1.0: workload;

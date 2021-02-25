@@ -14,7 +14,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 		nb_personnel = %d;
 		T = %s;
 		F = %s;
-		S = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
+		S = {JANW, SAEW, JAWH, SAWH, TSPT, CALL};
 	`
 	content := fmt.Sprintf(skeleton,
 		data.NbWeeks,
