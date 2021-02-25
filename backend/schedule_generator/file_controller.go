@@ -7,21 +7,52 @@ import (
 	"github.com/jorensjongers/scheduler/backend/model"
 )
 
-func writeInstanceSpecificData(file *os.File) error {
+func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 
-	content := `
-		nb_weeks = 4;
-		nb_personnel = 18;
-		T = [JA, JA, JA, JA, JA, JA, JA, JA_F, JA_F, SA, SA, SA, SA_F, SA_F, SA_NEO, SA_NEO, SA_F_NEO, SA_F_NEO];
-		F = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+	skeleton := `
+		nb_weeks = %d;
+		nb_personnel = %d;
+		T = %s;
+		F = %s;
 		S = {JANW, SAEW, JAEV, JAWH, SAWH, TSPT, CALL};
 	`
+	content := fmt.Sprintf(skeleton,
+		data.NbWeeks,
+		len(data.Assistants),
+		buildAssistantTypesString(data.Assistants),
+		buildFreeDaysString(len(data.Assistants)),
+	)
+
 	if _, err := file.WriteString(content); err != nil {
 		return err
 	}
 
 	return nil
 
+}
+
+func buildAssistantTypesString(ais []model.AssistantInstance) string {
+	result := "["
+
+	for _, ai := range ais {
+		result += fmt.Sprintf("%s,", (ai.Type))
+	}
+
+	result += "]"
+
+	return result
+}
+
+func buildFreeDaysString(nbAssistants int) string {
+	result := "["
+
+	for i := 0; i < nbAssistants; i++ {
+		result += "{},"
+	}
+
+	result += "]"
+
+	return result
 }
 
 func writeModelParameters(file *os.File, params model.ModelParameters) error {

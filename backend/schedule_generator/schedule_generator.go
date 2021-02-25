@@ -89,8 +89,13 @@ func (s ScheduleGenerator) generateDataFile() error {
 		return errors.Wrap(err, fmt.Sprintf("failed creating file %s", "minizinc/data.dzn"))
 	}
 
-	if err := writeInstanceSpecificData(file); err != nil {
-		return errors.Wrap(err, "failed writning instance specific data")
+	instanceData, err := s.dbc.getInstanceData()
+	if err != nil {
+		return errors.Wrap(err, "database controller error")
+	}
+
+	if err := writeInstanceSpecificData(file, instanceData); err != nil {
+		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
 	modelParameters, err := s.dbc.GetModelParameters()
