@@ -19,11 +19,11 @@
 
 <main>
     <form class="flex flex-col"> 
-        <p class="font-semibold text-sm cursor-default"> Minimun balance score </p>
+        <p class="font-semibold text-sm cursor-default"> Model parameters </p>
+        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> Minimun balance score </p>
         <InputField bind:value={modelParams.balance_minimum} step={1} />
 
-        <p class="mt-4 font-semibold text-sm cursor-default"> Shift type paramaters </p>
-        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> fairness weight + included in balance </p>
+        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> Fairness weight + Included in balance </p>
         <div class="mt-2 flex flex-col space-y-2">
             {#each modelParams.shift_type_params as stp}
                 <div class="flex flex-row space-x-1 items-center">
