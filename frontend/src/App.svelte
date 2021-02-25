@@ -9,7 +9,7 @@
 <main>
     <div class="flex flex-row">
         <div class="flex-none w-36 mt-10 ml-2">
-            {#await Service.getService1()}
+            {#await Service.getModelParams()}
                 <p> loading... </p>
             {:then modelParams} 
                 <ModelInput {modelParams}/>
@@ -21,7 +21,7 @@
             {/await}
         </div>
         <div class="flex-grow container">
-            {#await Service.getService()}
+            {#await Service.getSchedule()}
                 <p>loading...</p>
             {:then schedule}
                 <ScheduleView {schedule}/>

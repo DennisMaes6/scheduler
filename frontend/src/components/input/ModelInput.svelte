@@ -12,7 +12,7 @@
     export let modelParams: ModelParameters
 
     function handleSubmit() {
-        Service.postService(modelParams)
+        Service.postModelParams(modelParams)
     }
 
 </script>
