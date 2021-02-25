@@ -46,7 +46,7 @@ func (c *DefaultApiController) Routes() Routes {
 			"ModelParametersSetOptions",
 			strings.ToUpper("Options"),
 			"/model-parameters/set",
-			c.Options,
+			c.ModelParametersSetOptions,
 		},
 		{
 			"InstanceDataGetGet",
@@ -62,9 +62,9 @@ func (c *DefaultApiController) Routes() Routes {
 		},
 		{
 			"InstanceDataSetOptions",
-			strings.ToUpper("Post"),
+			strings.ToUpper("Options"),
 			"/instance-data/set",
-			c.Options,
+			c.InstanceDataSetOptions,
 		},
 		{
 			"ScheduleGet",
@@ -114,7 +114,14 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 }
 
 // ModelParametersSetOptions
-func (c *DefaultApiController) Options(w http.ResponseWriter, r *http.Request) {
+func (c *DefaultApiController) ModelParametersSetOptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+// ModelParametersSetOptions
+func (c *DefaultApiController) InstanceDataSetOptions(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
