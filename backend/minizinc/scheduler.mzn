@@ -26,6 +26,9 @@ set of ShiftType: S_full = S union {FREE};
 set of ShiftType: S_week = S intersect {JANW, SAEW, CALL};    
 set of ShiftType: S_weekend = S intersect {JAWH, SAWH, TSPT};
 
+array[ShiftType] of int: max_assignments;
+array[ShiftType] of int: shift_workload;
+
 
 % personnel
 enum PersonnelType = {
@@ -38,8 +41,8 @@ enum PersonnelType = {
 };
 
 int: nb_personnel;
-set of 1..nb_personnel: P = 1..nb_personnel;   % employees
-array[1..nb_personnel] of PersonnelType: T;    % mapping from employee to personnel type
+set of 1..nb_personnel: P = 1..nb_personnel;            % employees
+array[1..nb_personnel] of PersonnelType: T;             % mapping from employee to personnel type
 array[1..nb_personnel] of set of 1..nb_days: F;         % granted holidays per employee 
 
 % coverage requirements 
@@ -55,7 +58,6 @@ array[ShiftType] of set of PersonnelType: Q = [{JA},                            
                                                PersonnelType];                  % FREE
                                                                                           
 % model variables
-array[ShiftType] of float: fairness_weight;
 set of ShiftType: S_balance;
 int: min_balance;
 
@@ -83,26 +85,17 @@ constraint forall(s in S, p in P, w in W)(X[p, s, w] = 1 -> (7*w-6..7*w intersec
 % HC7 - no consecutive week assignements
 constraint forall(p in P, s in S_week, w in 2..nb_weeks)(
              exists(s_prev in S)(X[p, s_prev, w-1] = 1) -> X[p, s, w] = 0
-           );       
-
+           ); 
+           
+% HC8 - respect max assignments per shift type
+constraint forall(p in P, s in S)(sum(w in W)(X[p, s, w]) <= max_assignments[s]);    
 
 % optimization objective: fairness
-array[ShiftType] of var 0..1.0: fairness_per_shift_type;
-constraint forall(s in S)(fairness_per_shift_type[s] == max(p in P where T[p] in Q[s])(workload[s, p]) - min(p in P where T[p] in Q[s])(workload[s, p]));
+array[P] of var float: workload;
+constraint forall(p in P)(workload[p] = sum(w in W, s in S)(X[p, s, w] * shift_workload[s]) / (nb_days - card(F[p])));
 
-function var int: workload_shift_type(var ShiftType: st) =
-  if st in S_week then 7 else
-    if st in S_weekend then 7 else 0 endif
-  endif;
-
-array[ShiftType, P] of var 0..1.0: workload;
-constraint forall(s in S, p in P)(workload[s, p] == ((sum(w in W)(X[p, s, w])) * workload_shift_type(s)) / (nb_days - card(F[p])));
-
-array[ShiftType] of var float: weighted_fairness;
-constraint forall(s in S)(weighted_fairness[s] = fairness_per_shift_type[s] * fairness_weight[s]);
-
-var 0..1.0: fairness_score;
-constraint fairness_score == max(s in S)(weighted_fairness[s]);
+var float: fairness_score;
+constraint fairness_score = max(workload) - min(workload);
 
 
 % optimization objective: balance
@@ -155,11 +148,10 @@ constraint min(z) >= min_balance;
 
 solve minimize fairness_score;
 
- output  
+output  
        ["balance_shifts:"] ++ [show(s) ++ " " | s in S_balance] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
-       ["fairness_per_shift_type:"] ++ [show(s) ++ "=" ++ show(weighted_fairness[s]) ++ " " | s in S] ++ ["\n"] ++
        [
          if w == 1 then "assistant:" ++ show(p) ++ " " ++ "type:" ++ show(T[p]) ++ " " else "" endif ++
          if fix(X[p, FREE, w]) == 1 then "FREE FREE FREE FREE FREE FREE FREE " else "" endif ++
