@@ -78,10 +78,10 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 	`
 
 	rows, err := c.db.Query(shiftTypeParamsQuery)
-	defer rows.Close()
 	if err != nil {
 		return []model.ShiftTypeModelParameters{}, err
 	}
+	defer rows.Close()
 
 	result := []model.ShiftTypeModelParameters{}
 	for rows.Next() {
@@ -161,10 +161,10 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 	`
 
 	rows, err := c.db.Query(assistantInstanceQuery)
-	defer rows.Close()
 	if err != nil {
 		return model.InstanceData{}, errors.Wrap(err, "query error")
 	}
+	defer rows.Close()
 
 	ais := []model.AssistantInstance{}
 	for rows.Next() {
