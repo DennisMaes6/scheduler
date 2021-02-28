@@ -27,7 +27,7 @@ set of ShiftType: S_week = S intersect {JANW, SAEW, CALL};
 set of ShiftType: S_weekend = S intersect {JAWH, SAWH, TSPT};
 
 array[ShiftType] of int: max_assignments;
-array[ShiftType] of int: shift_workload;
+array[ShiftType] of float: shift_workload;
 
 
 % personnel
