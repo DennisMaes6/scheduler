@@ -220,6 +220,10 @@ components:
           description: The number of assignments per assisant allowed above the minimun
             for this shift type.
           type: integer
+      required:
+      - max_buffer
+      - shift_type
+      - shift_workload
       type: object
     InstanceData:
       description: Holds the instance data for scheduling.

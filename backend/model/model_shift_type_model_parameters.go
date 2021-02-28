@@ -11,11 +11,11 @@ package model
 
 // ShiftTypeModelParameters - Holds the shift type specific model parameters.
 type ShiftTypeModelParameters struct {
-	ShiftType ShiftType `json:"shift_type,omitempty"`
+	ShiftType ShiftType `json:"shift_type"`
 
 	// The weight of this shift type in the fairness score.
-	ShiftWorkload float32 `json:"shift_workload,omitempty"`
+	ShiftWorkload float32 `json:"shift_workload"`
 
 	// The number of assignments per assisant allowed above the minimun for this shift type.
-	MaxBuffer int32 `json:"max_buffer,omitempty"`
+	MaxBuffer int32 `json:"max_buffer"`
 }
