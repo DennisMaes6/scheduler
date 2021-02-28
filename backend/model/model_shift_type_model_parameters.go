@@ -14,8 +14,8 @@ type ShiftTypeModelParameters struct {
 	ShiftType ShiftType `json:"shift_type,omitempty"`
 
 	// The weight of this shift type in the fairness score.
-	FairnessWeight float32 `json:"fairness_weight,omitempty"`
+	ShiftWorkload float32 `json:"shift_workload,omitempty"`
 
-	// Whether or not this shift type is included when computing the balaance score.
-	IncludedInBalance bool `json:"included_in_balance,omitempty"`
+	// The number of assignments per assisant allowed above the minimun for this shift type.
+	MaxBuffer int32 `json:"max_buffer,omitempty"`
 }

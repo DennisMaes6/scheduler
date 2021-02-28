@@ -73,7 +73,7 @@ func (c DbController) getMinBalanceScore() (int, error) {
 func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, error) {
 
 	shiftTypeParamsQuery := `
-		SELECT shift_type, fairness_weight, included_in_balance
+		SELECT shift_type, shift_workload, max_buffer
 		FROM shift_type_params
 	`
 
@@ -86,19 +86,19 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 	result := []model.ShiftTypeModelParameters{}
 	for rows.Next() {
 		var (
-			shiftType         string
-			fairnessWeight    float32
-			includedInBalance bool
+			shiftType     string
+			shiftWorkload float32
+			maxBuffer     int32
 		)
 
-		if err := rows.Scan(&shiftType, &fairnessWeight, &includedInBalance); err != nil {
+		if err := rows.Scan(&shiftType, &shiftWorkload, &maxBuffer); err != nil {
 			return []model.ShiftTypeModelParameters{}, err
 		}
 
 		stp := model.ShiftTypeModelParameters{
-			ShiftType:         model.ShiftType(shiftType),
-			FairnessWeight:    fairnessWeight,
-			IncludedInBalance: includedInBalance,
+			ShiftType:     model.ShiftType(shiftType),
+			ShiftWorkload: shiftWorkload,
+			MaxBuffer:     maxBuffer,
 		}
 
 		result = append(result, stp)
@@ -130,12 +130,12 @@ func (c DbController) setShiftTypeParams(stp model.ShiftTypeModelParameters) err
 
 	setSTPsQuery := `
 		UPDATE shift_type_params
-		SET fairness_weight = ?,
-		    included_in_balance = ?
+		SET shift_workload = ?,
+		    max_buffer = ?
 		WHERE shift_type = ?
 	`
 
-	if _, err := c.db.Exec(setSTPsQuery, stp.FairnessWeight, stp.IncludedInBalance, stp.ShiftType); err != nil {
+	if _, err := c.db.Exec(setSTPsQuery, stp.ShiftWorkload, stp.MaxBuffer, stp.ShiftType); err != nil {
 		return err
 	}
 

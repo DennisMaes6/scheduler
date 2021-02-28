@@ -9,9 +9,9 @@ import (
 )
 
 func createDB() *sql.DB {
-	if _, err := os.Stat("sqlite-database-no-jaev.db"); os.IsNotExist(err) {
+	if _, err := os.Stat("sqlite-database-workload-score-model.db"); os.IsNotExist(err) {
 
-		file, err := os.Create("sqlite-database-no-jaev.db") // Create SQLite file
+		file, err := os.Create("sqlite-database-workload-score-model.db") // Create SQLite file
 		if err != nil {
 			log.Fatal(err.Error())
 		}
@@ -20,7 +20,7 @@ func createDB() *sql.DB {
 		log.Printf("New db file created")
 	}
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database-no-jaev.db")
+	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-workload-score-model.db")
 
 	if err := createTables(sqliteDatabase); err != nil {
 		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
@@ -46,8 +46,8 @@ func createTables(db *sql.DB) error {
 		`
 			CREATE TABLE IF NOT EXISTS shift_type_params (
 				shift_type TEXT PRIMARY KEY,
-				fairness_weight REAL,
-				included_in_balance BOOL
+				shift_workload REAL,
+				max_buffer INTEGER
 			)
 		`,
 		`
@@ -85,11 +85,11 @@ func initializeData(db *sql.DB) error {
 	}
 
 	initSTPsQuery := `
-		INSERT or IGNORE INTO shift_type_params(shift_type, fairness_weight, included_in_balance)
+		INSERT or IGNORE INTO shift_type_params(shift_type, shift_workload, max_buffer)
 		VALUES (?, ?, ?)
     `
 	for _, stp := range initialModelParameters.ShiftTypeParams {
-		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.FairnessWeight, stp.IncludedInBalance); err != nil {
+		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
 			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
 	}

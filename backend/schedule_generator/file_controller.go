@@ -58,13 +58,13 @@ func buildFreeDaysString(nbAssistants int) string {
 func writeModelParameters(file *os.File, params model.ModelParameters) error {
 
 	skeleton := `
-		fairness_weight = %s;
-		S_balance =  %s;
+		shift_workload = %s;
+		max_buffer = %s;
 		min_balance = %d;
 	`
 	content := fmt.Sprintf(skeleton,
-		buildFairnessWeightsString(params.ShiftTypeParams),
-		buildBalanceShiftsString(params.ShiftTypeParams),
+		buildShiftWorkloadString(params.ShiftTypeParams),
+		buildMaxBufferString(params.ShiftTypeParams),
 		params.BalanceMinimum)
 
 	if _, err := file.WriteString(content); err != nil {
@@ -75,11 +75,11 @@ func writeModelParameters(file *os.File, params model.ModelParameters) error {
 
 }
 
-func buildFairnessWeightsString(stps []model.ShiftTypeModelParameters) string {
+func buildShiftWorkloadString(stps []model.ShiftTypeModelParameters) string {
 	result := "["
 
 	for _, stp := range stps {
-		result += fmt.Sprintf("%f,", stp.FairnessWeight)
+		result += fmt.Sprintf("%f,", stp.ShiftWorkload)
 	}
 
 	result += "0.0]"
@@ -88,16 +88,14 @@ func buildFairnessWeightsString(stps []model.ShiftTypeModelParameters) string {
 
 }
 
-func buildBalanceShiftsString(stps []model.ShiftTypeModelParameters) string {
-	result := "{"
+func buildMaxBufferString(stps []model.ShiftTypeModelParameters) string {
+	result := "["
 
 	for _, stp := range stps {
-		if stp.IncludedInBalance {
-			result += fmt.Sprintf("%s,", (stp.ShiftType))
-		}
+		result += fmt.Sprintf("%d,", stp.MaxBuffer)
 	}
 
-	result += "}"
+	result += "0]"
 
 	return result
 }

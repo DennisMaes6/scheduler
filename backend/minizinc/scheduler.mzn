@@ -61,7 +61,6 @@ array[ShiftType] of set of PersonnelType: Q = [{JA},                            
                                                PersonnelType];                  % FREE
                                                                                           
 % model variables
-set of ShiftType: S_balance;
 int: min_balance;
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
@@ -106,9 +105,9 @@ array[P, 1..nb_days] of var 0..nb_days: a;
 constraint forall(p in P, w in W)(
              if w = 1
              then 
-               if sum(s in S_week intersect S_balance)(X[p, s, w]) = 1
+               if sum(s in S_week)(X[p, s, w]) = 1
                then forall(i in 7*w-6..7*w)(a[p, i] = 0)
-               else if sum(s in S_weekend intersect S_balance)(X[p, s, w]) = 1
+               else if sum(s in S_weekend)(X[p, s, w]) = 1
                     then  a[p, 7*w-6] = 0 
                        /\ a[p, 7*w-5] = 0
                        /\ a[p, 7*w-4] = 0 
@@ -120,9 +119,9 @@ constraint forall(p in P, w in W)(
                     endif
                endif
              else 
-               if sum(s in S_week intersect S_balance)(X[p, s, w]) = 1 
+               if sum(s in S_week)(X[p, s, w]) = 1 
                then forall(i in 7*w-6..7*w)(a[p, i] = 0)
-               else if sum(s in S_weekend intersect S_balance)(X[p, s, w]) = 1
+               else if sum(s in S_weekend)(X[p, s, w]) = 1
                     then  a[p, 7*w-6] = 1 + a[p, 7*w-7]
                        /\ a[p, 7*w-5] = 0
                        /\ a[p, 7*w-4] = 0 
@@ -152,7 +151,7 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output  
-       ["balance_shifts:"] ++ [show(s) ++ " " | s in S_balance] ++ ["\n"] ++
+       ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
@@ -161,7 +160,7 @@ output
           ++ "type:" ++ show(T[p]) ++ " " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++
-         
+
          if fix(X[p, FREE, w]) == 1 then "FREE FREE FREE FREE FREE FREE FREE " else "" endif ++
          if fix(X[p, JANW, w]) == 1 then "JANW JANW JANW JANW JANW JANW JANW " else "" endif ++
          if fix(X[p, SAEW, w]) == 1 then "SAEW SAEW SAEW SAEW SAEW SAEW SAEW " else "" endif ++
