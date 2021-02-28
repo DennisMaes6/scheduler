@@ -87,16 +87,10 @@ components:
           items:
             $ref: "#/components/schemas/Assistant"
         shift_types:
-            description: The shift_types that were considered when generating this schedule.
+            description: The shift types that were considered when generating this schedule.
             type: array
             items:
-              type: object
-              properties:
-                fairness_score:
-                  type: number
-                  description: The fairness score for this shift type
-                shift_type:
-                  $ref: "#/components/schemas/ShiftType"
+              $ref: "#/components/schemas/ShiftType"
         individual_schedules: 
             type: array
             items:
@@ -107,22 +101,15 @@ components:
       required:
         - id
         - type
-        - highest_unfair_workload
-        - lowest_unfair_workload
       properties:
         id:
           type: integer
           description: The identification number of this assistant.
         type:
           $ref: "#/components/schemas/AssistantType"
-        highest_unfair_workload:
-          type: array
-          items:
-            $ref: "#/components/schemas/ShiftType"
-        lowest_unfair_workload:
-          type: array
-          items: 
-            $ref: "#/components/schemas/ShiftType"
+        workload:
+          type: number
+          description: The workload on this assiastant in the schedule.
     IndividualSchedule:
       type: object
       description: Represents the work schedule of an individual assistant.
@@ -146,7 +133,7 @@ components:
           $ref: "#/components/schemas/ShiftType"
         part_of_min_balance:
           type: boolean
-          description: whether or not this assignlent is part of a min balance free block.
+          description: whether or not this assignment is part of a min balance free block.
     AssistantType:
       type: string
       description: The different assistant types.
@@ -192,9 +179,6 @@ components:
         max_buffer:
           type: integer
           description: The number of assignments per assisant allowed above the minimun for this shift type. 
-        included_in_balance:
-          type: boolean
-          description: Whether or not this shift type is included when computing the balaance score.
     InstanceData:
       description:  Holds the instance data for scheduling.
       type: object
