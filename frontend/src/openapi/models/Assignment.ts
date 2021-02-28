@@ -10,7 +10,7 @@ import type { ShiftType } from './ShiftType';
 export type Assignment = {
     shift_type: ShiftType;
     /**
-     * whether or not this assignlent is part of a min balance free block.
+     * whether or not this assignment is part of a min balance free block.
      */
     part_of_min_balance: boolean;
 }

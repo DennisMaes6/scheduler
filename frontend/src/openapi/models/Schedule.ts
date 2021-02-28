@@ -27,14 +27,8 @@ export type Schedule = {
      */
     assistants?: Array<Assistant>;
     /**
-     * The shift_types that were considered when generating this schedule.
+     * The shift types that were considered when generating this schedule.
      */
-    shift_types?: Array<{
-        /**
-         * The fairness score for this shift type
-         */
-        fairness_score?: number,
-        shift_type?: ShiftType,
-    }>;
+    shift_types?: Array<ShiftType>;
     individual_schedules?: Array<IndividualSchedule>;
 }

@@ -12,9 +12,9 @@ export type ShiftTypeModelParameters = {
     /**
      * The weight of this shift type in the fairness score.
      */
-    fairness_weight?: number;
+    shift_workload?: number;
     /**
-     * Whether or not this shift type is included when computing the balaance score.
+     * The number of assignments per assisant allowed above the minimun for this shift type.
      */
-    included_in_balance?: boolean;
+    max_buffer?: number;
 }

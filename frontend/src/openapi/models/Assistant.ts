@@ -3,7 +3,6 @@
 /* eslint-disable */
 
 import type { AssistantType } from './AssistantType';
-import type { ShiftType } from './ShiftType';
 
 /**
  * Represents an assistant.
@@ -14,6 +13,8 @@ export type Assistant = {
      */
     id: number;
     type: AssistantType;
-    highest_unfair_workload: Array<ShiftType>;
-    lowest_unfair_workload: Array<ShiftType>;
+    /**
+     * The workload on this assiastant in the schedule.
+     */
+    workload?: number;
 }

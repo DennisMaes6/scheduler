@@ -23,13 +23,13 @@
         <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> Minimun balance score </p>
         <InputField bind:value={modelParams.balance_minimum} step={1} />
 
-        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> Fairness weight + Included in balance </p>
+        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> fairness weight + max buffer </p>
         <div class="mt-2 flex flex-col space-y-2">
             {#each modelParams.shift_type_params as stp}
                 <div class="flex flex-row space-x-1 items-center">
                     <Assignment assignment={{shift_type:stp.shift_type, part_of_min_balance:false}}/>
-                    <InputField bind:value={stp.fairness_weight} step={0.01}/>
-                    <Toggle bind:checked={stp.included_in_balance} id={stp.shift_type}/>
+                    <InputField bind:value={stp.shift_workload} step={0.01}/>
+                    <InputField bind:value={stp.max_buffer} step={1}/>
                 </div>
             {/each}
         </div>
