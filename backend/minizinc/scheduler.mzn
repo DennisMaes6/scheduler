@@ -26,7 +26,10 @@ set of ShiftType: S_full = S union {FREE};
 set of ShiftType: S_week = S intersect {JANW, SAEW, CALL};    
 set of ShiftType: S_weekend = S intersect {JAWH, SAWH, TSPT};
 
-array[ShiftType] of int: max_assignments;
+array[ShiftType] of int: max_buffer;
+array[ShiftType] of int: max_assignments = [
+  ceil(nb_weeks / sum(p in P where T[p] in Q[s])(1)) + max_buffer[s] | s in ShiftType
+];
 array[ShiftType] of float: shift_workload;
 
 
