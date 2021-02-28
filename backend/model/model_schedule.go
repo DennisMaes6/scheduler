@@ -24,8 +24,8 @@ type Schedule struct {
 	// The assistants involved in this schedule.
 	Assistants []Assistant `json:"assistants,omitempty"`
 
-	// The shift_types that were considered when generating this schedule.
-	ShiftTypes []ScheduleShiftTypes `json:"shift_types,omitempty"`
+	// The shift types that were considered when generating this schedule.
+	ShiftTypes []ShiftType `json:"shift_types,omitempty"`
 
 	IndividualSchedules []IndividualSchedule `json:"individual_schedules,omitempty"`
 }

@@ -13,6 +13,6 @@ package model
 type Assignment struct {
 	ShiftType ShiftType `json:"shift_type"`
 
-	// whether or not this assignlent is part of a min balance free block.
+	// whether or not this assignment is part of a min balance free block.
 	PartOfMinBalance bool `json:"part_of_min_balance"`
 }

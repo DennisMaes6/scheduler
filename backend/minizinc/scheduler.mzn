@@ -153,6 +153,7 @@ solve minimize fairness_score;
 output  
        ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
+       ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
          if w == 1 then 

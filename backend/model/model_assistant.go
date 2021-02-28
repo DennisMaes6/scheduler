@@ -17,7 +17,6 @@ type Assistant struct {
 
 	Type AssistantType `json:"type"`
 
-	HighestUnfairWorkload []ShiftType `json:"highest_unfair_workload"`
-
-	LowestUnfairWorkload []ShiftType `json:"lowest_unfair_workload"`
+	// The workload on this assiastant in the schedule.
+	Workload float32 `json:"workload,omitempty"`
 }
