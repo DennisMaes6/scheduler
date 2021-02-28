@@ -170,6 +170,10 @@ components:
     ShiftTypeModelParameters:
       description: Holds the shift type specific model parameters.
       type: object
+      required:
+        - shift_type
+        - shift_workload
+        - max_buffer
       properties:
         shift_type:
           $ref: "#/components/schemas/ShiftType"
