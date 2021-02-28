@@ -84,6 +84,11 @@ func extractAssistants(scheduleStr string, unfairness []unfairnessPerShiftType, 
 			return []model.Assistant{}, err
 		}
 
+		_, err = strconv.Atoi(strings.Split(split_line[2], ":")[1])
+		if err != nil {
+			return []model.Assistant{}, err
+		}
+
 		huw := getHighestUnfairWorkload(unfairness, fairnessScore, int32(id))
 		luw := filterQualifications(getLowestUnfairWorkload(unfairness, fairnessScore, int32(id)), assistantType)
 
@@ -180,7 +185,7 @@ func extractIndividualSchedules(scheduleStr string) ([]model.IndividualSchedule,
 		}
 
 		assignments := []model.ShiftType{}
-		for i := 2; i < len(entries); i++ {
+		for i := 3; i < len(entries); i++ {
 			assignment, err := parseShiftType(entries[i])
 			if err != nil {
 				return []model.IndividualSchedule{}, err

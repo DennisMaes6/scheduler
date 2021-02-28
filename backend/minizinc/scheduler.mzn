@@ -156,7 +156,12 @@ output
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
-         if w == 1 then "assistant:" ++ show(p) ++ " " ++ "type:" ++ show(T[p]) ++ " " else "" endif ++
+         if w == 1 then 
+             "assistant:" ++ show(p) ++ " " 
+          ++ "type:" ++ show(T[p]) ++ " " 
+          ++ "workload:" ++ show(workload[p]) ++ " " 
+         else "" endif ++
+         
          if fix(X[p, FREE, w]) == 1 then "FREE FREE FREE FREE FREE FREE FREE " else "" endif ++
          if fix(X[p, JANW, w]) == 1 then "JANW JANW JANW JANW JANW JANW JANW " else "" endif ++
          if fix(X[p, SAEW, w]) == 1 then "SAEW SAEW SAEW SAEW SAEW SAEW SAEW " else "" endif ++
