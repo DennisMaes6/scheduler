@@ -7,6 +7,24 @@
 
 </script>
 
+<style>
+.loader {
+    border-top-color: #3498db;
+    -webkit-animation: spinner 1.5s linear infinite;
+    animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
 <main>
     <div class="flex flex-row">
         <div class="flex flex-col space-y-5">
@@ -38,7 +56,9 @@
 
         <div class="flex-grow container">
             {#await Service.getSchedule()}
-                <p>loading...</p>
+                <div class="w-full h-full">
+                    <div class="loader m-auto ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"></div>
+                </div>
             {:then schedule}
                 <ScheduleView {schedule}/>
             {:catch error}

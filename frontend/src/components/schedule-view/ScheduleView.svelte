@@ -16,7 +16,7 @@
 </script>
 
 <main>
-    <div class="flex flex-row space-x-10 ml-12 my-5 font-bold text-sm">
+    <div class="flex flex-row space-x-10 ml-12 font-bold text-sm">
         <div>
             <p> fairness score: {schedule.fairness_score.toFixed(2)} </p>
             <p> balance score: {schedule.balance_score} </p>
@@ -26,10 +26,10 @@
             <p> JAEV balance score: {schedule.jaev_balance} </p>
         </div>
     </div>
-    <div class="m-10 pl-6 flex flex-row pr-2">
+    <div class="ml-10 mt-5 flex flex-row pr-2">
         <!-- Assistant list -->
         <div class="flex flex-col w-32 mx-4 space-y-2">
-            <p class="mx-2 mt-4 text-xs"> Load </p>
+            <p class="mt-4 text-xs"> Workload </p>
             {#each schedule.assistants as assistant}
                 <AssistantHeader {assistant} max_workload={assistant.workload === max_workload} min_workload={assistant.workload === min_workload}/>
             {/each}
