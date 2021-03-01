@@ -16,9 +16,15 @@
 </script>
 
 <main>
-    <div class="ml-12 my-5 font-bold text-sm">
-        <p> fairness score: {schedule.fairness_score.toFixed(2)} </p>
-        <p> balance score: {schedule.balance_score} </p>
+    <div class="flex flex-row space-x-10 ml-12 my-5 font-bold text-sm">
+        <div>
+            <p> fairness score: {schedule.fairness_score.toFixed(2)} </p>
+            <p> balance score: {schedule.balance_score} </p>
+        </div>
+        <div>
+            <p> JAEV fairness score: {schedule.jaev_fairness_score.toFixed(2)} </p>
+            <p> JAEV balance score: {schedule.jaev_balance} </p>
+        </div>
     </div>
     <div class="m-10 pl-6 flex flex-row pr-2">
         <!-- Assistant list -->

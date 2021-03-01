@@ -22,6 +22,8 @@
         <p class="font-semibold text-sm cursor-default"> Model parameters </p>
         <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> Minimun balance score </p>
         <InputField bind:value={modelParams.balance_minimum} step={1} />
+        <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> JAEV minimun balance score </p>
+        <InputField bind:value={modelParams.balance_minimun_jaev} step={1} />
 
         <p class="mt-2 font-semibold text-xs text-gray-500 cursor-default"> fairness weight + max buffer </p>
         <div class="mt-2 flex flex-col space-y-2">
