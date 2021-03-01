@@ -20,7 +20,7 @@ func createDB() *sql.DB {
 		log.Printf("New db file created")
 	}
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-workload-score-model.db")
+	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database-workload-score-model.db")
 
 	if err := createTables(sqliteDatabase); err != nil {
 		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
