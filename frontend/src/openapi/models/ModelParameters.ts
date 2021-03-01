@@ -9,8 +9,12 @@ import type { ShiftTypeModelParameters } from './ShiftTypeModelParameters';
  */
 export type ModelParameters = {
     /**
-     * The minimal balance score for an acceptable solution
+     * The minimal balance score for an acceptable solution.
      */
     balance_minimum?: number;
+    /**
+     * The mininmal balance score for JAEV shifts for an acceptable solution.
+     */
+    balance_minimun_jaev?: number;
     shift_type_params?: Array<ShiftTypeModelParameters>;
 }

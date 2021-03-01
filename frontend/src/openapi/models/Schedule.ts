@@ -19,6 +19,14 @@ export type Schedule = {
      */
     balance_score?: number;
     /**
+     * The fairness score for teh JAEV schedule
+     */
+    jaev_fairness_score?: number;
+    /**
+     * The balance for the JAEV schedule
+     */
+    jaev_balance?: number;
+    /**
      * The number of days for which this schedule is generated.
      */
     nb_days?: number;
