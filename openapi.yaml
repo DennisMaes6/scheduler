@@ -107,6 +107,7 @@ components:
       required:
         - id
         - type
+        - workload
       properties:
         id:
           type: integer

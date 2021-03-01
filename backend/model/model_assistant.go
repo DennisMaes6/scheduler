@@ -18,5 +18,5 @@ type Assistant struct {
 	Type AssistantType `json:"type"`
 
 	// The workload on this assiastant in the schedule.
-	Workload float32 `json:"workload,omitempty"`
+	Workload float32 `json:"workload"`
 }
