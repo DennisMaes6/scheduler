@@ -7,6 +7,9 @@ generate-frontend:
 run-solver:
 	minizinc --solver gurobi  backend/minizinc/scheduler.mzn backend/minizinc/data.dzn
 
+run-jaev-solver:
+	minizinc --solver gurobi  backend/minizinc/scheduler_jaev.mzn backend/minizinc/data_jaev.dzn
+
 run-backend:
 	cd backend; go run main.go
 
