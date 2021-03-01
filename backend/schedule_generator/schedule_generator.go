@@ -75,6 +75,25 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
 		}
 
+		if err := s.generateJaevDataFile(res); err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed generating jaev data file")
+		}
+		/*
+			resStr, err := executeGenerateScheduleJeavCmd()
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+			}
+
+			if strings.Contains(resStr, "UNSATISFIABLE") {
+				return model.Schedule{}, errors.New("model unsatisfiable")
+			}
+
+			res, err := parseSchedule(resStr)
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
+			}
+		*/
+
 		schedule = res
 		//cached = true
 	}
@@ -128,4 +147,27 @@ func executeGenerateScheduleCmd() (string, error) {
 	}
 
 	return string(resultRaw), nil
+}
+
+func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
+
+	file, err := os.Create("minizinc/data_jaev.dzn")
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("failed creating jaev file %s", "minizinc/data.dzn"))
+	}
+
+	if err := writeInstanceSpecificDataJaev(file, res); err != nil {
+		return errors.Wrap(err, "failed writing instance specific data")
+	}
+
+	modelParameters, err := s.dbc.GetModelParameters()
+	if err != nil {
+		return errors.Wrap(err, "database controller error")
+	}
+
+	if err := writeModelParametersJaev(file, modelParameters); err != nil {
+		return errors.Wrap(err, "failed writing model parameters")
+	}
+
+	return nil
 }
