@@ -276,3 +276,64 @@ func extractFairnessScore(scheduleStr string) (float32, error) {
 
 	return float32(rawFloat), nil
 }
+
+func parseAndCombineSchedule(jaevResStr string, res model.Schedule) (model.Schedule, error) {
+
+	jaevFairnessScore, err := extractFairnessScore(jaevResStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev fairness")
+	}
+
+	jaevBalanceScore, err := extractMinBalance(jaevResStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev fairness")
+	}
+
+	individualSchedulesJaev, err := extractIndividualSchedules(jaevResStr, int(res.BalanceScore), res.ShiftTypes)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev individual schedules")
+	}
+
+	individualSchedules := []model.IndividualSchedule{}
+	for _, is := range res.IndividualSchedules {
+		if assistantIsOfType(res.Assistants, is.AssistantId, model.JA) {
+			schedule, err := getSchedule(individualSchedulesJaev, is.AssistantId)
+			if err != nil {
+				return model.Schedule{}, err
+			}
+			individualSchedules = append(individualSchedules, schedule)
+		} else {
+			individualSchedules = append(individualSchedules, is)
+		}
+	}
+
+	return model.Schedule{
+		FairnessScore:       res.FairnessScore,
+		BalanceScore:        res.BalanceScore,
+		JaevFairnessScore:   jaevFairnessScore,
+		JaevBalance:         int32(jaevBalanceScore),
+		NbDays:              res.NbDays,
+		Assistants:          res.Assistants,
+		ShiftTypes:          res.ShiftTypes,
+		IndividualSchedules: individualSchedules,
+	}, nil
+}
+
+func assistantIsOfType(assistants []model.Assistant, id int32, at model.AssistantType) bool {
+	for _, a := range assistants {
+		if a.Id == id {
+			return a.Type == at
+		}
+	}
+	return false
+}
+
+func getSchedule(individualSchedules []model.IndividualSchedule, id int32) (model.IndividualSchedule, error) {
+	for _, is := range individualSchedules {
+		if is.AssistantId == id {
+			return is, nil
+		}
+	}
+
+	return model.IndividualSchedule{}, errors.New("schedule not found")
+}

@@ -98,12 +98,13 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output  
-       ["min_balance_jaev:"] ++ [show(min_balance)] ++ ["\n"] ++
-       ["fairness_score_jaev:" ++ show(fairness_score)++"\n"] ++ 
+       ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
+       ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
          if d = 1 then 
              "assistant:" ++ show(p) ++ " " 
+          ++ "type:JA " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++
 

@@ -20,6 +20,13 @@ var generateScheduleArgs []string = []string{
 	"minizinc/data.dzn",
 }
 
+var generateScheduleJaevArgs []string = []string{
+	"--solver",
+	"gurobi",
+	"minizinc/scheduler_jaev.mzn",
+	"minizinc/data_jaev.dzn",
+}
+
 var schedule model.Schedule = model.Schedule{}
 var cached bool = false
 
@@ -61,7 +68,7 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 			return model.Schedule{}, errors.Wrap(err, "failed generating data file")
 		}
 
-		resStr, err := executeGenerateScheduleCmd()
+		resStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleArgs)
 		if err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
 		}
@@ -78,23 +85,22 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 		if err := s.generateJaevDataFile(res); err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed generating jaev data file")
 		}
-		/*
-			resStr, err := executeGenerateScheduleJeavCmd()
-			if err != nil {
-				return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
-			}
 
-			if strings.Contains(resStr, "UNSATISFIABLE") {
-				return model.Schedule{}, errors.New("model unsatisfiable")
-			}
+		jaevResStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleJaevArgs)
+		if err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+		}
 
-			res, err := parseSchedule(resStr)
-			if err != nil {
-				return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
-			}
-		*/
+		if strings.Contains(jaevResStr, "UNSATISFIABLE") {
+			return model.Schedule{}, errors.New("JAEV model unsatisfiable")
+		}
 
-		schedule = res
+		combinedRes, err := parseAndCombineSchedule(jaevResStr, res)
+		if err != nil {
+			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
+		}
+
+		schedule = combinedRes
 		//cached = true
 	}
 
@@ -130,8 +136,8 @@ func (s ScheduleGenerator) generateDataFile() error {
 
 }
 
-func executeGenerateScheduleCmd() (string, error) {
-	cmd := exec.Command(generateScheduleCmd, generateScheduleArgs...)
+func executeGenerateScheduleCmd(cmdStr string, argsStr []string) (string, error) {
+	cmd := exec.Command(cmdStr, argsStr...)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
