@@ -3,7 +3,8 @@ package schedule_generator
 import "github.com/jorensjongers/scheduler/backend/model"
 
 var initialModelParameters model.ModelParameters = model.ModelParameters{
-	BalanceMinimum: 3,
+	BalanceMinimum:     7,
+	BalanceMinimunJaev: 4,
 	ShiftTypeParams: []model.ShiftTypeModelParameters{
 		{
 			ShiftType:     model.JANW,

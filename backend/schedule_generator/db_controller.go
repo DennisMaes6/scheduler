@@ -25,14 +25,20 @@ func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 		return model.ModelParameters{}, errors.Wrap(err, "failed getting min balance score from db")
 	}
 
+	balanceMinimumJaev, err := c.getMinBalanceScoreJaev()
+	if err != nil {
+		return model.ModelParameters{}, errors.Wrap(err, "failed getting min balance score jaev from db")
+	}
+
 	shiftTypeParams, err := c.getShiftTypeParams()
 	if err != nil {
 		return model.ModelParameters{}, errors.Wrap(err, "failed getting shift type parameters from db")
 	}
 
 	result := model.ModelParameters{
-		BalanceMinimum:  int32(balanceMinimum),
-		ShiftTypeParams: shiftTypeParams,
+		BalanceMinimum:     int32(balanceMinimum),
+		BalanceMinimunJaev: int32(balanceMinimumJaev),
+		ShiftTypeParams:    shiftTypeParams,
 	}
 
 	return result, nil
@@ -42,6 +48,10 @@ func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 func (c DbController) SetModelParameters(params model.ModelParameters) error {
 
 	if err := c.setMinBalanceScore(params.BalanceMinimum); err != nil {
+		return errors.Wrap(err, "failed setting min balance score in db")
+	}
+
+	if err := c.setMinBalanceScoreJaev(params.BalanceMinimunJaev); err != nil {
 		return errors.Wrap(err, "failed setting min balance score in db")
 	}
 
@@ -64,6 +74,22 @@ func (c DbController) getMinBalanceScore() (int, error) {
 
 	var score int
 	if err := c.db.QueryRow(minBalanceScoreQuery).Scan(&score); err != nil {
+		return 0, err
+	}
+
+	return score, nil
+}
+
+func (c DbController) getMinBalanceScoreJaev() (int, error) {
+
+	minBalanceScoreJaevQuery := `
+		SELECT score
+		FROM min_balance_score_jaev
+		WHERE id = 1
+	`
+
+	var score int
+	if err := c.db.QueryRow(minBalanceScoreJaevQuery).Scan(&score); err != nil {
 		return 0, err
 	}
 
@@ -120,6 +146,21 @@ func (c DbController) setMinBalanceScore(newScore int32) error {
 	`
 
 	if _, err := c.db.Exec(setMBSQuery, newScore); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c DbController) setMinBalanceScoreJaev(newScore int32) error {
+
+	setMBSJaevQuery := `
+		UPDATE min_balance_score_jaev
+		SET score = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setMBSJaevQuery, newScore); err != nil {
 		return err
 	}
 

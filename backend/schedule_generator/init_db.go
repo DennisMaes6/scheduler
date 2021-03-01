@@ -44,6 +44,12 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
+		CREATE TABLE IF NOT EXISTS min_balance_score_jaev (
+			id INTEGER PRIMARY KEY,
+			score INTEGER NOT NULL
+		)
+		`,
+		`
 			CREATE TABLE IF NOT EXISTS shift_type_params (
 				shift_type TEXT PRIMARY KEY,
 				shift_workload REAL,
@@ -81,6 +87,15 @@ func initializeData(db *sql.DB) error {
 	`
 
 	if _, err := db.Exec(initMBSQuery, initialModelParameters.BalanceMinimum); err != nil {
+		return errors.Wrap(err, "failed initailizing minimin balance score")
+	}
+
+	initMBSJaevQuery := `
+		INSERT or IGNORE INTO min_balance_score_jaev(id, score)
+		VALUES (1, ?)
+	`
+
+	if _, err := db.Exec(initMBSJaevQuery, initialModelParameters.BalanceMinimunJaev); err != nil {
 		return errors.Wrap(err, "failed initailizing minimin balance score")
 	}
 
