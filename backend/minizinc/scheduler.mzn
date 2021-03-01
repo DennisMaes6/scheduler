@@ -133,16 +133,24 @@ constraint forall(p in P, w in W)(
                     endif
                endif
              endif);
+
+
+predicate after_first(1..nb_personnel: p, 1..nb_days: d) =
+  exists(w in W, s in S)(d > 7*w /\ X[p, s, w] = 1);
            
 array[P, 1..nb_days] of var 0..nb_days: z;
 constraint forall(p in P, d in 1..nb_days)(
              if d = nb_days
              then  z[p, d] = nb_days
-             else 
-               if (a[p, d] != 0 /\ a[p, d+1] == 0)
-               then z[p, d] = a[p, d]
-               else z[p, d] = nb_days
-               endif
+             else
+                if after_first(p, d)
+                then 
+                  if (a[p, d] != 0 /\ a[p, d+1] == 0)
+                  then z[p, d] = a[p, d]
+                  else z[p, d] = nb_days
+                  endif
+                else z[p, d] = nb_days
+                endif
              endif
            );
            
@@ -150,7 +158,7 @@ constraint min(z) >= min_balance;
 
 solve minimize fairness_score;
 
-output  
+output
        ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
