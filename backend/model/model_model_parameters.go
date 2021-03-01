@@ -12,8 +12,11 @@ package model
 // ModelParameters - Holds all model parameters to generate a schedule.
 type ModelParameters struct {
 
-	// The minimal balance score for an acceptable solution
+	// The minimal balance score for an acceptable solution.
 	BalanceMinimum int32 `json:"balance_minimum,omitempty"`
+
+	// The mininmal balance score for JAEV shifts for an acceptable solution.
+	BalanceMinimunJaev int32 `json:"balance_minimun_jaev,omitempty"`
 
 	ShiftTypeParams []ShiftTypeModelParameters `json:"shift_type_params,omitempty"`
 }

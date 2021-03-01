@@ -190,15 +190,20 @@ components:
     ModelParameters:
       description: Holds all model parameters to generate a schedule.
       example:
+        balance_minimun_jaev: 6
         balance_minimum: 0
         shift_type_params:
-        - max_buffer: 1
-          shift_workload: 6.027456183070403
-        - max_buffer: 1
-          shift_workload: 6.027456183070403
+        - max_buffer: 5
+          shift_workload: 1.4658129805029452
+        - max_buffer: 5
+          shift_workload: 1.4658129805029452
       properties:
         balance_minimum:
-          description: The minimal balance score for an acceptable solution
+          description: The minimal balance score for an acceptable solution.
+          type: integer
+        balance_minimun_jaev:
+          description: The mininmal balance score for JAEV shifts for an acceptable
+            solution.
           type: integer
         shift_type_params:
           items:
@@ -208,8 +213,8 @@ components:
     ShiftTypeModelParameters:
       description: Holds the shift type specific model parameters.
       example:
-        max_buffer: 1
-        shift_workload: 6.027456183070403
+        max_buffer: 5
+        shift_workload: 1.4658129805029452
       properties:
         shift_type:
           $ref: '#/components/schemas/ShiftType'
