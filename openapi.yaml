@@ -162,7 +162,10 @@ components:
       properties:
         balance_minimum:
           type: integer
-          description: The minimal balance score for an acceptable solution
+          description: The minimal balance score for an acceptable solution.
+        balance_minimun_jaev:
+          type: integer
+          description: The mininmal balance score for JAEV shifts for an acceptable solution.
         shift_type_params:
           type: array 
           items:
