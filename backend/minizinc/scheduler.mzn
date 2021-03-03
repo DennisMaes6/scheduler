@@ -84,9 +84,9 @@ constraint forall(p in P, w in W)(sum(s in S_full)(X[p, s, w]) = 1);
 % HC6 - no assignments on free days
 constraint forall(s in S, p in P, w in W)(X[p, s, w] = 1 -> (7*w-6..7*w intersect F[p] = {}));
 
-% HC7 - no consecutive week assignements
-constraint forall(p in P, s in S_week, w in 2..nb_weeks)(
-             exists(s_prev in S)(X[p, s_prev, w-1] = 1) -> X[p, s, w] = 0
+% HC7 - no consecutive assignements
+constraint forall(p in P, w in 1..nb_weeks-1, s in S)(
+             exists(s_prev in S)(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
            ); 
            
 % HC8 - respect max assignments per shift type
