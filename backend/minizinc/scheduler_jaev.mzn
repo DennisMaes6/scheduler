@@ -57,10 +57,15 @@ constraint forall(p in P, d in D)(X[p, d] = 1 -> not (d in F[p]));
 % HC4 - no consecutive jaev assignements
 constraint forall(p in P, d in 2..nb_days)(X[p, d-1] = 1 -> X[p, d] = 0); 
 
-% HC5 - no assignments in the weeks before or after night weeks
-constraint forall(p in P, d in 1..7)(X[p, d] = 1 -> schedule[p, d+7] != JANW); 
-constraint forall(p in P, d in nb_days-6..nb_days)(X[p, d] = 1 -> schedule[p, d-7] != JANW); 
-constraint forall(p in P, d in 8..nb_days-7)(X[p, d] = 1 -> schedule[p, d-7] != JANW /\ schedule[p, d+7] != JANW); 
+% HC5 - no assignments three days before or after night weeks
+constraint forall(p in P, d in 1..7)(X[p, d] = 1 -> schedule[p, d+3] != JANW); 
+constraint forall(p in P, d in nb_days-6..nb_days)(X[p, d] = 1 -> schedule[p, d-3] != JANW); 
+constraint forall(p in P, d in 8..nb_days-7)(X[p, d] = 1 -> schedule[p, d-3] != JANW /\ schedule[p, d+3] != JANW); 
+
+% HC5 - no assignments one days before or after weekends
+constraint forall(p in P)(X[p, 1] = 1 -> schedule[p, 2] != JAWH); 
+constraint forall(p in P)(X[p, nb_days] = 1 -> schedule[p, nb_days-1] != JAWH); 
+constraint forall(p in P, d in 2..nb_days-1)(X[p, d] = 1 -> schedule[p, d-1] != JAWH /\ schedule[p, d+1] != JAWH); 
            
 
 % optimization objective: fairness
