@@ -62,7 +62,7 @@ constraint forall(p in P, d in 1..7)(X[p, d] = 1 -> schedule[p, d+3] != JANW);
 constraint forall(p in P, d in nb_days-6..nb_days)(X[p, d] = 1 -> schedule[p, d-3] != JANW); 
 constraint forall(p in P, d in 8..nb_days-7)(X[p, d] = 1 -> schedule[p, d-3] != JANW /\ schedule[p, d+3] != JANW); 
 
-% HC5 - no assignments one days before or after weekends
+% HC6 - no assignments one days before or after weekends
 constraint forall(p in P)(X[p, 1] = 1 -> schedule[p, 2] != JAWH); 
 constraint forall(p in P)(X[p, nb_days] = 1 -> schedule[p, nb_days-1] != JAWH); 
 constraint forall(p in P, d in 2..nb_days-1)(X[p, d] = 1 -> schedule[p, d-1] != JAWH /\ schedule[p, d+1] != JAWH); 
