@@ -8,6 +8,7 @@ include "all_equal.mzn";
 int: nb_weeks;
 int: nb_days = 7 * nb_weeks;
 set of int: D = 1..nb_days;
+set of D: H;   % holidays
 
 
 % shift types
@@ -49,7 +50,10 @@ array[1..nb_personnel, 1..nb_days] of var 0..1: X;
 constraint forall(p in P, d in D)(X[p, d] = 1 -> schedule[p, d] = FREE);
 
 % HC2 - coverage requirements met
-constraint forall(d in D)(sum(p in P)(X[p, d]) = R[1 + ((d - 1) mod 7)]);
+constraint forall(d in D)(sum(p in P)(X[p, d]) = if d in H
+                                                 then 0 
+                                                 else R[1 + ((d - 1) mod 7)]
+                                                 endif);
 
 % HC3 - no assignments on free days
 constraint forall(p in P, d in D)(X[p, d] = 1 -> not (d in F[p]));
