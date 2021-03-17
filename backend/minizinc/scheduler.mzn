@@ -8,6 +8,7 @@ include "all_equal.mzn";
 int: nb_weeks;
 int: nb_days = 7 * nb_weeks;
 set of int: W = 1..nb_weeks;
+set of int: H;                                     % holidays
 
 
 % shift types
@@ -66,6 +67,7 @@ int: min_balance;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 % decision variables X[p, s, d] == 1 -> employee p is assigned shift of type s on day d
 array[1..nb_personnel, ShiftType, 1..nb_weeks] of var 0..1: X;
+array[1..nb_personnel, ShiftType, 1..nb_days] of var 0..1: Xh;
 
 %%%%%%%%%%%%%%%
 % CONSTRAINTS %
@@ -74,15 +76,20 @@ array[1..nb_personnel, ShiftType, 1..nb_weeks] of var 0..1: X;
 
 % HC1 - shift requirements met for every shift on every day
 constraint forall(s in S, w in W)((sum(p in P)(X[p, s, w])) = R[s]);
+constraint forall(s in S_weekend, d in H)((sum(p in P)(Xh[p, s, d])) = R[s]);
 
 % HC2 - only qualified personnel allowed
 constraint forall(s in S, p in P, w in W)(X[p, s, w] = 1 -> T[p] in Q[s]);
+constraint forall(s in S_weekend, p in P, d in H)(Xh[p, s, d] = 1 -> T[p] in Q[s]);
+
 
 % HC3 - exaclty one assignment per personnel member on every week
 constraint forall(p in P, w in W)(sum(s in S_full)(X[p, s, w]) = 1);
+constraint forall(p in P, d in H)(sum(s in S_weekend)(Xh[p, s, d]) <= 1);
 
 % HC6 - no assignments on free days
 constraint forall(s in S, p in P, w in W)(X[p, s, w] = 1 -> (7*w-6..7*w intersect F[p] = {}));
+constraint forall(s in S_weekend, p in P, d in H)(Xh[p, s, d] = 1 -> not(d in F[p]));
 
 % HC7 - no consecutive assignements
 constraint forall(p in P, w in 1..nb_weeks-1, s in S)(
@@ -94,7 +101,7 @@ constraint forall(p in P, s in S)(sum(w in W)(X[p, s, w]) <= max_assignments[s])
 
 % optimization objective: fairness
 array[P] of var float: workload;
-constraint forall(p in P)(workload[p] = sum(w in W, s in S)(X[p, s, w] * shift_workload[s]) / (nb_days - card(F[p])));
+constraint forall(p in P)(workload[p] = (sum(w in W, s in S)(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_weekend)(Xh[p, s, d]))/ (nb_days - card(F[p])));
 
 var float: fairness_score;
 constraint fairness_score = max(workload) - min(workload);
