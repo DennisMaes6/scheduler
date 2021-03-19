@@ -245,6 +245,9 @@ components:
         assistants:
         - id: 0
         - id: 0
+        holidays:
+        - 1
+        - 1
         nb_weeks: 6
       properties:
         assistants:
@@ -254,6 +257,10 @@ components:
         nb_weeks:
           description: The number of weeks to be scheduled in this instance
           type: integer
+        holidays:
+          items:
+            type: integer
+          type: array
       type: object
     AssistantInstance:
       description: Holds all instance data for one assistant.

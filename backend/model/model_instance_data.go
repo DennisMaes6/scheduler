@@ -11,8 +11,11 @@ package model
 
 // InstanceData - Holds the instance data for scheduling.
 type InstanceData struct {
+
 	Assistants []AssistantInstance `json:"assistants,omitempty"`
 
 	// The number of weeks to be scheduled in this instance
 	NbWeeks int32 `json:"nb_weeks,omitempty"`
+
+	Holidays []int32 `json:"holidays,omitempty"`
 }

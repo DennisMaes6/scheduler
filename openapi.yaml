@@ -204,6 +204,10 @@ components:
         nb_weeks:
           type: integer
           description: The number of weeks to be scheduled in this instance
+        holidays:
+          type: array
+          items:
+            type: integer
     AssistantInstance:
       description: Holds all instance data for one assistant.
       type: object
