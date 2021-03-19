@@ -261,6 +261,10 @@ components:
           items:
             type: integer
           type: array
+      required:
+      - assistants
+      - holidays
+      - nb_weeks
       type: object
     AssistantInstance:
       description: Holds all instance data for one assistant.
