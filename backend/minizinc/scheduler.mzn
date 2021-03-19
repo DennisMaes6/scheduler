@@ -176,12 +176,11 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output
-       [show_int(2, fix(a[p, d])) ++ " " ++ if d = nb_days then "\n" else "" endif | p in P, d in D]  ++
-       [show_int(2, fix(z[p, d])) ++ " " ++ if d = nb_days then "\n" else "" endif | p in P, d in D]  ++
        ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
        ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
+       ["holidays:"] ++ [show(H)] ++ ["\n"] ++
        [
          if w == 1 then 
              "assistant:" ++ show(p) ++ " " 
