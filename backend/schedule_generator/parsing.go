@@ -16,6 +16,11 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting nb days")
 	}
 
+	holidays, err := extractHolidays(scheduleStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting holidays")
+	}
+
 	fairnessScore, err := extractFairnessScore(scheduleStr)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed extracting fairness score")
@@ -45,6 +50,7 @@ func parseSchedule(scheduleStr string) (model.Schedule, error) {
 		FairnessScore:       fairnessScore,
 		BalanceScore:        int32(balanceScore),
 		NbDays:              nbDays,
+		Holidays:            holidays,
 		Assistants:          assistants,
 		ShiftTypes:          shiftTypes,
 		IndividualSchedules: individualSchedules,
@@ -312,6 +318,7 @@ func parseAndCombineSchedule(jaevResStr string, res model.Schedule) (model.Sched
 		BalanceScore:        res.BalanceScore,
 		JaevFairnessScore:   jaevFairnessScore,
 		JaevBalance:         int32(jaevBalanceScore),
+		Holidays:            res.Holidays,
 		NbDays:              res.NbDays,
 		Assistants:          res.Assistants,
 		ShiftTypes:          res.ShiftTypes,
@@ -336,4 +343,21 @@ func getSchedule(individualSchedules []model.IndividualSchedule, id int32) (mode
 	}
 
 	return model.IndividualSchedule{}, errors.New("schedule not found")
+}
+
+func extractHolidays(scheduleStr string) ([]int32, error) {
+	holidaysLines := filterLines(strings.Split(scheduleStr, "\n"), "holidays")
+	holidaysStr := strings.TrimPrefix(strings.TrimSuffix(strings.Split(holidaysLines[0], ":")[1], "}"), "{")
+	holidays := strings.Split(holidaysStr, ",")
+
+	result := []int32{}
+	for _, h := range holidays {
+		i, err := strconv.Atoi(h)
+		if err != nil {
+			return []int32{}, err
+		}
+		result = append(result, int32(i))
+	}
+
+	return result, nil
 }
