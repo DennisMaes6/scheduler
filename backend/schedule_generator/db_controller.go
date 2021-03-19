@@ -2,6 +2,9 @@ package schedule_generator
 
 import (
 	"database/sql"
+	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/jorensjongers/scheduler/backend/model"
 	_ "github.com/mattn/go-sqlite3"
@@ -196,6 +199,22 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 		return model.InstanceData{}, errors.Wrap(err, "failed getting nb weeks from db")
 	}
 
+	holidaysQuery := `
+		SELECT days
+		FROM holidays
+		WHERE id = 1
+	`
+
+	var rawHolidays string
+	if err := c.db.QueryRow(holidaysQuery).Scan(&rawHolidays); err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "failed getting holidays from db")
+	}
+
+	holidays, err := holidaysToArray(rawHolidays)
+	if err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "failed converting holiday string to array")
+	}
+
 	assistantInstanceQuery := `
 		SELECT id, type
 		FROM assistant_instance
@@ -232,6 +251,7 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 
 	result := model.InstanceData{
 		NbWeeks:    int32(nbWeeks),
+		Holidays:   holidays,
 		Assistants: ais,
 	}
 
@@ -243,6 +263,10 @@ func (c DbController) SetInstanceData(data model.InstanceData) error {
 
 	if err := c.setNbWeeks(data.NbWeeks); err != nil {
 		return errors.Wrap(err, "failed setting nb weeks in db")
+	}
+
+	if err := c.setHolidays(data.Holidays); err != nil {
+		return errors.Wrap(err, "failed setting holidays in db")
 	}
 
 	if err := c.setAssistantInstances(data.Assistants); err != nil {
@@ -267,6 +291,21 @@ func (c DbController) setNbWeeks(nbWeeks int32) error {
 	return nil
 }
 
+func (c DbController) setHolidays(holidays []int32) error {
+
+	setHolidaysQuery := `
+		UPDATE holidays
+		SET days = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setHolidaysQuery, buildHolidayString(holidays)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error {
 	deleteRowsQuery := "DELETE FROM assistant_instance"
 
@@ -285,4 +324,23 @@ func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error
 	}
 
 	return nil
+}
+
+func holidaysToArray(str string) ([]int32, error) {
+	if str == "" {
+		return []int32{}, nil
+	}
+	splitStr := strings.Split(strings.TrimSpace(str), " ")
+	fmt.Println(splitStr)
+	result := []int32{}
+	fmt.Println(len(splitStr))
+	for _, s := range splitStr {
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			return []int32{}, err
+		}
+		result = append(result, int32(i))
+	}
+
+	return result, nil
 }
