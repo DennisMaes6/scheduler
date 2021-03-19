@@ -2,7 +2,6 @@ package schedule_generator
 
 import (
 	"database/sql"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -330,10 +329,8 @@ func holidaysToArray(str string) ([]int32, error) {
 	if str == "" {
 		return []int32{}, nil
 	}
-	splitStr := strings.Split(strings.TrimSpace(str), " ")
-	fmt.Println(splitStr)
+	splitStr := strings.Split(strings.TrimSuffix(str, ","), ",")
 	result := []int32{}
-	fmt.Println(len(splitStr))
 	for _, s := range splitStr {
 		i, err := strconv.Atoi(s)
 		if err != nil {

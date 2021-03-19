@@ -2,6 +2,7 @@ package schedule_generator
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -148,8 +149,8 @@ func initializeData(db *sql.DB) error {
 
 func buildHolidayString(days []int32) string {
 	result := ""
-	for _, d := range days {
-		result += strconv.Itoa(int(d)) + " "
+	for _, h := range days {
+		result += fmt.Sprintf("%s,", strconv.Itoa(int(h)))
 	}
 	return result
 }

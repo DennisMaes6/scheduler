@@ -11,6 +11,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 
 	skeleton := `
 		nb_weeks = %d;
+		H = {%s};
 		nb_personnel = %d;
 		T = %s;
 		F = %s;
@@ -18,6 +19,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 	`
 	content := fmt.Sprintf(skeleton,
 		data.NbWeeks,
+		buildHolidayString(data.Holidays),
 		len(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
 		buildFreeDaysString(len(data.Assistants)),
