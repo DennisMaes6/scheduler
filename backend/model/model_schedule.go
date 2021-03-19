@@ -27,6 +27,8 @@ type Schedule struct {
 	// The number of days for which this schedule is generated.
 	NbDays int32 `json:"nb_days,omitempty"`
 
+	Holidays []int32 `json:"holidays"`
+
 	// The assistants involved in this schedule.
 	Assistants []Assistant `json:"assistants,omitempty"`
 

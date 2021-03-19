@@ -71,6 +71,8 @@ components:
     Schedule:
       type: object
       description: Holds all data of a generated schedule.
+      required:
+        - holidays
       properties:
         fairness_score:
           type: number
@@ -87,6 +89,10 @@ components:
         nb_days: 
           type: integer
           description: The number of days for which this schedule is generated.
+        holidays:
+          type: array
+          items:
+            type: integer
         assistants: 
           description: The assistants involved in this schedule.
           type: array

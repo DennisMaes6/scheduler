@@ -69,20 +69,23 @@ components:
       example:
         nb_days: 5
         individual_schedules:
-        - assistant_id: 9
+        - assistant_id: 3
           assignments:
           - part_of_min_balance: true
           - part_of_min_balance: true
-        - assistant_id: 9
+        - assistant_id: 3
           assignments:
           - part_of_min_balance: true
           - part_of_min_balance: true
         assistants:
-        - workload: 7.061401241503109
-          id: 2
-        - workload: 7.061401241503109
-          id: 2
+        - workload: 9.301444243932576
+          id: 7
+        - workload: 9.301444243932576
+          id: 7
         fairness_score: 0.8008281904610115
+        holidays:
+        - 2
+        - 2
         jaev_balance: 5
         balance_score: 6
         shift_types:
@@ -105,6 +108,10 @@ components:
         nb_days:
           description: The number of days for which this schedule is generated.
           type: integer
+        holidays:
+          items:
+            type: integer
+          type: array
         assistants:
           description: The assistants involved in this schedule.
           items:
@@ -119,12 +126,14 @@ components:
           items:
             $ref: '#/components/schemas/IndividualSchedule'
           type: array
+      required:
+      - holidays
       type: object
     Assistant:
       description: Represents an assistant.
       example:
-        workload: 7.061401241503109
-        id: 2
+        workload: 9.301444243932576
+        id: 7
       properties:
         id:
           description: The identification number of this assistant.
@@ -142,7 +151,7 @@ components:
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.
       example:
-        assistant_id: 9
+        assistant_id: 3
         assignments:
         - part_of_min_balance: true
         - part_of_min_balance: true
