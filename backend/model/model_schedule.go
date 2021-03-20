@@ -13,13 +13,13 @@ package model
 type Schedule struct {
 
 	// The fairness score of this schedule
-	FairnessScore float32 `json:"fairness_score,omitempty"`
+	FairnessScore float32 `json:"fairness_score"`
 
 	// The balance score of this schedule
 	BalanceScore int32 `json:"balance_score,omitempty"`
 
 	// The fairness score for teh JAEV schedule
-	JaevFairnessScore float32 `json:"jaev_fairness_score,omitempty"`
+	JaevFairnessScore float32 `json:"jaev_fairness_score"`
 
 	// The balance for the JAEV schedule
 	JaevBalance int32 `json:"jaev_balance,omitempty"`

@@ -127,7 +127,9 @@ components:
             $ref: '#/components/schemas/IndividualSchedule'
           type: array
       required:
+      - fairness_score
       - holidays
+      - jaev_fairness_score
       type: object
     Assistant:
       description: Represents an assistant.

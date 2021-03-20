@@ -73,6 +73,8 @@ components:
       description: Holds all data of a generated schedule.
       required:
         - holidays
+        - jaev_fairness_score
+        - fairness_score
       properties:
         fairness_score:
           type: number
