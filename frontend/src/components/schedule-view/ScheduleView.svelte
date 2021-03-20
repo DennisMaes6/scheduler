@@ -5,6 +5,7 @@
     import AssistantHeader from './AssistantHeader.svelte'
     import Assignment from './Assignment.svelte';
     import DayHeader from './DayHeader.svelte';
+    import { dataset_dev } from 'svelte/internal';
 
     export let schedule: Schedule;
 
@@ -32,7 +33,7 @@
             <!-- Header with days of scheduling period -->
             <div class="flex flex-row space-x-2">
                 {#each days as day}
-                    <DayHeader {day}/>
+                    <DayHeader {day} holiday={schedule.holidays.includes(day)}/>
                 {/each}
             </div>
             <!-- Schedule -->

@@ -98,7 +98,7 @@ constraint forall(s in S_weekend, p in P, d in H)(Xh[p, s, d] = 1 -> not(d in F[
 % HC7 - no consecutive assignements
 constraint forall(p in P, w in 1..nb_weeks-1, s in S)(
              exists(s_prev in S)(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
-           ); 
+           );
            
 % HC8 - respect max assignments per shift type
 constraint forall(p in P, s in S)(sum(w in W)(X[p, s, w]) <= max_assignments[s]);    
