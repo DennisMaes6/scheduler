@@ -99,13 +99,19 @@ constraint forall(s in S_weekend, p in P, d in H)(Xh[p, s, d] = 1 -> not(d in F[
 constraint forall(p in P, w in 1..nb_weeks-1, s in S)(
              exists(s_prev in S)(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
            );
+constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
+  exists(sh in S_weekend)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h-1)]) = 0
+);
+constraint forall(p in P, h in H where h mod 7 = 0 /\ h < 7*nb_weeks)(
+  exists(sh in S_weekend)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h+1)]) = 0
+);
            
 % HC8 - respect max assignments per shift type
 constraint forall(p in P, s in S)(sum(w in W)(X[p, s, w]) <= max_assignments[s]);    
 
 % optimization objective: fairness
 array[P] of var float: workload;
-constraint forall(p in P)(workload[p] = (sum(w in W, s in S)(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_weekend)(Xh[p, s, d]))/ (nb_days - card(F[p])));
+constraint forall(p in P)(workload[p] = (sum(w in W, s in S)(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_weekend)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p])));
 
 var float: fairness_score;
 constraint fairness_score = max(workload) - min(workload);
