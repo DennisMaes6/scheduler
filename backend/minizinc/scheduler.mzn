@@ -1,7 +1,7 @@
 include "all_equal.mzn";
 
 %%%%%%%%%%%%%
-% VARAIBLES %
+% VARIABLES %
 %%%%%%%%%%%%%
 
 % days
