@@ -209,13 +209,13 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 		return model.InstanceData{}, errors.Wrap(err, "failed getting holidays from db")
 	}
 
-	holidays, err := holidaysToArray(rawHolidays)
+	holidays, err := stringToIntArray(rawHolidays)
 	if err != nil {
 		return model.InstanceData{}, errors.Wrap(err, "failed converting holiday string to array")
 	}
 
 	assistantInstanceQuery := `
-		SELECT id, type
+		SELECT id, type, free_days
 		FROM assistant_instance
 	`
 
@@ -228,17 +228,24 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 	ais := []model.AssistantInstance{}
 	for rows.Next() {
 		var (
-			id      int32
-			rawType string
+			id          int32
+			rawType     string
+			freeDaysRaw string
 		)
 
-		if err := rows.Scan(&id, &rawType); err != nil {
+		if err := rows.Scan(&id, &rawType, &freeDaysRaw); err != nil {
 			return model.InstanceData{}, errors.Wrap(err, "scan error")
 		}
 
+		freeDays, err := stringToIntArray(freeDaysRaw)
+		if err != nil {
+			return model.InstanceData{}, errors.Wrap(err, "failed converting free days string to array")
+		}
+
 		ai := model.AssistantInstance{
-			Id:   id,
-			Type: model.AssistantType(rawType),
+			Id:       id,
+			Type:     model.AssistantType(rawType),
+			FreeDays: freeDays,
 		}
 
 		ais = append(ais, ai)
@@ -313,11 +320,11 @@ func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error
 	}
 
 	setAIQuery := `
-		INSERT INTO assistant_instance(id, type)
-		VALUES (?, ?)
+		INSERT INTO assistant_instance(id, type, free_days)
+		VALUES (?, ?, ?)
 	`
 	for _, ai := range ais {
-		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Type); err != nil {
+		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Type, integerArrayToString(ai.FreeDays)); err != nil {
 			return errors.Wrap(err, "failed initializing assistant instance")
 		}
 	}
@@ -325,7 +332,7 @@ func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error
 	return nil
 }
 
-func holidaysToArray(str string) ([]int32, error) {
+func stringToIntArray(str string) ([]int32, error) {
 	if str == "" {
 		return []int32{}, nil
 	}
