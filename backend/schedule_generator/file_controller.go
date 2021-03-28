@@ -22,7 +22,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 		integerArrayToString(data.Holidays),
 		len(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
-		buildFreeDaysString(len(data.Assistants)),
+		buildFreeDaysString(data.Assistants),
 	)
 
 	if _, err := file.WriteString(content); err != nil {
@@ -45,11 +45,11 @@ func buildAssistantTypesString(ais []model.AssistantInstance) string {
 	return result
 }
 
-func buildFreeDaysString(nbAssistants int) string {
+func buildFreeDaysString(assistants []model.AssistantInstance) string {
 	result := "["
 
-	for i := 0; i < nbAssistants; i++ {
-		result += "{},"
+	for _, assistant := range assistants {
+		result += fmt.Sprintf("{%s},", integerArrayToString(assistant.FreeDays))
 	}
 
 	result += "]"
@@ -102,7 +102,7 @@ func buildMaxBufferString(stps []model.ShiftTypeModelParameters) string {
 	return result
 }
 
-func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule) error {
+func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule, data model.InstanceData) error {
 
 	skeleton := `
 		nb_weeks = %d;
@@ -115,9 +115,9 @@ func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule) error
 	content := fmt.Sprintf(skeleton,
 		(schedule.NbDays / 7),
 		integerArrayToString(schedule.Holidays),
-		len(filterAssistant(model.JA, schedule.Assistants)),
-		buildScheduleString(schedule),
-		buildFreeDaysString(len(filterAssistant(model.JA, schedule.Assistants))),
+		len(filterAssistant(model.JA, data.Assistants)),
+		buildScheduleString(schedule, data.Assistants),
+		buildFreeDaysString(filterAssistant(model.JA, data.Assistants)),
 	)
 
 	if _, err := file.WriteString(content); err != nil {
@@ -126,8 +126,8 @@ func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule) error
 	return nil
 }
 
-func filterAssistant(at model.AssistantType, assistants []model.Assistant) []model.Assistant {
-	result := []model.Assistant{}
+func filterAssistant(at model.AssistantType, assistants []model.AssistantInstance) []model.AssistantInstance {
+	result := []model.AssistantInstance{}
 
 	for _, a := range assistants {
 		if a.Type == at {
@@ -138,10 +138,10 @@ func filterAssistant(at model.AssistantType, assistants []model.Assistant) []mod
 	return result
 }
 
-func buildScheduleString(schedule model.Schedule) string {
+func buildScheduleString(schedule model.Schedule, ais []model.AssistantInstance) string {
 
 	result := ""
-	assistants := filterAssistant(model.JA, schedule.Assistants)
+	assistants := filterAssistant(model.JA, ais)
 
 	for _, is := range schedule.IndividualSchedules {
 		if idMatches(is.AssistantId, assistants) {
@@ -156,7 +156,7 @@ func buildScheduleString(schedule model.Schedule) string {
 	return result
 }
 
-func idMatches(id int32, assistants []model.Assistant) bool {
+func idMatches(id int32, assistants []model.AssistantInstance) bool {
 
 	for _, a := range assistants {
 		if a.Id == id {

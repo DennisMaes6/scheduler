@@ -162,7 +162,12 @@ func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
 		return errors.Wrap(err, fmt.Sprintf("failed creating jaev file %s", "minizinc/data.dzn"))
 	}
 
-	if err := writeInstanceSpecificDataJaev(file, res); err != nil {
+	instanceData, err := s.dbc.getInstanceData()
+	if err != nil {
+		return errors.Wrap(err, "database controller error")
+	}
+
+	if err := writeInstanceSpecificDataJaev(file, res, instanceData); err != nil {
 		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
