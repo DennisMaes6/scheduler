@@ -223,9 +223,19 @@ components:
     AssistantInstance:
       description: Holds all instance data for one assistant.
       type: object
+      required:
+        - id
+        - type
+        - free_days
       properties:
         id:
           type: integer
           description: The identification number of this assistant.
         type:
           $ref: "#/components/schemas/AssistantType"
+        free_days:
+          type: array
+          description: The free days granted to this assistant for the current scheduling period.
+          items:
+            type: integer
+          
