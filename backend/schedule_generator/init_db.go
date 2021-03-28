@@ -46,10 +46,10 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
-		CREATE TABLE IF NOT EXISTS min_balance_score_jaev (
-			id INTEGER PRIMARY KEY,
-			score INTEGER NOT NULL
-		)
+			CREATE TABLE IF NOT EXISTS min_balance_score_jaev (
+				id INTEGER PRIMARY KEY,
+				score INTEGER NOT NULL
+			)
 		`,
 		`
 			CREATE TABLE IF NOT EXISTS shift_type_params (
@@ -65,17 +65,18 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
-		CREATE TABLE IF NOT EXISTS holidays (
-			id INTEGER PRIMARY KEY,
-			days TEXT NOT NULL
-		)
-	`,
+			CREATE TABLE IF NOT EXISTS holidays (
+				id INTEGER PRIMARY KEY,
+				days TEXT NOT NULL
+			)
+		`,
 		`
-		CREATE TABLE IF NOT EXISTS assistant_instance (
-			id INTEGER PRIMARY KEY,
-			type TEXT NOT NULL
-		)
-	`,
+			CREATE TABLE IF NOT EXISTS assistant_instance (
+				id INTEGER PRIMARY KEY,
+				type TEXT NOT NULL,
+				free_days TEXT NOT NULL
+			)
+		`,
 	}
 
 	for _, query := range queries {
@@ -131,25 +132,25 @@ func initializeData(db *sql.DB) error {
 		VALUES (1, ?)
 	`
 
-	if _, err := db.Exec(initHolidaysQuery, buildHolidayString(initialInstanceData.Holidays)); err != nil {
+	if _, err := db.Exec(initHolidaysQuery, integerArrayToString(initialInstanceData.Holidays)); err != nil {
 		return errors.Wrap(err, "failed initializing holidays")
 	}
 
 	initAIQuery := `
-		INSERT or IGNORE INTO assistant_instance(id, type)
-		VALUES (?, ?)
+		INSERT or IGNORE INTO assistant_instance(id, type, free_days)
+		VALUES (?, ?, ?)
 	`
 	for _, ai := range initialInstanceData.Assistants {
-		if _, err := db.Exec(initAIQuery, ai.Id, ai.Type); err != nil {
+		if _, err := db.Exec(initAIQuery, ai.Id, ai.Type, integerArrayToString(ai.FreeDays)); err != nil {
 			return errors.Wrap(err, "failed initializing assistant instance")
 		}
 	}
 	return nil
 }
 
-func buildHolidayString(days []int32) string {
+func integerArrayToString(array []int32) string {
 	result := ""
-	for _, h := range days {
+	for _, h := range array {
 		result += fmt.Sprintf("%s,", strconv.Itoa(int(h)))
 	}
 	return result

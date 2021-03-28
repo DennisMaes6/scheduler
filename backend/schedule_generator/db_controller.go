@@ -298,7 +298,7 @@ func (c DbController) setHolidays(holidays []int32) error {
 		WHERE id = 1
 	`
 
-	if _, err := c.db.Exec(setHolidaysQuery, buildHolidayString(holidays)); err != nil {
+	if _, err := c.db.Exec(setHolidaysQuery, integerArrayToString(holidays)); err != nil {
 		return err
 	}
 
