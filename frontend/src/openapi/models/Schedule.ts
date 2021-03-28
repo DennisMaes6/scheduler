@@ -13,7 +13,7 @@ export type Schedule = {
     /**
      * The fairness score of this schedule
      */
-    fairness_score?: number;
+    fairness_score: number;
     /**
      * The balance score of this schedule
      */
@@ -21,7 +21,7 @@ export type Schedule = {
     /**
      * The fairness score for teh JAEV schedule
      */
-    jaev_fairness_score?: number;
+    jaev_fairness_score: number;
     /**
      * The balance for the JAEV schedule
      */
