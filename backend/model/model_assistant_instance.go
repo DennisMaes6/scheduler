@@ -13,7 +13,10 @@ package model
 type AssistantInstance struct {
 
 	// The identification number of this assistant.
-	Id int32 `json:"id,omitempty"`
+	Id int32 `json:"id"`
 
-	Type AssistantType `json:"type,omitempty"`
+	Type AssistantType `json:"type"`
+
+	// The free days granted to this assistant for the current scheduling period.
+	FreeDays []int32 `json:"free_days"`
 }
