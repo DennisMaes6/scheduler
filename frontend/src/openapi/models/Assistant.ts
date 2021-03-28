@@ -16,5 +16,5 @@ export type Assistant = {
     /**
      * The workload on this assiastant in the schedule.
      */
-    workload?: number;
+    workload: number;
 }

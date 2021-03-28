@@ -30,6 +30,7 @@ export type Schedule = {
      * The number of days for which this schedule is generated.
      */
     nb_days?: number;
+    holidays: Array<number>;
     /**
      * The assistants involved in this schedule.
      */

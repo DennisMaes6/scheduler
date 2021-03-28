@@ -11,6 +11,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 
 	skeleton := `
 		nb_weeks = %d;
+		H = {%s};
 		nb_personnel = %d;
 		T = %s;
 		F = %s;
@@ -18,6 +19,7 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 	`
 	content := fmt.Sprintf(skeleton,
 		data.NbWeeks,
+		buildHolidayString(data.Holidays),
 		len(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
 		buildFreeDaysString(len(data.Assistants)),
@@ -104,6 +106,7 @@ func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule) error
 
 	skeleton := `
 		nb_weeks = %d;
+		H = {%s};
 		nb_personnel = %d;
 		schedule = [|%s];
 		F = %s;
@@ -111,6 +114,7 @@ func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule) error
 
 	content := fmt.Sprintf(skeleton,
 		(schedule.NbDays / 7),
+		buildHolidayString(schedule.Holidays),
 		len(filterAssistant(model.JA, schedule.Assistants)),
 		buildScheduleString(schedule),
 		buildFreeDaysString(len(filterAssistant(model.JA, schedule.Assistants))),

@@ -1,6 +1,7 @@
 <script lang=typescript>
 
     export let day: number
+    export let holiday: boolean
 
     function getDay(dayNb: number): string {
         switch (dayNb % 7) {
@@ -29,6 +30,8 @@
         {#if day % 7 == 1}
             <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day/7) + 1)}</p>
         {/if}
-        <p class="text-xs font-bold text-black"> {getDay(day)}</p>
+        <div class="flex flex-row justify-items-center w-12 rounded {holiday ? "bg-yellow-200" : ""}">
+            <p class="m-auto text-xs font-bold text-black"> {getDay(day)}</p>
+        </div>
     </div>
 </main>

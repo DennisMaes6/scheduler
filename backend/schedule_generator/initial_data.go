@@ -41,6 +41,7 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 
 var initialInstanceData model.InstanceData = model.InstanceData{
 	NbWeeks: 4,
+	Holidays: []int32{4, 20},
 	Assistants: []model.AssistantInstance{
 		{
 			Id:   1,

@@ -71,6 +71,10 @@ components:
     Schedule:
       type: object
       description: Holds all data of a generated schedule.
+      required:
+        - holidays
+        - jaev_fairness_score
+        - fairness_score
       properties:
         fairness_score:
           type: number
@@ -87,6 +91,10 @@ components:
         nb_days: 
           type: integer
           description: The number of days for which this schedule is generated.
+        holidays:
+          type: array
+          items:
+            type: integer
         assistants: 
           description: The assistants involved in this schedule.
           type: array
@@ -196,6 +204,10 @@ components:
     InstanceData:
       description:  Holds the instance data for scheduling.
       type: object
+      required:
+        - assistants
+        - nb_weeks
+        - holidays
       properties:
         assistants:
           type: array
@@ -204,6 +216,10 @@ components:
         nb_weeks:
           type: integer
           description: The number of weeks to be scheduled in this instance
+        holidays:
+          type: array
+          items:
+            type: integer
     AssistantInstance:
       description: Holds all instance data for one assistant.
       type: object

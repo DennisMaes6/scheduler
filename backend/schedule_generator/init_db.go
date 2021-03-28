@@ -2,8 +2,10 @@ package schedule_generator
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -63,6 +65,12 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
+		CREATE TABLE IF NOT EXISTS holidays (
+			id INTEGER PRIMARY KEY,
+			days TEXT NOT NULL
+		)
+	`,
+		`
 		CREATE TABLE IF NOT EXISTS assistant_instance (
 			id INTEGER PRIMARY KEY,
 			type TEXT NOT NULL
@@ -118,6 +126,15 @@ func initializeData(db *sql.DB) error {
 		return errors.Wrap(err, "failed initializing number of weeks")
 	}
 
+	initHolidaysQuery := `
+		INSERT or IGNORE INTO holidays(id, days)
+		VALUES (1, ?)
+	`
+
+	if _, err := db.Exec(initHolidaysQuery, buildHolidayString(initialInstanceData.Holidays)); err != nil {
+		return errors.Wrap(err, "failed initializing holidays")
+	}
+
 	initAIQuery := `
 		INSERT or IGNORE INTO assistant_instance(id, type)
 		VALUES (?, ?)
@@ -128,4 +145,12 @@ func initializeData(db *sql.DB) error {
 		}
 	}
 	return nil
+}
+
+func buildHolidayString(days []int32) string {
+	result := ""
+	for _, h := range days {
+		result += fmt.Sprintf("%s,", strconv.Itoa(int(h)))
+	}
+	return result
 }
