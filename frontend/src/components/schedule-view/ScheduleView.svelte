@@ -5,7 +5,6 @@
     import AssistantHeader from './AssistantHeader.svelte'
     import Assignment from './Assignment.svelte';
     import DayHeader from './DayHeader.svelte';
-    import { dataset_dev } from 'svelte/internal';
 
     export let schedule: Schedule;
 
