@@ -22,7 +22,7 @@
             case ShiftType.TSPT:
                 return "bg-red-700";
             case ShiftType.FREE:
-                return "bg-white";
+                return "bg-gray-100";
         }
     }
 
