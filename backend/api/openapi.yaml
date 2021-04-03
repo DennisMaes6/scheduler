@@ -254,11 +254,13 @@ components:
       description: Holds the instance data for scheduling.
       example:
         assistants:
-        - free_days:
+        - name: name
+          free_days:
           - 6
           - 6
           id: 0
-        - free_days:
+        - name: name
+          free_days:
           - 6
           - 6
           id: 0
@@ -286,6 +288,7 @@ components:
     AssistantInstance:
       description: Holds all instance data for one assistant.
       example:
+        name: name
         free_days:
         - 6
         - 6
@@ -294,6 +297,9 @@ components:
         id:
           description: The identification number of this assistant.
           type: integer
+        name:
+          description: The name of this assistant.
+          type: string
         type:
           $ref: '#/components/schemas/AssistantType'
         free_days:
@@ -305,5 +311,6 @@ components:
       required:
       - free_days
       - id
+      - name
       - type
       type: object

@@ -225,12 +225,16 @@ components:
       type: object
       required:
         - id
+        - name
         - type
         - free_days
       properties:
         id:
           type: integer
           description: The identification number of this assistant.
+        name:
+          type: string
+          description: The name of this assistant.
         type:
           $ref: "#/components/schemas/AssistantType"
         free_days:

@@ -15,6 +15,9 @@ type AssistantInstance struct {
 	// The identification number of this assistant.
 	Id int32 `json:"id"`
 
+	// The name of this assistant.
+	Name string `json:"name"`
+
 	Type AssistantType `json:"type"`
 
 	// The free days granted to this assistant for the current scheduling period.
