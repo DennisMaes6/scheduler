@@ -72,7 +72,7 @@
         </div>
 
     
-        <div class="max-h-96 overflow-auto">
+        <div class="max-h-3/4 max-w-7xl overflow-auto">
             <slot name="content" {store}/>
         </div>
     
