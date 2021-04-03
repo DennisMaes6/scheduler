@@ -215,7 +215,7 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 	}
 
 	assistantInstanceQuery := `
-		SELECT id, type, free_days
+		SELECT id, name, type, free_days
 		FROM assistant_instance
 	`
 
@@ -229,11 +229,12 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 	for rows.Next() {
 		var (
 			id          int32
+			name        string
 			rawType     string
 			freeDaysRaw string
 		)
 
-		if err := rows.Scan(&id, &rawType, &freeDaysRaw); err != nil {
+		if err := rows.Scan(&id, &name, &rawType, &freeDaysRaw); err != nil {
 			return model.InstanceData{}, errors.Wrap(err, "scan error")
 		}
 
@@ -244,6 +245,7 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 
 		ai := model.AssistantInstance{
 			Id:       id,
+			Name:     name,
 			Type:     model.AssistantType(rawType),
 			FreeDays: freeDays,
 		}
@@ -320,12 +322,12 @@ func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error
 	}
 
 	setAIQuery := `
-		INSERT INTO assistant_instance(id, type, free_days)
-		VALUES (?, ?, ?)
+		INSERT INTO assistant_instance(id, name, type, free_days)
+		VALUES (?, ?, ?, ?)
 	`
 	for _, ai := range ais {
-		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Type, integerArrayToString(ai.FreeDays)); err != nil {
-			return errors.Wrap(err, "failed initializing assistant instance")
+		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Name, ai.Type, integerArrayToString(ai.FreeDays)); err != nil {
+			return errors.Wrap(err, "failed updating assistant instance")
 		}
 	}
 
