@@ -12,6 +12,10 @@ export type AssistantInstance = {
      * The identification number of this assistant.
      */
     id: number;
+    /**
+     * The name of this assistant.
+     */
+    name: string;
     type: AssistantType;
     /**
      * The free days granted to this assistant for the current scheduling period.
