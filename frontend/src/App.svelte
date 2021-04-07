@@ -56,7 +56,9 @@
 
         <div class="flex-grow container">
             {#await Service.getSchedule()}
-                <div class="loader mx-auto mt-56 ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+                <div class="mt-56">
+                    <p class="mx-auto w-20"> Loading... </p>
+                </div>
             {:then schedule}
                 <ScheduleView {schedule}/>
             {:catch error}

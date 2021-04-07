@@ -60,7 +60,7 @@
     <div on:click={close} class="fixed w-full h-full bg-white bg-opacity-60" />
 
     <!-- modal view -->
-    <div class="z-10 px-10 py-3 border border-black rounded-md bg-white overflow-hidden">
+    <div class="absolute z-20 px-10 py-3 border border-black rounded-md bg-white overflow-hidden">
 
         <div class="flex flex-row"> 
             <slot name="header" {store}>
