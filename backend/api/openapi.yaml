@@ -163,18 +163,18 @@ components:
     ModelParameters:
       description: Holds all model parameters for generating schedules.
       example:
-        balance_minimun_jaev: 6
-        balance_minimum: 0
+        min_balance: 0
+        min_balance_jaev: 6
         shift_type_params:
         - max_buffer: 5
           shift_workload: 1.4658129805029452
         - max_buffer: 5
           shift_workload: 1.4658129805029452
       properties:
-        balance_minimum:
+        min_balance:
           description: The minimal balance score for an acceptable solution.
           type: integer
-        balance_minimun_jaev:
+        min_balance_jaev:
           description: The mininmal balance score for JAEV shifts for an acceptable
             solution.
           type: integer
