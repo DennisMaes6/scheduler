@@ -10,10 +10,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-func createDB() *sql.DB {
-	if _, err := os.Stat("sqlite-database-workload-score-model.db"); os.IsNotExist(err) {
+const fileName = "sqlite-database-new.db"
 
-		file, err := os.Create("sqlite-database-workload-score-model.db") // Create SQLite file
+func createDB() *sql.DB {
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+
+		file, err := os.Create(fileName) // Create SQLite file
 		if err != nil {
 			log.Fatal(err.Error())
 		}
@@ -22,7 +24,7 @@ func createDB() *sql.DB {
 		log.Printf("New db file created")
 	}
 
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database-workload-score-model.db")
+	sqliteDatabase, _ := sql.Open("sqlite3", fileName)
 
 	if err := createTables(sqliteDatabase); err != nil {
 		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
