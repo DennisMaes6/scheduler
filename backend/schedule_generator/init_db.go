@@ -42,34 +42,28 @@ func createTables(db *sql.DB) error {
 
 	queries := []string{
 		`
-			CREATE TABLE IF NOT EXISTS min_balance_score (
+			PRAGMA foreign_keys
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS model_parameters (
 				id INTEGER PRIMARY KEY,
-				score INTEGER NOT NULL
+				min_balance INTEGER NOT NULL,
+				min_balance_jaev INTEGER NOT NULL
+
 			)
 		`,
 		`
-			CREATE TABLE IF NOT EXISTS min_balance_score_jaev (
-				id INTEGER PRIMARY KEY,
-				score INTEGER NOT NULL
-			)
-		`,
-		`
-			CREATE TABLE IF NOT EXISTS shift_type_params (
+			CREATE TABLE IF NOT EXISTS shift_type_parameters (
 				shift_type TEXT PRIMARY KEY,
 				shift_workload REAL,
 				max_buffer INTEGER
 			)
 		`,
 		`
-			CREATE TABLE IF NOT EXISTS nb_weeks (
+			CREATE TABLE IF NOT EXISTS day (
 				id INTEGER PRIMARY KEY,
-				nb_weeks INTEGER NOT NULL
-			)
-		`,
-		`
-			CREATE TABLE IF NOT EXISTS holidays (
-				id INTEGER PRIMARY KEY,
-				days TEXT NOT NULL
+				date TEXT NOT NULL,
+				is_holiday BOOL NOT NULL,
 			)
 		`,
 		`
@@ -78,6 +72,23 @@ func createTables(db *sql.DB) error {
 				name TEXT NOT NULL,
 				type TEXT NOT NULL,
 				free_days TEXT NOT NULL
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS indivudual_schedule (
+				id INTEGER PRIMARY_KEY,
+				assistant_id INTEGER NOT NULL,
+				workload REAL NOT NULL,
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS assignment (
+				asisstant_id INTEGER NOT NULL,
+				day_nb INTEGER NOT NULL,
+				shift_type TEXT NOT NULL,
+				PRIMARY KEY (assistant_id, day_nb),
+				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE,
+				FOREIGN KEY (day_nb) REFERENCES day(id) ON DELETE CASCADE
 			)
 		`,
 	}
