@@ -104,21 +104,17 @@ func createTables(db *sql.DB) error {
 
 func initializeData(db *sql.DB) error {
 
-	initMBSQuery := `
-		INSERT or IGNORE INTO min_balance_score(id, score)
-		VALUES (1, ?)
+	initModelParametersQuery := `
+		INSERT or IGNORE INTO model_parameters(id, min_balance, min_balance_jaev)
+		VALUES (1, ?, ?)
 	`
 
-	if _, err := db.Exec(initMBSQuery, initialModelParameters.BalanceMinimum); err != nil {
-		return errors.Wrap(err, "failed initailizing minimin balance score")
-	}
-
-	initMBSJaevQuery := `
-		INSERT or IGNORE INTO min_balance_score_jaev(id, score)
-		VALUES (1, ?)
-	`
-
-	if _, err := db.Exec(initMBSJaevQuery, initialModelParameters.BalanceMinimunJaev); err != nil {
+	_, err := db.Exec(
+		initModelParametersQuery,
+		initialModelParameters.MinBalance,
+		initialModelParameters.MinBalanceJaev,
+	)
+	if err != nil {
 		return errors.Wrap(err, "failed initailizing minimin balance score")
 	}
 
@@ -132,22 +128,15 @@ func initializeData(db *sql.DB) error {
 		}
 	}
 
-	initNbWeeksQuery := `
-		INSERT or IGNORE INTO nb_weeks(id, nb_weeks)
-		VALUES (1, ?)
+	initDaysQuery := `
+		INSERT or IGNORE INTO day(id, date, is_holiday)
+		VALUES (?, ?, ?)
 	`
 
-	if _, err := db.Exec(initNbWeeksQuery, initialInstanceData.NbWeeks); err != nil {
-		return errors.Wrap(err, "failed initializing number of weeks")
-	}
-
-	initHolidaysQuery := `
-		INSERT or IGNORE INTO holidays(id, days)
-		VALUES (1, ?)
-	`
-
-	if _, err := db.Exec(initHolidaysQuery, integerArrayToString(initialInstanceData.Holidays)); err != nil {
-		return errors.Wrap(err, "failed initializing holidays")
+	for _, day := range initialInstanceData.Days {
+		if _, err := db.Exec(initDaysQuery, day.Id, day.Date, day.IsHoliday); err != nil {
+			return errors.Wrap(err, "failed initializing days in database")
+		}
 	}
 
 	initAIQuery := `
