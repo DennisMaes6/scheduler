@@ -134,10 +134,10 @@ components:
         - balanace_minimun_jaev
         - shift_type_params
       properties:
-        balance_minimum:
+        min_balance:
           type: integer
           description: The minimal balance score for an acceptable solution.
-        balance_minimun_jaev:
+        min_balance_jaev:
           type: integer
           description: The mininmal balance score for JAEV shifts for an acceptable solution.
         shift_type_params:
