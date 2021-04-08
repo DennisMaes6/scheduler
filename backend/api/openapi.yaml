@@ -1,8 +1,9 @@
 openapi: 3.0.0
 info:
-  description: Basic API for retrieving schedules, based on a ScheduleInput object.
+  description: API for getting generated schedules. Also used for getting and setting
+    model parameters and instance data.
   title: Scheduler API
-  version: 0.0.1
+  version: 0.1.0
 servers:
 - url: http://localhost:8080
 paths:
@@ -67,148 +68,100 @@ components:
     Schedule:
       description: Holds all data of a generated schedule.
       example:
-        nb_days: 5
         individual_schedules:
-        - assistant_id: 3
+        - assistant_id: 5
           assignments:
-          - part_of_min_balance: true
-          - part_of_min_balance: true
-        - assistant_id: 3
+          - day_nb: 7
+            part_of_min_balance: true
+          - day_nb: 7
+            part_of_min_balance: true
+          workload: 2.3021358869347655
+        - assistant_id: 5
           assignments:
-          - part_of_min_balance: true
-          - part_of_min_balance: true
-        assistants:
-        - workload: 9.301444243932576
-          id: 7
-        - workload: 9.301444243932576
-          id: 7
+          - day_nb: 7
+            part_of_min_balance: true
+          - day_nb: 7
+            part_of_min_balance: true
+          workload: 2.3021358869347655
+        jaev_balance_score: 5
         fairness_score: 0.8008281904610115
-        holidays:
-        - 2
-        - 2
-        jaev_balance: 5
         balance_score: 6
-        shift_types:
-        - null
-        - null
         jaev_fairness_score: 1.4658129805029452
       properties:
         fairness_score:
-          description: The fairness score of this schedule
+          description: The fairness score of this schedule.
           type: number
         balance_score:
-          description: The balance score of this schedule
+          description: The balance score of this schedule.
           type: integer
         jaev_fairness_score:
-          description: The fairness score for teh JAEV schedule
+          description: The fairness score for the JAEV shifts of this schedule.
           type: number
-        jaev_balance:
-          description: The balance for the JAEV schedule
+        jaev_balance_score:
+          description: The balance score for the JAEV shifts of this schedule.
           type: integer
-        nb_days:
-          description: The number of days for which this schedule is generated.
-          type: integer
-        holidays:
-          items:
-            type: integer
-          type: array
-        assistants:
-          description: The assistants involved in this schedule.
-          items:
-            $ref: '#/components/schemas/Assistant'
-          type: array
-        shift_types:
-          description: The shift types that were considered when generating this schedule.
-          items:
-            $ref: '#/components/schemas/ShiftType'
-          type: array
         individual_schedules:
           items:
             $ref: '#/components/schemas/IndividualSchedule'
           type: array
       required:
+      - balance_score
       - fairness_score
-      - holidays
+      - jaev_balance_score
       - jaev_fairness_score
-      type: object
-    Assistant:
-      description: Represents an assistant.
-      example:
-        workload: 9.301444243932576
-        id: 7
-      properties:
-        id:
-          description: The identification number of this assistant.
-          type: integer
-        type:
-          $ref: '#/components/schemas/AssistantType'
-        workload:
-          description: The workload on this assiastant in the schedule.
-          type: number
-      required:
-      - id
-      - type
-      - workload
       type: object
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.
       example:
-        assistant_id: 3
+        assistant_id: 5
         assignments:
-        - part_of_min_balance: true
-        - part_of_min_balance: true
+        - day_nb: 7
+          part_of_min_balance: true
+        - day_nb: 7
+          part_of_min_balance: true
+        workload: 2.3021358869347655
       properties:
         assistant_id:
           description: The identification number of the assistant for which this is
             an individual schedule.
           type: integer
+        workload:
+          description: The workload of this inidividual schedule. Used when calculating
+            the fairness score.
+          type: number
         assignments:
-          description: An array as long as the number of days of this schedule. Contains
-            all the assignments that have been scheduled to this assistant.
+          description: Contains all the individual assignments of this individual
+            schedule.
           items:
             $ref: '#/components/schemas/Assignment'
           type: array
+      required:
+      - assignments
+      - assistant_id
+      - workload
       type: object
     Assignment:
       description: Represents a single shift assignment.
       example:
+        day_nb: 7
         part_of_min_balance: true
       properties:
+        day_nb:
+          description: The day of the scheduling period for which this is an assignment.
+          type: integer
         shift_type:
           $ref: '#/components/schemas/ShiftType'
         part_of_min_balance:
-          description: whether or not this assignment is part of a min balance free
-            block.
+          description: Indicates whether or not this assignment is part of a streak
+            of free days as long as the min_balance score for this schedule.
           type: boolean
       required:
+      - day_nb
       - part_of_min_balance
       - shift_type
       type: object
-    AssistantType:
-      description: The different assistant types.
-      enum:
-      - JA
-      - JA_F
-      - SA
-      - SA_F
-      - SA_NEO
-      - SA_F_NEO
-      type: string
-    ShiftType:
-      description: The different shift types that can be scheduled, including the
-        free shift.
-      enum:
-      - JAEV
-      - JAWH
-      - JANW
-      - SAEW
-      - SAWH
-      - TSPT
-      - CALL
-      - FREE
-      type: string
     ModelParameters:
-      description: Holds all model parameters to generate a schedule.
+      description: Holds all model parameters for generating schedules.
       example:
         balance_minimun_jaev: 6
         balance_minimum: 0
@@ -229,6 +182,10 @@ components:
           items:
             $ref: '#/components/schemas/ShiftTypeModelParameters'
           type: array
+      required:
+      - balanace_minimun_jaev
+      - balance_munimun
+      - shift_type_params
       type: object
     ShiftTypeModelParameters:
       description: Holds the shift type specific model parameters.
@@ -254,41 +211,43 @@ components:
       description: Holds the instance data for scheduling.
       example:
         assistants:
-        - name: name
+        - name: Janssen J
           free_days:
           - 6
           - 6
           id: 0
-        - name: name
+        - name: Janssen J
           free_days:
           - 6
           - 6
           id: 0
-        holidays:
-        - 5
-        - 5
-        nb_weeks: 1
+        days:
+        - date: 2021-07-21T00:00:00.000+0000
+          is_holiday: true
+          id: 1
+        - date: 2021-07-21T00:00:00.000+0000
+          is_holiday: true
+          id: 1
       properties:
         assistants:
+          description: The assistant instances representing the assistants for which
+            to produce a schedule.
           items:
-            $ref: '#/components/schemas/AssistantInstance'
+            $ref: '#/components/schemas/Assistant'
           type: array
-        nb_weeks:
-          description: The number of weeks to be scheduled in this instance
-          type: integer
-        holidays:
+        days:
+          description: The days for which to produce a schedule.
           items:
-            type: integer
+            $ref: '#/components/schemas/Day'
           type: array
       required:
       - assistants
-      - holidays
-      - nb_weeks
+      - days
       type: object
-    AssistantInstance:
-      description: Holds all instance data for one assistant.
+    Assistant:
+      description: Holds all information for one assistant.
       example:
-        name: name
+        name: Janssen J
         free_days:
         - 6
         - 6
@@ -299,12 +258,13 @@ components:
           type: integer
         name:
           description: The name of this assistant.
+          example: Janssen J
           type: string
         type:
           $ref: '#/components/schemas/AssistantType'
         free_days:
-          description: The free days granted to this assistant for the current scheduling
-            period.
+          description: The day numbers corresponding to the free days granted to this
+            assistant for the current scheduling period.
           items:
             type: integer
           type: array
@@ -314,3 +274,50 @@ components:
       - name
       - type
       type: object
+    Day:
+      description: Represents a single day in the scheduling period.
+      example:
+        date: 2021-07-21T00:00:00.000+0000
+        is_holiday: true
+        id: 1
+      properties:
+        id:
+          description: The day number of this day in the current scheduling period.
+          type: integer
+        date:
+          description: A string representation of the date that is represented by
+            this day.
+          example: 2021-07-21
+          format: date
+          type: string
+        is_holiday:
+          description: Indicates whether or not this day should be considered a holiday
+            in the produced schedule.
+          type: boolean
+      required:
+      - date
+      - id
+      - is_holiday
+      type: object
+    AssistantType:
+      description: The skill category of an assistant.
+      enum:
+      - JA
+      - JA_F
+      - SA
+      - SA_F
+      - SA_NEO
+      - SA_F_NEO
+      type: string
+    ShiftType:
+      description: Identifies a specific shift type. Includes the FREE shift type.
+      enum:
+      - JAEV
+      - JAWH
+      - JANW
+      - SAEW
+      - SAWH
+      - TSPT
+      - CALL
+      - FREE
+      type: string
