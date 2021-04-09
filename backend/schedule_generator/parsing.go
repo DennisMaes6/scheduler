@@ -9,132 +9,99 @@ import (
 	"github.com/pkg/errors"
 )
 
-func parseSchedule(scheduleStr string) (model.Schedule, error) {
+type firstStageSchedule struct {
+	fairnessScore       float32
+	balanceScore        int32
+	individualSchedules []untaggedIndividualSchedule
+}
 
-	nbDays, err := extractNbDays(scheduleStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting nb days")
-	}
+type untaggedIndividualSchedule struct {
+	assistantId int32
+	workload    float32
+	assigments  []untaggedAssignment
+}
 
-	holidays, err := extractHolidays(scheduleStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting holidays")
-	}
+type untaggedAssignment struct {
+	dayNb     int32
+	shiftType model.ShiftType
+}
+
+func parseFirstStageSchedule(scheduleStr string) (firstStageSchedule, error) {
 
 	fairnessScore, err := extractFairnessScore(scheduleStr)
 	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting fairness score")
+		return firstStageSchedule{}, errors.Wrap(err, "failed extracting fairness score")
 	}
 
-	shiftTypes, err := extractShiftTypes(scheduleStr)
+	balanceScore, err := extractBalanceScore(scheduleStr)
 	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting shift types")
+		return firstStageSchedule{}, errors.Wrap(err, "failed extracting balance score")
 	}
 
-	balanceScore, err := extractMinBalance(scheduleStr)
+	individualSchedules, err := extractIndividualSchedules(scheduleStr)
 	if err != nil {
-		return model.Schedule{}, err
+		return firstStageSchedule{}, errors.Wrap(err, "failed extracting individual schedules")
 	}
 
-	individualSchedules, err := extractIndividualSchedules(scheduleStr, balanceScore, shiftTypes)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting individual schedules")
-	}
-
-	assistants, err := extractAssistants(scheduleStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting assistants")
-	}
-
-	result := model.Schedule{
-		FairnessScore:       fairnessScore,
-		BalanceScore:        int32(balanceScore),
-		NbDays:              nbDays,
-		Holidays:            holidays,
-		Assistants:          assistants,
-		ShiftTypes:          shiftTypes,
-		IndividualSchedules: individualSchedules,
+	result := firstStageSchedule{
+		fairnessScore:       float32(fairnessScore),
+		balanceScore:        int32(balanceScore),
+		individualSchedules: individualSchedules,
 	}
 
 	return result, nil
 }
 
-func extractNbDays(scheduleStr string) (int32, error) {
-	lines := filterLines(strings.Split(scheduleStr, "\n"), "nb_days")
-	nbDays, err := strconv.Atoi(strings.Split(lines[0], ":")[1])
-	if err != nil {
-		return 0, err
-	}
-
-	return int32(nbDays), nil
+func extractFairnessScore(scheduleStr string) (float64, error) {
+	fairnessLines := filterLines(strings.Split(scheduleStr, "\n"), "fairness_score")
+	return strconv.ParseFloat(strings.Split(fairnessLines[0], ":")[1], 32)
 }
 
-func extractAssistants(scheduleStr string) ([]model.Assistant, error) {
+func extractBalanceScore(scheduleStr string) (int, error) {
+	minBalanceLines := filterLines(strings.Split(scheduleStr, "\n"), "min_balance")
+	return strconv.Atoi(strings.Split(minBalanceLines[0], ":")[1])
+}
+
+func extractIndividualSchedules(scheduleStr string) ([]untaggedIndividualSchedule, error) {
 	lines := filterLines(strings.Split(scheduleStr, "\n"), "assistant")
 
-	assistants := []model.Assistant{}
+	result := []untaggedIndividualSchedule{}
 	for _, line := range lines {
-		split_line := strings.Split(line, " ")
 
-		id, err := strconv.Atoi(strings.Split(split_line[0], ":")[1])
+		entries := strings.Split(strings.TrimSpace(line), " ")
+
+		assistantId, err := strconv.Atoi(strings.Split(entries[0], ":")[1])
 		if err != nil {
-			return []model.Assistant{}, err
+			return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assistant id")
 		}
 
-		assistantType, err := parseAssistantType(strings.Split(split_line[1], ":")[1])
+		workload, err := strconv.ParseFloat(strings.Split(entries[2], ":")[1], 32)
 		if err != nil {
-			return []model.Assistant{}, err
+			return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assistant workload")
 		}
 
-		workload, err := strconv.ParseFloat(strings.Split(split_line[2], ":")[1], 32)
-		if err != nil {
-			return []model.Assistant{}, err
+		assignments := []untaggedAssignment{}
+		for i := 3; i < len(entries); i++ {
+			shiftType, err := parseShiftType(entries[i])
+			if err != nil {
+				return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assignment")
+			}
+			assignment := untaggedAssignment{
+				dayNb:     int32(i - 2),
+				shiftType: shiftType,
+			}
+			assignments = append(assignments, assignment)
 		}
 
-		assistant := model.Assistant{
-			Id:       int32(id),
-			Type:     assistantType,
-			Workload: float32(workload),
+		is := untaggedIndividualSchedule{
+			assistantId: int32(assistantId),
+			workload:    float32(workload),
+			assigments:  assignments,
 		}
 
-		assistants = append(assistants, assistant)
+		result = append(result, is)
 	}
 
-	return assistants, nil
-}
-
-func parseAssistantType(typeStr string) (model.AssistantType, error) {
-	switch typeStr {
-	case "JA":
-		return model.JA, nil
-	case "JA_F":
-		return model.JA_F, nil
-	case "SA":
-		return model.SA, nil
-	case "SA_F":
-		return model.SA_F, nil
-	case "SA_NEO":
-		return model.SA_NEO, nil
-	case "SA_F_NEO":
-		return model.SA_F_NEO, nil
-	default:
-		return "", fmt.Errorf("invalid assistant type string: %s", typeStr)
-	}
-}
-
-func extractShiftTypes(scheduleStr string) ([]model.ShiftType, error) {
-	lines := filterLines(strings.Split(scheduleStr, "\n"), "shift_types")
-	shiftTypesLine := strings.TrimSpace(strings.Split(lines[0], ":")[1])
-
-	result := []model.ShiftType{}
-	for _, shiftTypeStr := range strings.Split(shiftTypesLine, " ") {
-		shiftType, err := parseShiftType(strings.Split(shiftTypeStr, "=")[0])
-		if err != nil {
-			return []model.ShiftType{}, err
-		}
-
-		result = append(result, shiftType)
-	}
 	return result, nil
 }
 
@@ -162,38 +129,6 @@ func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
 	}
 }
 
-func extractIndividualSchedules(scheduleStr string, balanceScore int, shiftTypes []model.ShiftType) ([]model.IndividualSchedule, error) {
-	lines := filterLines(strings.Split(scheduleStr, "\n"), "assistant")
-
-	result := []model.IndividualSchedule{}
-	for _, line := range lines {
-
-		entries := strings.Split(strings.TrimSpace(line), " ")
-		assistantId, err := strconv.Atoi(strings.Split(entries[0], ":")[1])
-		if err != nil {
-			return []model.IndividualSchedule{}, err
-		}
-
-		assignments := []model.ShiftType{}
-		for i := 3; i < len(entries); i++ {
-			assignment, err := parseShiftType(entries[i])
-			if err != nil {
-				return []model.IndividualSchedule{}, err
-			}
-			assignments = append(assignments, assignment)
-		}
-
-		is := model.IndividualSchedule{
-			AssistantId: int32(assistantId),
-			Assignments: tagAssignments(assignments, balanceScore, shiftTypes),
-		}
-
-		result = append(result, is)
-	}
-
-	return result, nil
-}
-
 func filterLines(lines []string, substr string) []string {
 	filtered_lines := []string{}
 	for _, line := range lines {
@@ -205,159 +140,146 @@ func filterLines(lines []string, substr string) []string {
 	return filtered_lines
 }
 
-func extractMinBalance(scheduleStr string) (int, error) {
-	minBalanceLines := filterLines(strings.Split(scheduleStr, "\n"), "min_balance")
-	return strconv.Atoi(strings.Split(minBalanceLines[0], ":")[1])
+func parseAndCombineSchedule(jaevResStr string, res firstStageSchedule) (model.Schedule, error) {
+
+	jaevFairnessScore, err := extractFairnessScore(jaevResStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev fairness score")
+	}
+
+	jaevBalanceScore, err := extractBalanceScore(jaevResStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev balance score")
+	}
+
+	individualSchedulesJaev, err := extractIndividualSchedules(jaevResStr)
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev individual schedules")
+	}
+
+	individualSchedules := combineIndividualSchedules(res.individualSchedules, individualSchedulesJaev)
+
+	return model.Schedule{
+		FairnessScore:       res.fairnessScore,
+		BalanceScore:        res.balanceScore,
+		JaevFairnessScore:   float32(jaevFairnessScore),
+		JaevBalanceScore:    int32(jaevBalanceScore),
+		IndividualSchedules: tagIndividualSchedules(individualSchedules, res.balanceScore),
+	}, nil
 }
 
-func tagAssignments(assignments []model.ShiftType, minBalance int, balanceShifts []model.ShiftType) []model.Assignment {
+func combineIndividualSchedules(
+	firstStageISs []untaggedIndividualSchedule,
+	jaevISs []untaggedIndividualSchedule) []untaggedIndividualSchedule {
+	result := []untaggedIndividualSchedule{}
 
-	result := []model.Assignment{}
+	for _, is := range firstStageISs {
+		found, jaevIs := findISWithId(is.assistantId, jaevISs)
+		if found {
+			result = append(result, jaevIs)
+		} else {
+			result = append(result, is)
+		}
 
-	firstShiftDone := false
-	lastShiftDone := false
-	firstDay := 0
-	count := 0
+	}
 
-	for i, shiftType := range assignments {
-		result = append(result, model.Assignment{
-			ShiftType:        shiftType,
-			PartOfMinBalance: false,
-		})
+	return result
+}
 
-		if firstShiftDone && !lastShiftDone {
-			if !oneOf(shiftType, balanceShifts) {
-				if count == 0 {
-					firstDay = i
+func findISWithId(id int32, iss []untaggedIndividualSchedule) (bool, untaggedIndividualSchedule) {
+	for _, is := range iss {
+		if is.assistantId == id {
+			return true, is
+		}
+	}
+
+	return false, untaggedIndividualSchedule{}
+}
+
+func tagIndividualSchedules(iss []untaggedIndividualSchedule, balanceScore int32) []model.IndividualSchedule {
+
+	result := []model.IndividualSchedule{}
+
+	for _, uis := range iss {
+		streaks := streaksOfLength(findStreaks(uis), balanceScore)
+		taggedAssignments := []model.Assignment{}
+		for _, ua := range uis.assigments {
+			taggedAssignment := model.Assignment{
+				DayNb:            ua.dayNb,
+				ShiftType:        ua.shiftType,
+				PartOfMinBalance: inStreak(streaks, ua.dayNb),
+			}
+			taggedAssignments = append(taggedAssignments, taggedAssignment)
+		}
+
+		taggedIndividualSchedule := model.IndividualSchedule{
+			AssistantId: uis.assistantId,
+			Workload:    uis.workload,
+			Assignments: taggedAssignments,
+		}
+
+		result = append(result, taggedIndividualSchedule)
+	}
+
+	return result
+}
+
+type streak struct {
+	firstDay int32
+	lastDay  int32
+}
+
+func findStreaks(uis untaggedIndividualSchedule) []streak {
+
+	var (
+		firstShiftDone bool = false
+		streakActive   bool
+		firstDay       int32
+	)
+
+	streaks := []streak{}
+
+	for _, ua := range uis.assigments {
+		if firstShiftDone {
+			if !streakActive && (ua.shiftType == model.FREE || ua.shiftType == model.JAEV) {
+				firstDay = int32(ua.dayNb)
+				streakActive = true
+			}
+			if streakActive && (ua.shiftType != model.FREE && ua.shiftType != model.JAEV) {
+				streakActive = false
+				streak := streak{
+					firstDay: firstDay,
+					lastDay:  int32(ua.dayNb),
 				}
-				count++
-			} else if assignments[i-1] == model.FREE && oneOf(shiftType, balanceShifts) {
-				if count == minBalance {
-					for j := firstDay; j < i; j++ {
-						result[j] = model.Assignment{
-							ShiftType:        assignments[j],
-							PartOfMinBalance: true,
-						}
-					}
-				}
-				count = 0
+				streaks = append(streaks, streak)
 			}
 		}
 
-		if !firstShiftDone && shiftType != model.FREE {
+		if !firstShiftDone && (ua.shiftType != model.FREE && ua.shiftType != model.JAEV) {
 			firstShiftDone = true
 		}
+	}
 
-		if !lastShiftDone && allNotOfOneOf(assignments[i:], balanceShifts) {
-			lastShiftDone = true
+	return streaks
+}
+
+func streaksOfLength(streaks []streak, length int32) []streak {
+	result := []streak{}
+
+	for _, streak := range streaks {
+		if (streak.lastDay - streak.firstDay) == length {
+			result = append(result, streak)
 		}
 	}
 	return result
 }
 
-func allNotOfOneOf(shiftTypes []model.ShiftType, test []model.ShiftType) bool {
-	for _, shiftType := range shiftTypes {
-		if oneOf(shiftType, test) {
-			return false
-		}
-	}
-	return true
-}
-
-func oneOf(test model.ShiftType, sts []model.ShiftType) bool {
-	for _, st := range sts {
-		if st == test {
+func inStreak(streaks []streak, dayNb int32) bool {
+	for _, streak := range streaks {
+		if dayNb >= streak.firstDay && dayNb < streak.lastDay {
 			return true
 		}
 	}
+
 	return false
-}
-
-func extractFairnessScore(scheduleStr string) (float32, error) {
-	fairnessLines := filterLines(strings.Split(scheduleStr, "\n"), "fairness_score")
-	rawFloat, err := strconv.ParseFloat(strings.Split(fairnessLines[0], ":")[1], 32)
-	if err != nil {
-		return 0.0, errors.Wrap(err, "failed parsing fairness score")
-	}
-
-	return float32(rawFloat), nil
-}
-
-func parseAndCombineSchedule(jaevResStr string, res model.Schedule) (model.Schedule, error) {
-
-	jaevFairnessScore, err := extractFairnessScore(jaevResStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev fairness")
-	}
-
-	jaevBalanceScore, err := extractMinBalance(jaevResStr)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev fairness")
-	}
-
-	individualSchedulesJaev, err := extractIndividualSchedules(jaevResStr, int(res.BalanceScore), res.ShiftTypes)
-	if err != nil {
-		return model.Schedule{}, errors.Wrap(err, "failed extracting jaev individual schedules")
-	}
-
-	individualSchedules := []model.IndividualSchedule{}
-	for _, is := range res.IndividualSchedules {
-		if assistantIsOfType(res.Assistants, is.AssistantId, model.JA) {
-			schedule, err := getSchedule(individualSchedulesJaev, is.AssistantId)
-			if err != nil {
-				return model.Schedule{}, err
-			}
-			individualSchedules = append(individualSchedules, schedule)
-		} else {
-			individualSchedules = append(individualSchedules, is)
-		}
-	}
-
-	return model.Schedule{
-		FairnessScore:       res.FairnessScore,
-		BalanceScore:        res.BalanceScore,
-		JaevFairnessScore:   jaevFairnessScore,
-		JaevBalance:         int32(jaevBalanceScore),
-		Holidays:            res.Holidays,
-		NbDays:              res.NbDays,
-		Assistants:          res.Assistants,
-		ShiftTypes:          res.ShiftTypes,
-		IndividualSchedules: individualSchedules,
-	}, nil
-}
-
-func assistantIsOfType(assistants []model.Assistant, id int32, at model.AssistantType) bool {
-	for _, a := range assistants {
-		if a.Id == id {
-			return a.Type == at
-		}
-	}
-	return false
-}
-
-func getSchedule(individualSchedules []model.IndividualSchedule, id int32) (model.IndividualSchedule, error) {
-	for _, is := range individualSchedules {
-		if is.AssistantId == id {
-			return is, nil
-		}
-	}
-
-	return model.IndividualSchedule{}, errors.New("schedule not found")
-}
-
-func extractHolidays(scheduleStr string) ([]int32, error) {
-	holidaysLines := filterLines(strings.Split(scheduleStr, "\n"), "holidays")
-	holidaysStr := strings.TrimPrefix(strings.TrimSuffix(strings.Split(holidaysLines[0], ":")[1], "}"), "{")
-	holidays := strings.Split(holidaysStr, ",")
-
-	result := []int32{}
-	for _, h := range holidays {
-		i, err := strconv.Atoi(h)
-		if err != nil {
-			return []int32{}, err
-		}
-		result = append(result, int32(i))
-	}
-
-	return result, nil
 }

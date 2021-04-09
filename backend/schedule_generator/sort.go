@@ -42,8 +42,8 @@ func (a ByShiftType) Swap(i, j int) {
 }
 
 func index(slice []model.ShiftType, item model.ShiftType) int {
-	for i, _ := range slice {
-		if slice[i] == item {
+	for i, s := range slice {
+		if s == item {
 			return i
 		}
 	}

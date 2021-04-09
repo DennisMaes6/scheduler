@@ -27,7 +27,7 @@ var generateScheduleJaevArgs []string = []string{
 	"minizinc/data_jaev.dzn",
 }
 
-var schedule model.Schedule = model.Schedule{}
+var cachedSchedule model.Schedule = model.Schedule{}
 var cached bool = false
 
 type ScheduleGenerator struct {
@@ -36,6 +36,22 @@ type ScheduleGenerator struct {
 
 func NewScheduleGenerator() ScheduleGenerator {
 	return ScheduleGenerator{newDBController()}
+}
+
+func (s ScheduleGenerator) GetInstanceData() (model.InstanceData, error) {
+	return s.dbc.GetInstanceData()
+}
+
+func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
+	return s.dbc.SetInstanceData(data)
+}
+
+func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
+	return s.dbc.GetModelParameters()
+}
+
+func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) error {
+	return s.dbc.SetModelParameters(params)
 }
 
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
@@ -55,7 +71,7 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 			return model.Schedule{}, errors.New("model unsatisfiable")
 		}
 
-		res, err := parseSchedule(resStr)
+		res, err := parseFirstStageSchedule(resStr)
 		if err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
 		}
@@ -78,11 +94,11 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
 		}
 
-		schedule = combinedRes
+		cachedSchedule = combinedRes
 		//cached = true
 	}
 
-	return schedule, nil
+	return cachedSchedule, nil
 }
 
 func (s ScheduleGenerator) generateDataFile() error {
@@ -128,7 +144,7 @@ func executeGenerateScheduleCmd(cmdStr string, argsStr []string) (string, error)
 	return string(resultRaw), nil
 }
 
-func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
+func (s ScheduleGenerator) generateJaevDataFile(res firstStageSchedule) error {
 
 	file, err := os.Create("minizinc/data_jaev.dzn")
 	if err != nil {
@@ -145,7 +161,7 @@ func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
 		return errors.Wrap(err, "database controller error")
 	}
 
-	if err := writeJaevData(file, schedule, modelParameters, instanceData); err != nil {
+	if err := writeJaevData(file, res, modelParameters, instanceData); err != nil {
 		return errors.Wrap(err, "failed writing model parameters")
 	}
 

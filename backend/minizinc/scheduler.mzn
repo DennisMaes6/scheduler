@@ -184,7 +184,7 @@ solve minimize fairness_score;
 
 output
        ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
-       ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
+       ["balance_score:"] ++ [show(z)] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        ["holidays:"] ++ [show(H)] ++ ["\n"] ++

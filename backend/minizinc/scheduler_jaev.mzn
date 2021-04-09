@@ -113,7 +113,7 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output  
-       ["min_balance:"] ++ [show(min_balance)] ++ ["\n"] ++
+       ["balance_score:"] ++ [show(z)] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [

@@ -50,7 +50,7 @@ func buildHolidaysString(days []model.Day) string {
 
 	for _, day := range days {
 		if day.IsHoliday {
-			result += fmt.Sprintf("%s,", day.Id)
+			result += fmt.Sprintf("%d,", day.Id)
 		}
 	}
 
@@ -121,7 +121,7 @@ func buildMaxBufferString(stps []model.ShiftTypeModelParameters) string {
 }
 
 func writeJaevData(file *os.File,
-	schedule model.Schedule,
+	schedule firstStageSchedule,
 	params model.ModelParameters,
 	data model.InstanceData) error {
 
@@ -134,7 +134,7 @@ func writeJaevData(file *os.File,
 		nb_personnel = %d;
 		personnel_id = %s;
 		schedule = [|%s];
-
+		F = %s;
 		min_balance = %d;
 	`
 
@@ -166,14 +166,14 @@ func filterAssistant(at model.AssistantType, assistants []model.Assistant) []mod
 	return result
 }
 
-func buildScheduleString(schedule model.Schedule, jas []model.Assistant) string {
+func buildScheduleString(schedule firstStageSchedule, jas []model.Assistant) string {
 	result := ""
 
-	for _, is := range schedule.IndividualSchedules {
-		if idIn(is.AssistantId, jas) {
+	for _, is := range schedule.individualSchedules {
+		if idIn(is.assistantId, jas) {
 			result += "\n\t\t\t"
-			for _, assignment := range is.Assignments {
-				result += fmt.Sprintf("%s, ", string(assignment.ShiftType))
+			for _, assignment := range is.assigments {
+				result += fmt.Sprintf("%s, ", string(assignment.shiftType))
 			}
 			result += " |"
 		}
