@@ -75,7 +75,7 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 
 	shiftTypeParamsQuery := `
 		SELECT shift_type, shift_workload, max_buffer
-		FROM shift_type_params
+		FROM shift_type_parameters
 	`
 
 	rows, err := c.db.Query(shiftTypeParamsQuery)
