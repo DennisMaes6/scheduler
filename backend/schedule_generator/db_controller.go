@@ -212,7 +212,7 @@ func (c DbController) getAssistants() ([]model.Assistant, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return []model.Assistant{}, errors.Wrap(err, "rows error when retrieving assisatants")
+		return []model.Assistant{}, errors.Wrap(err, "rows error when retrieving assistants")
 	}
 
 	return assistants, nil
