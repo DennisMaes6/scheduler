@@ -63,7 +63,7 @@ func createTables(db *sql.DB) error {
 			CREATE TABLE IF NOT EXISTS day (
 				id INTEGER PRIMARY KEY,
 				date TEXT NOT NULL,
-				is_holiday BOOL NOT NULL,
+				is_holiday BOOL NOT NULL
 			)
 		`,
 		`
@@ -78,12 +78,12 @@ func createTables(db *sql.DB) error {
 			CREATE TABLE IF NOT EXISTS indivudual_schedule (
 				id INTEGER PRIMARY_KEY,
 				assistant_id INTEGER NOT NULL,
-				workload REAL NOT NULL,
+				workload REAL NOT NULL
 			)
 		`,
 		`
 			CREATE TABLE IF NOT EXISTS assignment (
-				asisstant_id INTEGER NOT NULL,
+				assistant_id INTEGER NOT NULL,
 				day_nb INTEGER NOT NULL,
 				shift_type TEXT NOT NULL,
 				PRIMARY KEY (assistant_id, day_nb),
@@ -95,7 +95,7 @@ func createTables(db *sql.DB) error {
 
 	for _, query := range queries {
 		if _, err := db.Exec(query); err != nil {
-			return errors.Wrap(err, "failed creating creating table")
+			return errors.Wrap(err, fmt.Sprintf("failed creating table with query: %s", query))
 		}
 	}
 
@@ -119,10 +119,10 @@ func initializeData(db *sql.DB) error {
 	}
 
 	initSTPsQuery := `
-		INSERT or IGNORE INTO shift_type_params(shift_type, shift_workload, max_buffer)
+		INSERT or IGNORE INTO shift_type_parameters(shift_type, shift_workload, max_buffer)
 		VALUES (?, ?, ?)
     `
-	for _, stp := range initialModelParameters.ShiftTypeParams {
+	for _, stp := range initialModelParameters.ShiftTypeParameters {
 		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
 			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
