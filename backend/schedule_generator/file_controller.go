@@ -3,26 +3,38 @@ package schedule_generator
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/jorensjongers/scheduler/backend/model"
 )
 
-func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
+func writeData(file *os.File, params model.ModelParameters, data model.InstanceData) error {
+
+	sort.Sort(ById(data.Assistants))
+	sort.Sort(ByShiftType(params.ShiftTypeParams))
 
 	skeleton := `
 		nb_weeks = %d;
 		H = {%s};
 		nb_personnel = %d;
+		Ids= %s;
 		T = %s;
 		F = %s;
-		S = {JANW, SAEW, JAWH, SAWH, TSPT, CALL};
+		
+		shift_workload = %s;
+		max_buffer = %s;
+		min_balance = %d;
 	`
 	content := fmt.Sprintf(skeleton,
-		data.NbWeeks,
-		integerArrayToString(data.Holidays),
+		len(data.Days)/7,
+		buildHolidaysString(data.Days),
 		len(data.Assistants),
+		buildIdsString(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
 		buildFreeDaysString(data.Assistants),
+		buildShiftWorkloadString(params.ShiftTypeParams),
+		buildMaxBufferString(params.ShiftTypeParams),
+		params.MinBalance,
 	)
 
 	if _, err := file.WriteString(content); err != nil {
@@ -33,11 +45,13 @@ func writeInstanceSpecificData(file *os.File, data model.InstanceData) error {
 
 }
 
-func buildAssistantTypesString(ais []model.AssistantInstance) string {
+func buildHolidaysString(days []model.Day) string {
 	result := "["
 
-	for _, ai := range ais {
-		result += fmt.Sprintf("%s,", (ai.Type))
+	for _, day := range days {
+		if day.IsHoliday {
+			result += fmt.Sprintf("%s,", day.Id)
+		}
 	}
 
 	result += "]"
@@ -45,7 +59,31 @@ func buildAssistantTypesString(ais []model.AssistantInstance) string {
 	return result
 }
 
-func buildFreeDaysString(assistants []model.AssistantInstance) string {
+func buildIdsString(ais []model.Assistant) string {
+	result := "["
+
+	for _, assistant := range ais {
+		result += fmt.Sprintf("%d,", assistant.Id)
+	}
+
+	result += "]"
+
+	return result
+}
+
+func buildAssistantTypesString(ais []model.Assistant) string {
+	result := "["
+
+	for _, assistant := range ais {
+		result += fmt.Sprintf("%s,", assistant.Type)
+	}
+
+	result += "]"
+
+	return result
+}
+
+func buildFreeDaysString(assistants []model.Assistant) string {
 	result := "["
 
 	for _, assistant := range assistants {
@@ -55,26 +93,6 @@ func buildFreeDaysString(assistants []model.AssistantInstance) string {
 	result += "]"
 
 	return result
-}
-
-func writeModelParameters(file *os.File, params model.ModelParameters) error {
-
-	skeleton := `
-		shift_workload = %s;
-		max_buffer = %s;
-		min_balance = %d;
-	`
-	content := fmt.Sprintf(skeleton,
-		buildShiftWorkloadString(params.ShiftTypeParams),
-		buildMaxBufferString(params.ShiftTypeParams),
-		params.BalanceMinimum)
-
-	if _, err := file.WriteString(content); err != nil {
-		return err
-	}
-
-	return nil
-
 }
 
 func buildShiftWorkloadString(stps []model.ShiftTypeModelParameters) string {
@@ -102,22 +120,32 @@ func buildMaxBufferString(stps []model.ShiftTypeModelParameters) string {
 	return result
 }
 
-func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule, data model.InstanceData) error {
+func writeJaevData(file *os.File,
+	schedule model.Schedule,
+	params model.ModelParameters,
+	data model.InstanceData) error {
+
+	jas := filterAssistant(model.JA, data.Assistants) // consider only assistants of type JA
+	sort.Sort(ById(jas))
 
 	skeleton := `
 		nb_weeks = %d;
 		H = {%s};
 		nb_personnel = %d;
+		personnel_id = %s;
 		schedule = [|%s];
-		F = %s;
+
+		min_balance = %d;
 	`
 
 	content := fmt.Sprintf(skeleton,
-		(schedule.NbDays / 7),
-		integerArrayToString(schedule.Holidays),
-		len(filterAssistant(model.JA, data.Assistants)),
-		buildScheduleString(schedule, data.Assistants),
-		buildFreeDaysString(filterAssistant(model.JA, data.Assistants)),
+		len(data.Days)/7,
+		buildHolidaysString(data.Days),
+		len(jas),
+		buildIdsString(jas),
+		buildScheduleString(schedule, jas),
+		buildFreeDaysString(jas),
+		params.MinBalanceJaev,
 	)
 
 	if _, err := file.WriteString(content); err != nil {
@@ -126,8 +154,8 @@ func writeInstanceSpecificDataJaev(file *os.File, schedule model.Schedule, data 
 	return nil
 }
 
-func filterAssistant(at model.AssistantType, assistants []model.AssistantInstance) []model.AssistantInstance {
-	result := []model.AssistantInstance{}
+func filterAssistant(at model.AssistantType, assistants []model.Assistant) []model.Assistant {
+	result := []model.Assistant{}
 
 	for _, a := range assistants {
 		if a.Type == at {
@@ -138,14 +166,12 @@ func filterAssistant(at model.AssistantType, assistants []model.AssistantInstanc
 	return result
 }
 
-func buildScheduleString(schedule model.Schedule, ais []model.AssistantInstance) string {
-
+func buildScheduleString(schedule model.Schedule, jas []model.Assistant) string {
 	result := ""
-	assistants := filterAssistant(model.JA, ais)
 
 	for _, is := range schedule.IndividualSchedules {
-		if idMatches(is.AssistantId, assistants) {
-			result += "\n"
+		if idIn(is.AssistantId, jas) {
+			result += "\n\t\t\t"
 			for _, assignment := range is.Assignments {
 				result += fmt.Sprintf("%s, ", string(assignment.ShiftType))
 			}
@@ -156,7 +182,7 @@ func buildScheduleString(schedule model.Schedule, ais []model.AssistantInstance)
 	return result
 }
 
-func idMatches(id int32, assistants []model.AssistantInstance) bool {
+func idIn(id int32, assistants []model.Assistant) bool {
 
 	for _, a := range assistants {
 		if a.Id == id {
@@ -165,12 +191,4 @@ func idMatches(id int32, assistants []model.AssistantInstance) bool {
 	}
 
 	return false
-}
-
-func writeModelParametersJaev(file *os.File, params model.ModelParameters) error {
-
-	if _, err := file.WriteString(fmt.Sprintf("min_balance = %d;", params.BalanceMinimunJaev)); err != nil {
-		return err
-	}
-	return nil
 }

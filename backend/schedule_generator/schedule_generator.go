@@ -38,28 +38,6 @@ func NewScheduleGenerator() ScheduleGenerator {
 	return ScheduleGenerator{newDBController()}
 }
 
-func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) error {
-	if err := s.dbc.SetModelParameters(params); err != nil {
-		return errors.Wrap(err, "failed updating model parameters")
-	}
-	return nil
-}
-
-func (s ScheduleGenerator) GetModelParameters() (model.ModelParameters, error) {
-	return s.dbc.GetModelParameters()
-}
-
-func (s ScheduleGenerator) UpdateInstanceData(data model.InstanceData) error {
-	if err := s.dbc.SetInstanceData(data); err != nil {
-		return errors.Wrap(err, "failed updating instance data")
-	}
-	return nil
-}
-
-func (s ScheduleGenerator) GetInstanceData() (model.InstanceData, error) {
-	return s.dbc.getInstanceData()
-}
-
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 
 	if !cached {
@@ -114,13 +92,9 @@ func (s ScheduleGenerator) generateDataFile() error {
 		return errors.Wrap(err, fmt.Sprintf("failed creating file %s", "minizinc/data.dzn"))
 	}
 
-	instanceData, err := s.dbc.getInstanceData()
+	instanceData, err := s.dbc.GetInstanceData()
 	if err != nil {
 		return errors.Wrap(err, "database controller error")
-	}
-
-	if err := writeInstanceSpecificData(file, instanceData); err != nil {
-		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
 	modelParameters, err := s.dbc.GetModelParameters()
@@ -128,12 +102,11 @@ func (s ScheduleGenerator) generateDataFile() error {
 		return errors.Wrap(err, "databse controller error")
 	}
 
-	if err := writeModelParameters(file, modelParameters); err != nil {
-		return errors.Wrap(err, "failed writing model parameters")
+	if err := writeData(file, modelParameters, instanceData); err != nil {
+		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
 	return nil
-
 }
 
 func executeGenerateScheduleCmd(cmdStr string, argsStr []string) (string, error) {
@@ -162,13 +135,9 @@ func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
 		return errors.Wrap(err, fmt.Sprintf("failed creating jaev file %s", "minizinc/data.dzn"))
 	}
 
-	instanceData, err := s.dbc.getInstanceData()
+	instanceData, err := s.dbc.GetInstanceData()
 	if err != nil {
 		return errors.Wrap(err, "database controller error")
-	}
-
-	if err := writeInstanceSpecificDataJaev(file, res, instanceData); err != nil {
-		return errors.Wrap(err, "failed writing instance specific data")
 	}
 
 	modelParameters, err := s.dbc.GetModelParameters()
@@ -176,7 +145,7 @@ func (s ScheduleGenerator) generateJaevDataFile(res model.Schedule) error {
 		return errors.Wrap(err, "database controller error")
 	}
 
-	if err := writeModelParametersJaev(file, modelParameters); err != nil {
+	if err := writeJaevData(file, schedule, modelParameters, instanceData); err != nil {
 		return errors.Wrap(err, "failed writing model parameters")
 	}
 
