@@ -15,9 +15,9 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 
 	skeleton := `
 		nb_weeks = %d;
-		H = {%s};
+		H = %s;
 		nb_personnel = %d;
-		Ids= %s;
+		personnel_id = %s;
 		T = %s;
 		F = %s;
 		
@@ -46,7 +46,7 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 }
 
 func buildHolidaysString(days []model.Day) string {
-	result := "["
+	result := "{"
 
 	for _, day := range days {
 		if day.IsHoliday {
@@ -54,7 +54,7 @@ func buildHolidaysString(days []model.Day) string {
 		}
 	}
 
-	result += "]"
+	result += "}"
 
 	return result
 }
