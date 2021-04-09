@@ -22,14 +22,19 @@ func newDBController() DbController {
 // GetModelParameters -- returns the model parameters a stored in the DB
 func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 
-	balanceMinimum, err := c.getMinBalanceScore()
-	if err != nil {
-		return model.ModelParameters{}, errors.Wrap(err, "failed getting min balance score from db")
-	}
+	balanceScoresQuery := `
+		SELECT (min_balance, min_balance_jaev)
+		FROM model_parameters
+		WHERE id = 1
+	`
 
-	balanceMinimumJaev, err := c.getMinBalanceScoreJaev()
-	if err != nil {
-		return model.ModelParameters{}, errors.Wrap(err, "failed getting min balance score jaev from db")
+	var (
+		minBalance     int
+		minBalanceJaev int
+	)
+
+	if err := c.db.QueryRow(balanceScoresQuery).Scan(&minBalance, &minBalanceJaev); err != nil {
+		return model.ModelParameters{}, errors.Wrap(err, "failed getting model parameters from db")
 	}
 
 	shiftTypeParams, err := c.getShiftTypeParams()
@@ -38,64 +43,32 @@ func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 	}
 
 	result := model.ModelParameters{
-		BalanceMinimum:     int32(balanceMinimum),
-		BalanceMinimunJaev: int32(balanceMinimumJaev),
-		ShiftTypeParams:    shiftTypeParams,
+		MinBalance:      int32(minBalance),
+		MinBalanceJaev:  int32(minBalanceJaev),
+		ShiftTypeParams: shiftTypeParams,
 	}
 
 	return result, nil
 }
 
-// SetModelParameters -- updates the model parameters in teh DB
+// SetModelParameters -- updates the model parameters in the DB
 func (c DbController) SetModelParameters(params model.ModelParameters) error {
 
-	if err := c.setMinBalanceScore(params.BalanceMinimum); err != nil {
-		return errors.Wrap(err, "failed setting min balance score in db")
+	setBalanceScoresQuery := `
+		UPDATE model_parameters
+		SET min_balance = ?, min_balance_jaev = ?
+		WHERE id = 1
+	`
+
+	if _, err := c.db.Exec(setBalanceScoresQuery, params.MinBalance, params.MinBalanceJaev); err != nil {
+		return errors.Wrap(err, "failed updating balance scores")
 	}
 
-	if err := c.setMinBalanceScoreJaev(params.BalanceMinimunJaev); err != nil {
-		return errors.Wrap(err, "failed setting min balance score in db")
-	}
-
-	for _, stps := range params.ShiftTypeParams {
-		if err := c.setShiftTypeParams(stps); err != nil {
-			return errors.Wrap(err, "failed setting shift type parameters in db")
-		}
+	if err := c.setShiftTypeParams(params.ShiftTypeParams); err != nil {
+		return errors.Wrap(err, "failed setting shift type parameters in database")
 	}
 
 	return nil
-}
-
-func (c DbController) getMinBalanceScore() (int, error) {
-
-	minBalanceScoreQuery := `
-		SELECT score
-		FROM min_balance_score
-		WHERE id = 1
-	`
-
-	var score int
-	if err := c.db.QueryRow(minBalanceScoreQuery).Scan(&score); err != nil {
-		return 0, err
-	}
-
-	return score, nil
-}
-
-func (c DbController) getMinBalanceScoreJaev() (int, error) {
-
-	minBalanceScoreJaevQuery := `
-		SELECT score
-		FROM min_balance_score_jaev
-		WHERE id = 1
-	`
-
-	var score int
-	if err := c.db.QueryRow(minBalanceScoreJaevQuery).Scan(&score); err != nil {
-		return 0, err
-	}
-
-	return score, nil
 }
 
 func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, error) {
@@ -139,93 +112,78 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 	return result, nil
 }
 
-func (c DbController) setMinBalanceScore(newScore int32) error {
+func (c DbController) setShiftTypeParams(stps []model.ShiftTypeModelParameters) error {
 
-	setMBSQuery := `
-		UPDATE min_balance_score
-		SET score = ?
-		WHERE id = 1
-	`
+	deleteRowsQuery := "DELETE FROM shift_type_parameters"
 
-	if _, err := c.db.Exec(setMBSQuery, newScore); err != nil {
-		return err
+	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
+		return errors.Wrap(err, "failed truncating shift type parameters table")
 	}
-
-	return nil
-}
-
-func (c DbController) setMinBalanceScoreJaev(newScore int32) error {
-
-	setMBSJaevQuery := `
-		UPDATE min_balance_score_jaev
-		SET score = ?
-		WHERE id = 1
-	`
-
-	if _, err := c.db.Exec(setMBSJaevQuery, newScore); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (c DbController) setShiftTypeParams(stp model.ShiftTypeModelParameters) error {
 
 	setSTPsQuery := `
-		UPDATE shift_type_params
-		SET shift_workload = ?,
-		    max_buffer = ?
-		WHERE shift_type = ?
+		INSERT INTO shift_type_parameters(shift_type, shift_workload, max_buffer)
+		VALUES (?, ?, ?)
 	`
 
-	if _, err := c.db.Exec(setSTPsQuery, stp.ShiftWorkload, stp.MaxBuffer, stp.ShiftType); err != nil {
-		return err
+	for _, stp := range stps {
+		if _, err := c.db.Exec(setSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
+			return errors.Wrap(err, "failed inserting shift type paramers in database")
+		}
 	}
 
 	return nil
 
 }
 
-func (c DbController) getInstanceData() (model.InstanceData, error) {
-	nbWeeksQuery := `
-		SELECT nb_weeks
-		FROM nb_weeks
-		WHERE id = 1
-	`
+// GetInstanceData -- retrieves the instance data from database
+func (c DbController) GetInstanceData() (model.InstanceData, error) {
 
-	var nbWeeks int
-	if err := c.db.QueryRow(nbWeeksQuery).Scan(&nbWeeks); err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "failed getting nb weeks from db")
-	}
-
-	holidaysQuery := `
-		SELECT days
-		FROM holidays
-		WHERE id = 1
-	`
-
-	var rawHolidays string
-	if err := c.db.QueryRow(holidaysQuery).Scan(&rawHolidays); err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "failed getting holidays from db")
-	}
-
-	holidays, err := stringToIntArray(rawHolidays)
+	assitants, err := c.getAssistants()
 	if err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "failed converting holiday string to array")
+		return model.InstanceData{}, errors.Wrap(err, "failed retreiving assistants from database")
 	}
 
-	assistantInstanceQuery := `
-		SELECT id, name, type, free_days
-		FROM assistant_instance
+	days, err := c.getDays()
+	if err != nil {
+		return model.InstanceData{}, errors.Wrap(err, "failed retreiving days from database")
+	}
+
+	result := model.InstanceData{
+		Assistants: assitants,
+		Days:       days,
+	}
+
+	return result, nil
+}
+
+// SetInstanceData -- updates the instance data in the database
+func (c DbController) SetInstanceData(data model.InstanceData) error {
+
+	if err := c.setAssistants(data.Assistants); err != nil {
+		return errors.Wrap(err, "failed updating assistants in db")
+	}
+
+	if err := c.setDays(data.Days); err != nil {
+		return errors.Wrap(err, "failed updating days in db")
+	}
+
+	return nil
+}
+
+func (c DbController) getAssistants() ([]model.Assistant, error) {
+
+	getAssistantsQuery := `
+		SELECT (id, name, type, free_days)
+		FROM assistant
 	`
 
-	rows, err := c.db.Query(assistantInstanceQuery)
+	rows, err := c.db.Query(getAssistantsQuery)
 	if err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "query error")
+		return []model.Assistant{}, errors.Wrap(err, "failed querying database for assistants")
 	}
 	defer rows.Close()
 
-	ais := []model.AssistantInstance{}
+	assistants := []model.Assistant{}
 	for rows.Next() {
 		var (
 			id          int32
@@ -235,99 +193,110 @@ func (c DbController) getInstanceData() (model.InstanceData, error) {
 		)
 
 		if err := rows.Scan(&id, &name, &rawType, &freeDaysRaw); err != nil {
-			return model.InstanceData{}, errors.Wrap(err, "scan error")
+			return []model.Assistant{}, errors.Wrap(err, "failed scanning assistant row")
 		}
 
 		freeDays, err := stringToIntArray(freeDaysRaw)
 		if err != nil {
-			return model.InstanceData{}, errors.Wrap(err, "failed converting free days string to array")
+			return []model.Assistant{}, errors.Wrap(err, "failed converting free days string to array")
 		}
 
-		ai := model.AssistantInstance{
+		assistant := model.Assistant{
 			Id:       id,
 			Name:     name,
 			Type:     model.AssistantType(rawType),
 			FreeDays: freeDays,
 		}
 
-		ais = append(ais, ai)
+		assistants = append(assistants, assistant)
 	}
 
 	if err := rows.Err(); err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "rows error")
+		return []model.Assistant{}, errors.Wrap(err, "rows error when retrieving assisatants")
 	}
 
-	result := model.InstanceData{
-		NbWeeks:    int32(nbWeeks),
-		Holidays:   holidays,
-		Assistants: ais,
-	}
-
-	return result, nil
-
+	return assistants, nil
 }
 
-func (c DbController) SetInstanceData(data model.InstanceData) error {
+func (c DbController) getDays() ([]model.Day, error) {
 
-	if err := c.setNbWeeks(data.NbWeeks); err != nil {
-		return errors.Wrap(err, "failed setting nb weeks in db")
-	}
-
-	if err := c.setHolidays(data.Holidays); err != nil {
-		return errors.Wrap(err, "failed setting holidays in db")
-	}
-
-	if err := c.setAssistantInstances(data.Assistants); err != nil {
-		return errors.Wrap(err, "failed setting assistant instances in db")
-	}
-
-	return nil
-}
-
-func (c DbController) setNbWeeks(nbWeeks int32) error {
-
-	setMBSQuery := `
-		UPDATE nb_weeks
-		SET nb_weeks = ?
-		WHERE id = 1
+	getDaysQuery := `
+		SELECT (id, date, is_holiday)
+		FROM day
 	`
 
-	if _, err := c.db.Exec(setMBSQuery, nbWeeks); err != nil {
-		return err
+	rows, err := c.db.Query(getDaysQuery)
+	if err != nil {
+		return []model.Day{}, errors.Wrap(err, "failed querying database for days")
+	}
+	defer rows.Close()
+
+	days := []model.Day{}
+	for rows.Next() {
+		var (
+			id        int32
+			date      string
+			isHoliday bool
+		)
+
+		if err := rows.Scan(&id, &date, &isHoliday); err != nil {
+			return []model.Day{}, errors.Wrap(err, "failed scanning day row")
+		}
+
+		day := model.Day{
+			Id:        id,
+			Date:      date,
+			IsHoliday: isHoliday,
+		}
+
+		days = append(days, day)
 	}
 
-	return nil
-}
-
-func (c DbController) setHolidays(holidays []int32) error {
-
-	setHolidaysQuery := `
-		UPDATE holidays
-		SET days = ?
-		WHERE id = 1
-	`
-
-	if _, err := c.db.Exec(setHolidaysQuery, integerArrayToString(holidays)); err != nil {
-		return err
+	if err := rows.Err(); err != nil {
+		return []model.Day{}, errors.Wrap(err, "rows error when retrieving days")
 	}
 
-	return nil
+	return days, nil
 }
 
-func (c DbController) setAssistantInstances(ais []model.AssistantInstance) error {
-	deleteRowsQuery := "DELETE FROM assistant_instance"
+func (c DbController) setAssistants(assistants []model.Assistant) error {
 
+	deleteRowsQuery := "DELETE FROM assistant"
 	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
-		return errors.Wrap(err, "failed truncating assistant instance table")
+		return errors.Wrap(err, "failed truncating assistant table")
 	}
 
-	setAIQuery := `
-		INSERT INTO assistant_instance(id, name, type, free_days)
+	insertAssistantQuery := `
+		INSERT INTO assistant(id, name, type, free_days)
 		VALUES (?, ?, ?, ?)
 	`
-	for _, ai := range ais {
-		if _, err := c.db.Exec(setAIQuery, ai.Id, ai.Name, ai.Type, integerArrayToString(ai.FreeDays)); err != nil {
-			return errors.Wrap(err, "failed updating assistant instance")
+	for _, assistant := range assistants {
+		_, err := c.db.Exec(insertAssistantQuery,
+			assistant.Id,
+			assistant.Name,
+			assistant.Type,
+			integerArrayToString(assistant.FreeDays))
+		if err != nil {
+			return errors.Wrap(err, "failed inserting assistant in database")
+		}
+	}
+
+	return nil
+}
+
+func (c DbController) setDays(days []model.Day) error {
+	deleteRowsQuery := "DELETE FROM day"
+	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
+		return errors.Wrap(err, "failed truncating day table")
+	}
+
+	insertDayQuery := `
+		INSERT INTO day(id, date, is_holiday)
+		VALUES (?, ?, ?)
+	`
+	for _, day := range days {
+		if _, err := c.db.Exec(insertDayQuery, day.Id, day.Date, day.IsHoliday); err != nil {
+			return errors.Wrap(err, "failed inserting day in database")
 		}
 	}
 
