@@ -84,7 +84,7 @@ var initialInstanceData model.InstanceData = model.InstanceData{
 		{
 			Id:        9,
 			Date:      "2021-01-09",
-			IsHoliday: true,
+			IsHoliday: false,
 		},
 		{
 			Id:        10,
@@ -94,7 +94,7 @@ var initialInstanceData model.InstanceData = model.InstanceData{
 		{
 			Id:        11,
 			Date:      "2021-01-11",
-			IsHoliday: false,
+			IsHoliday: true,
 		},
 		{
 			Id:        12,
