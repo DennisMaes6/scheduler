@@ -178,7 +178,7 @@ var initialInstanceData model.InstanceData = model.InstanceData{
 		},
 		{
 			Id:        28,
-			Date:      "2021-01-29",
+			Date:      "2021-01-28",
 			IsHoliday: false,
 		},
 	},
