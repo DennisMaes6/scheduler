@@ -183,11 +183,8 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output
-       ["shift_types: "] ++ [show(s) ++ " " | s in S] ++ ["\n"] ++
-       ["balance_score:"] ++ [show(z)] ++ ["\n"] ++
+       ["balance_score:"] ++ [show(min(z))] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
-       ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
-       ["holidays:"] ++ [show(H)] ++ ["\n"] ++
        [
          if w == 1 then 
              "assistant_id:" ++ show(personnel_id[p]) ++ " " 
