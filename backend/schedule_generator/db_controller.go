@@ -43,9 +43,9 @@ func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 	}
 
 	result := model.ModelParameters{
-		MinBalance:      int32(minBalance),
-		MinBalanceJaev:  int32(minBalanceJaev),
-		ShiftTypeParams: shiftTypeParams,
+		MinBalance:          int32(minBalance),
+		MinBalanceJaev:      int32(minBalanceJaev),
+		ShiftTypeParameters: shiftTypeParams,
 	}
 
 	return result, nil
@@ -64,7 +64,7 @@ func (c DbController) SetModelParameters(params model.ModelParameters) error {
 		return errors.Wrap(err, "failed updating balance scores")
 	}
 
-	if err := c.setShiftTypeParams(params.ShiftTypeParams); err != nil {
+	if err := c.setShiftTypeParams(params.ShiftTypeParameters); err != nil {
 		return errors.Wrap(err, "failed setting shift type parameters in database")
 	}
 

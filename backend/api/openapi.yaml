@@ -165,7 +165,7 @@ components:
       example:
         min_balance: 0
         min_balance_jaev: 6
-        shift_type_params:
+        shift_type_parameters:
         - max_buffer: 5
           shift_workload: 1.4658129805029452
         - max_buffer: 5
@@ -178,7 +178,7 @@ components:
           description: The mininmal balance score for JAEV shifts for an acceptable
             solution.
           type: integer
-        shift_type_params:
+        shift_type_parameters:
           items:
             $ref: '#/components/schemas/ShiftTypeModelParameters'
           type: array

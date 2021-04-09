@@ -140,7 +140,7 @@ components:
         min_balance_jaev:
           type: integer
           description: The mininmal balance score for JAEV shifts for an acceptable solution.
-        shift_type_params:
+        shift_type_parameters:
           type: array 
           items:
             $ref: "#/components/schemas/ShiftTypeModelParameters"

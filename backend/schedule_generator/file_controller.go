@@ -11,7 +11,7 @@ import (
 func writeData(file *os.File, params model.ModelParameters, data model.InstanceData) error {
 
 	sort.Sort(ById(data.Assistants))
-	sort.Sort(ByShiftType(params.ShiftTypeParams))
+	sort.Sort(ByShiftType(params.ShiftTypeParameters))
 
 	skeleton := `
 		nb_weeks = %d;
@@ -32,8 +32,8 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 		buildIdsString(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
 		buildFreeDaysString(data.Assistants),
-		buildShiftWorkloadString(params.ShiftTypeParams),
-		buildMaxBufferString(params.ShiftTypeParams),
+		buildShiftWorkloadString(params.ShiftTypeParameters),
+		buildMaxBufferString(params.ShiftTypeParameters),
 		params.MinBalance,
 	)
 

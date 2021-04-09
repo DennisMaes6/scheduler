@@ -5,7 +5,7 @@ import "github.com/jorensjongers/scheduler/backend/model"
 var initialModelParameters model.ModelParameters = model.ModelParameters{
 	MinBalance:     7,
 	MinBalanceJaev: 4,
-	ShiftTypeParams: []model.ShiftTypeModelParameters{
+	ShiftTypeParameters: []model.ShiftTypeModelParameters{
 		{
 			ShiftType:     model.JANW,
 			ShiftWorkload: 3,

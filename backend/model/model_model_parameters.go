@@ -18,5 +18,5 @@ type ModelParameters struct {
 	// The mininmal balance score for JAEV shifts for an acceptable solution.
 	MinBalanceJaev int32 `json:"min_balance_jaev,omitempty"`
 
-	ShiftTypeParams []ShiftTypeModelParameters `json:"shift_type_params"`
+	ShiftTypeParameters []ShiftTypeModelParameters `json:"shift_type_parameters,omitempty"`
 }
