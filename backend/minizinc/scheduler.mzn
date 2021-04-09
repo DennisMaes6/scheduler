@@ -23,7 +23,7 @@ enum ShiftType = {
   FREE
 };
 
-set of ShiftType: S;     
+set of ShiftType: S = {JANW, SAEW, JAWH, SAWH, TSPT, CALL};   
 set of ShiftType: S_full = S union {FREE};   
 set of ShiftType: S_week = S intersect {JANW, SAEW, CALL};    
 set of ShiftType: S_weekend = S intersect {JAWH, SAWH, TSPT};
@@ -47,6 +47,7 @@ enum PersonnelType = {
 
 int: nb_personnel;
 set of 1..nb_personnel: P = 1..nb_personnel;            % employees
+array[1..nb_personnel] of int: personnel_id;            % mapping from employee to external id
 array[1..nb_personnel] of PersonnelType: T;             % mapping from employee to personnel type
 array[1..nb_personnel] of set of 1..nb_days: F;         % granted holidays per employee 
 
@@ -189,7 +190,7 @@ output
        ["holidays:"] ++ [show(H)] ++ ["\n"] ++
        [
          if w == 1 then 
-             "assistant:" ++ show(p) ++ " " 
+             "assistant_id:" ++ show(personnel_id[p]) ++ " " 
           ++ "type:" ++ show(T[p]) ++ " " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++

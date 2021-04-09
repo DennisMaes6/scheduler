@@ -31,6 +31,7 @@ enum PersonnelType = {
 
 int: nb_personnel;
 set of 1..nb_personnel: P = 1..nb_personnel;            % employees
+array[1..nb_personnel] of int: personnel_id;            % mapping from employee to external id
 array[1..nb_personnel] of set of 1..nb_days: F;         % granted holidays per employee 
 
 % schedule
@@ -117,7 +118,7 @@ output
        ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
          if d = 1 then 
-             "assistant:" ++ show(p) ++ " " 
+             "assistant_id:" ++ show(personnel_id[p]) ++ " " 
           ++ "type:JA " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++
