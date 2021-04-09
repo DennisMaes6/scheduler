@@ -2,16 +2,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { AssistantInstance } from './AssistantInstance';
+import type { Assistant } from './Assistant';
+import type { Day } from './Day';
 
 /**
  * Holds the instance data for scheduling.
  */
 export type InstanceData = {
-    assistants: Array<AssistantInstance>;
     /**
-     * The number of weeks to be scheduled in this instance
+     * The assistant instances representing the assistants for which to produce a schedule.
      */
-    nb_weeks: number;
-    holidays: Array<number>;
+    assistants: Array<Assistant>;
+    /**
+     * The days for which to produce a schedule.
+     */
+    days: Array<Day>;
 }

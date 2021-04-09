@@ -11,9 +11,13 @@ export type IndividualSchedule = {
     /**
      * The identification number of the assistant for which this is an individual schedule.
      */
-    assistant_id?: number;
+    assistant_id: number;
     /**
-     * An array as long as the number of days of this schedule. Contains all the assignments that have been scheduled to this assistant.
+     * The workload of this inidividual schedule. Used when calculating the fairness score.
      */
-    assignments?: Array<Assignment>;
+    workload: number;
+    /**
+     * Contains all the individual assignments of this individual schedule.
+     */
+    assignments: Array<Assignment>;
 }

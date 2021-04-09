@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 /**
- * The different assistant types.
+ * The skill category of an assistant.
  */
 export enum AssistantType {
     JA = 'JA',

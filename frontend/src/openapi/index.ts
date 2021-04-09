@@ -6,8 +6,8 @@ export { OpenAPI } from './core/OpenAPI';
 
 export type { Assignment } from './models/Assignment';
 export type { Assistant } from './models/Assistant';
-export type { AssistantInstance } from './models/AssistantInstance';
 export { AssistantType } from './models/AssistantType';
+export type { Day } from './models/Day';
 export type { IndividualSchedule } from './models/IndividualSchedule';
 export type { InstanceData } from './models/InstanceData';
 export type { ModelParameters } from './models/ModelParameters';

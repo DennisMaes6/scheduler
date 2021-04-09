@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 /**
- * The different shift types that can be scheduled, including the free shift.
+ * Identifies a specific shift type. Includes the FREE shift type.
  */
 export enum ShiftType {
     JAEV = 'JAEV',
