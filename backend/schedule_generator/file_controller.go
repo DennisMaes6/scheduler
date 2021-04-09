@@ -10,7 +10,6 @@ import (
 
 func writeData(file *os.File, params model.ModelParameters, data model.InstanceData) error {
 
-	sort.Sort(ById(data.Assistants))
 	sort.Sort(ByShiftType(params.ShiftTypeParameters))
 
 	skeleton := `
@@ -126,7 +125,6 @@ func writeJaevData(file *os.File,
 	data model.InstanceData) error {
 
 	jas := filterAssistant(model.JA, data.Assistants) // consider only assistants of type JA
-	sort.Sort(ById(jas))
 
 	skeleton := `
 		nb_weeks = %d;

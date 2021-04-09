@@ -2,21 +2,6 @@ package schedule_generator
 
 import "github.com/jorensjongers/scheduler/backend/model"
 
-// Sort interface methods for assistants
-type ById []model.Assistant
-
-func (a ById) Len() int {
-	return len(a)
-}
-
-func (a ById) Less(i, j int) bool {
-	return a[i].Id < a[j].Id
-}
-
-func (a ById) Swap(i, j int) {
-	a[i], a[j] = a[j], a[i]
-}
-
 // Sort interface methods for shift type parameters
 type ByShiftType []model.ShiftTypeModelParameters
 
