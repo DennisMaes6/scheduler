@@ -130,7 +130,7 @@ func writeJaevData(file *os.File,
 
 	skeleton := `
 		nb_weeks = %d;
-		H = {%s};
+		H = %s;
 		nb_personnel = %d;
 		personnel_id = %s;
 		schedule = [|%s];
