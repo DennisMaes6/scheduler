@@ -67,7 +67,7 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
-			CREATE TABLE IF NOT EXISTS assistant_instance (
+			CREATE TABLE IF NOT EXISTS assistant (
 				id INTEGER PRIMARY KEY,
 				name TEXT NOT NULL,
 				type TEXT NOT NULL,
@@ -140,7 +140,7 @@ func initializeData(db *sql.DB) error {
 	}
 
 	initAIQuery := `
-		INSERT or IGNORE INTO assistant_instance(id, name, type, free_days)
+		INSERT or IGNORE INTO assistant(id, name, type, free_days)
 		VALUES (?, ?, ?, ?)
 	`
 	for _, ai := range initialInstanceData.Assistants {
