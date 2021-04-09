@@ -188,7 +188,6 @@ output
        [
          if w == 1 then 
              "assistant_id:" ++ show(personnel_id[p]) ++ " " 
-          ++ "type:" ++ show(T[p]) ++ " " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++
          if fix(X[p, FREE, w]) == 1 

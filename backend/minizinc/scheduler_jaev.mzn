@@ -113,13 +113,11 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output  
-       ["balance_score:"] ++ [show(z)] ++ ["\n"] ++
+       ["balance_score:"] ++ [show(min(z))] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
-       ["nb_days:"] ++ [show(nb_days)] ++ ["\n"] ++
        [
          if d = 1 then 
              "assistant_id:" ++ show(personnel_id[p]) ++ " " 
-          ++ "type:JA " 
           ++ "workload:" ++ show(workload[p]) ++ " " 
          else "" endif ++
 

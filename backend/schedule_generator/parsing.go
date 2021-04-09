@@ -75,19 +75,19 @@ func extractIndividualSchedules(scheduleStr string) ([]untaggedIndividualSchedul
 			return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assistant id")
 		}
 
-		workload, err := strconv.ParseFloat(strings.Split(entries[2], ":")[1], 32)
+		workload, err := strconv.ParseFloat(strings.Split(entries[1], ":")[1], 32)
 		if err != nil {
 			return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assistant workload")
 		}
 
 		assignments := []untaggedAssignment{}
-		for i := 3; i < len(entries); i++ {
+		for i := 2; i < len(entries); i++ {
 			shiftType, err := parseShiftType(entries[i])
 			if err != nil {
 				return []untaggedIndividualSchedule{}, errors.Wrap(err, "failed parsing assignment")
 			}
 			assignment := untaggedAssignment{
-				dayNb:     int32(i - 2),
+				dayNb:     int32(i - 1),
 				shiftType: shiftType,
 			}
 			assignments = append(assignments, assignment)
