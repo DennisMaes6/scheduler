@@ -7,24 +7,6 @@
 
 </script>
 
-<style>
-.loader {
-    border-top-color: #3498db;
-    -webkit-animation: spinner 1.5s linear infinite;
-    animation: spinner 1.5s linear infinite;
-}
-
-@-webkit-keyframes spinner {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spinner {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
-
 <main>
     <div class="flex flex-row">
         <div class="flex flex-col space-y-5">
@@ -55,12 +37,12 @@
         </div>
 
         <div class="flex-grow container">
-            {#await Service.getSchedule()}
+            {#await Promise.all([Service.getSchedule(), Service.getInstanceData()])}
                 <div class="mt-56">
                     <p class="mx-auto w-20"> Loading... </p>
                 </div>
-            {:then schedule}
-                <ScheduleView {schedule}/>
+            {:then result}
+                <ScheduleView schedule={result[0]} data={result[1]}/>
             {:catch error}
                 <div>
                     <p style="color: red">! {error}: </p> 

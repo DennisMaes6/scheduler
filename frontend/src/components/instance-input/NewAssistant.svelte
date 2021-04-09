@@ -1,9 +1,9 @@
 <script lang="typescript">
     
-    import type { AssistantInstance } from "../../openapi";
+    import type { Assistant } from "../../openapi";
     import { AssistantType } from "../../openapi";
 
-    export let assistant: AssistantInstance
+    export let assistant: Assistant
 
     const types: AssistantType[] = Object.values(AssistantType)
 

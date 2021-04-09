@@ -1,12 +1,12 @@
 <script lang=typescript>
 
-    import type {Assignment} from '../../openapi'
-    import {ShiftType} from '../../openapi'
+    import type { Assignment } from '../../openapi'
+    import { ShiftType } from '../../openapi'
 
     export let assignment: Assignment
 
-    function getColor(assignment: ShiftType): string {
-        switch (assignment) {
+    function getColor(st: ShiftType): string {
+        switch (st) {
             case ShiftType.JAEV:
                 return "bg-yellow-400";
             case ShiftType.JANW:
@@ -29,7 +29,7 @@
 </script>
 
 <main>
-    {#if assignment.part_of_min_balance}
+    {#if assignment.part_of_min_balance && assignment.shift_type == ShiftType.FREE}
         <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default">
             <div class="text-xs text-red-500 font-bold"> ! </div>
         </div>

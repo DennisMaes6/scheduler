@@ -1,10 +1,11 @@
 <script lang=typescript>
 
-    export let day: number
-    export let holiday: boolean
+    import type { Day } from '../../openapi';
+    
+    export let day: Day
 
-    function getDay(dayNb: number): string {
-        switch (dayNb % 7) {
+    function day_of_week(day: Day): string {
+        switch (day.id % 7) {
             case 0:
                 return "Thu";
             case 1:
@@ -27,11 +28,11 @@
 
 <main>
     <div class="flex flex-col h-8 w-12 justify-end items-center cursor-default">
-        {#if day % 7 == 1}
-            <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day/7) + 1)}</p>
+        {#if day.id % 7 == 1}
+            <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day.id/7) + 1)}</p>
         {/if}
-        <div class="flex flex-row justify-items-center w-12 rounded {holiday ? "bg-yellow-200" : ""}">
-            <p class="m-auto text-xs font-bold text-black"> {getDay(day)}</p>
+        <div class="flex flex-row justify-items-center w-12 rounded {day.is_holiday ? "bg-yellow-200" : ""}">
+            <p class="m-auto text-xs font-bold text-black"> {day_of_week(day)}</p>
         </div>
     </div>
 </main>
