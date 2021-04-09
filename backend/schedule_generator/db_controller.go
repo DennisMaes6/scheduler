@@ -23,7 +23,7 @@ func newDBController() DbController {
 func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 
 	balanceScoresQuery := `
-		SELECT (min_balance, min_balance_jaev)
+		SELECT min_balance, min_balance_jaev
 		FROM model_parameters
 		WHERE id = 1
 	`
@@ -173,7 +173,7 @@ func (c DbController) SetInstanceData(data model.InstanceData) error {
 func (c DbController) getAssistants() ([]model.Assistant, error) {
 
 	getAssistantsQuery := `
-		SELECT (id, name, type, free_days)
+		SELECT id, name, type, free_days
 		FROM assistant
 	`
 
@@ -221,7 +221,7 @@ func (c DbController) getAssistants() ([]model.Assistant, error) {
 func (c DbController) getDays() ([]model.Day, error) {
 
 	getDaysQuery := `
-		SELECT (id, date, is_holiday)
+		SELECT id, date, is_holiday
 		FROM day
 	`
 
