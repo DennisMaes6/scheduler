@@ -58,7 +58,7 @@ func extractFairnessScore(scheduleStr string) (float64, error) {
 }
 
 func extractBalanceScore(scheduleStr string) (int, error) {
-	minBalanceLines := filterLines(strings.Split(scheduleStr, "\n"), "min_balance")
+	minBalanceLines := filterLines(strings.Split(scheduleStr, "\n"), "balance_score")
 	return strconv.Atoi(strings.Split(minBalanceLines[0], ":")[1])
 }
 
