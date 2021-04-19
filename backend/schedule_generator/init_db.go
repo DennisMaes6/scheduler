@@ -75,10 +75,20 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
+			CREATE TABLE IF NOT EXISTS schedule (
+				id INTEGER PRIMARY_KEY,
+				fairness_score REAL NOT NULL,
+				balance_score INTEGER NOT NULL,
+				jaev_fairness_score REAL NOT NULL,
+				jaev_balance_score REAL NOT NULL
+			)
+		`,
+		`
 			CREATE TABLE IF NOT EXISTS indivudual_schedule (
 				id INTEGER PRIMARY_KEY,
 				assistant_id INTEGER NOT NULL,
-				workload REAL NOT NULL
+				workload REAL NOT NULL,
+				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE
 			)
 		`,
 		`
