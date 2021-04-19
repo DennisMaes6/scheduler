@@ -11,15 +11,21 @@
                 return "bg-yellow-400";
             case ShiftType.JANW:
                 return "bg-green-400";
-            case ShiftType.JAWH:
+            case ShiftType.JAWE:
+                return "bg-red-500";
+            case ShiftType.JAHO:
                 return "bg-red-500";
             case ShiftType.SAEW:
                 return "bg-green-500";
-            case ShiftType.SAWH:
+            case ShiftType.SAWE:
+                return "bg-red-600";
+            case ShiftType.SAHO:
                 return "bg-red-600";
             case ShiftType.CALL:
                 return "bg-green-600";
-            case ShiftType.TSPT:
+            case ShiftType.TPWE:
+                return "bg-red-700";
+            case ShiftType.TPHO:
                 return "bg-red-700";
             case ShiftType.FREE:
                 return "bg-gray-100";
