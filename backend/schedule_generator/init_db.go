@@ -84,9 +84,8 @@ func createTables(db *sql.DB) error {
 			)
 		`,
 		`
-			CREATE TABLE IF NOT EXISTS indivudual_schedule (
-				id INTEGER PRIMARY_KEY,
-				assistant_id INTEGER NOT NULL,
+			CREATE TABLE IF NOT EXISTS individual_schedule (
+				assistant_id INTEGER PRIMARY_KEY,
 				workload REAL NOT NULL,
 				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE
 			)
