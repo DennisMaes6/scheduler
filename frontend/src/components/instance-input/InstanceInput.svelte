@@ -18,12 +18,66 @@
         day.is_holiday = !day.is_holiday
         data.days = data.days
     }
-    
+
+    function removeWeek() {
+        data.days = data.days.slice(0, data.days.length - 7)
+    }
+
+    function addWeek() {
+        data.days.push(
+            {
+                id: data.days.length + 1,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 2,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 3,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 4,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 5,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 6,
+                date: "todo",
+                is_holiday: false
+            },
+            {
+                id: data.days.length + 7,
+                date: "todo",
+                is_holiday: false
+            },
+        )
+        console.log(data.days)
+        data.days = data.days
+    }
+
 </script>
 
 <main>
     <div class="flex flex-col space-y-2"> 
         <p class="font-semibold text-sm cursor-default"> Instance data </p>
+
+        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Number of weeks </p>
+        <div class="flex flex-row justify-start space-x-4">
+            <Button callback={() => removeWeek()}> - </Button>
+            <p class="font-semibold text-sm text-black-500 cursor-default"> {data.days.length / 7} </p>
+            <Button callback={() => addWeek()}> + </Button>
+        </div>
+        <Button callback={() => {handleSubmit()}}> Submit </Button>
         <Modal>
             <div slot="trigger" let:open> 
                 <Button callback={open}> Edit holidays </Button>
