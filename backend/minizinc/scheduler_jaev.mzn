@@ -14,10 +14,13 @@ set of D: H;   % holidays
 % shift types
 enum ShiftType = {
   JANW,
-  JAWH,
+  JAWE,
+  JAHO,
   SAEW,
-  SAWH,
-  TSPT,
+  SAWE,
+  SAHO,
+  TPWE,
+  TPHO,
   CALL,
   FREE
 };
@@ -67,11 +70,15 @@ constraint forall(p in P, d in 1..7)(X[p, d] = 1 -> schedule[p, d+3] != JANW);
 constraint forall(p in P, d in nb_days-6..nb_days)(X[p, d] = 1 -> schedule[p, d-3] != JANW); 
 constraint forall(p in P, d in 8..nb_days-7)(X[p, d] = 1 -> schedule[p, d-3] != JANW /\ schedule[p, d+3] != JANW); 
 
-% HC6 - no assignments one days before or after weekends
-constraint forall(p in P)(X[p, 1] = 1 -> schedule[p, 2] != JAWH); 
-constraint forall(p in P)(X[p, nb_days] = 1 -> schedule[p, nb_days-1] != JAWH); 
-constraint forall(p in P, d in 2..nb_days-1)(X[p, d] = 1 -> schedule[p, d-1] != JAWH /\ schedule[p, d+1] != JAWH); 
-           
+% HC6 - no assignments one day before or after weekends
+constraint forall(p in P)(X[p, 1] = 1 -> schedule[p, 2] != JAWE); 
+constraint forall(p in P)(X[p, nb_days] = 1 -> schedule[p, nb_days-1] != JAWE); 
+constraint forall(p in P, d in 2..nb_days-1)(X[p, d] = 1 -> schedule[p, d-1] != JAWE /\ schedule[p, d+1] != JAWE); 
+
+% HC6 - no assignments one day before or after holidays
+constraint forall(p in P)(X[p, 1] = 1 -> schedule[p, 2] != JAHO); 
+constraint forall(p in P)(X[p, nb_days] = 1 -> schedule[p, nb_days-1] != JAHO); 
+constraint forall(p in P, d in 2..nb_days-1)(X[p, d] = 1 -> schedule[p, d-1] != JAHO /\ schedule[p, d+1] != JAHO);           
 
 % optimization objective: fairness
 array[P] of var float: workload;
@@ -127,9 +134,12 @@ output
          endif ++
          if schedule[p, d] == JANW then "JANW " else "" endif ++
          if schedule[p, d] == SAEW then "SAEW " else "" endif ++
-         if schedule[p, d] == JAWH then "JAWH " else "" endif ++
-         if schedule[p, d] == SAWH then "SAWH " else "" endif ++
-         if schedule[p, d] == TSPT then "TSPT " else "" endif ++
+         if schedule[p, d] == JAWE then "JAWE " else "" endif ++
+         if schedule[p, d] == JAHO then "JAHO " else "" endif ++
+         if schedule[p, d] == SAWE then "SAWE " else "" endif ++
+         if schedule[p, d] == SAHO then "SAHO " else "" endif ++
+         if schedule[p, d] == TPWE then "TPWE " else "" endif ++
+         if schedule[p, d] == TPHO then "TPHO " else "" endif ++
          if schedule[p, d] == CALL then "CALL " else "" endif ++
          if d == nb_days then "\n" else "" endif 
          | p in P, d in D

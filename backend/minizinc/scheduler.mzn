@@ -90,17 +90,17 @@ array[1..nb_personnel, ShiftType, D] of var 0..1: Xh;
 %%%%%%%%%%%%%%%
 
 % HC1 - shift requirements met for every shift on every day
-constraint forall(s in (S_week intersect S_weekend), w in W)((sum(p in P)(X[p, s, w])) = R[s]);
+constraint forall(s in (S_week union S_weekend), w in W)((sum(p in P)(X[p, s, w])) = R[s]);
 constraint forall(s in S_holiday, d in H)((sum(p in P)(Xh[p, s, d])) = R[s]);
 
 % HC2 - only qualified personnel allowed
-constraint forall(s in (S_week intersect S_weekend), p in P, w in W)(X[p, s, w] = 1 -> T[p] in Q[s]);
+constraint forall(s in (S_week union S_weekend), p in P, w in W)(X[p, s, w] = 1 -> T[p] in Q[s]);
 constraint forall(s in S_holiday, p in P, d in H)(Xh[p, s, d] = 1 -> T[p] in Q[s]);
 
 % HC3 - exaclty one assignment per personnel member on every week
-constraint forall(p in P, w in W)(sum(s in S_full)(X[p, s, w]) = 1);
+constraint forall(p in P, w in W)(sum(s in (S_week union S_weekend union {FREE}))(X[p, s, w]) = 1);
 constraint forall(p in P, d in H)(sum(s in S_holiday)(Xh[p, s, d]) <= 1);
-constraint forall(p in P, h in H)(sum(sh in S_holiday)(Xh[p, sh, h]) = 1 -> sum(s in (S_week intersect S_weekend))(X[p, s, day_to_week(h)]) = 0);
+constraint forall(p in P, h in H)(sum(sh in S_holiday)(Xh[p, sh, h]) = 1 -> sum(s in (S_week union S_weekend))(X[p, s, day_to_week(h)]) = 0);
 
 % HC6 - no assignments on free days
 constraint forall(s in S_week, p in P, w in W)(X[p, s, w] = 1 -> (7*w-6..7*w intersect F[p] = {}));
@@ -108,8 +108,8 @@ constraint forall(s in S_weekend, p in P, w in W)(X[p, s, w] = 1 -> (7*w-5..7*w-
 constraint forall(s in S_holiday, p in P, d in H)(Xh[p, s, d] = 1 -> not(d in F[p]));
 
 % HC7 - no consecutive assignements
-constraint forall(p in P, w in 1..nb_weeks-1, s in (S_week intersect S_weekend))(
-             exists(s_prev in (S_week intersect S_weekend))(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
+constraint forall(p in P, w in 1..nb_weeks-1, s in (S_week union S_weekend))(
+             exists(s_prev in (S_week union S_weekend))(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
            );
 constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h-1)]) = 0
@@ -119,12 +119,12 @@ constraint forall(p in P, h in H where h mod 7 = 0 /\ h < 7*nb_weeks)(
 );
            
 % HC8 - respect max assignments per shift type
-constraint forall(p in P, s in (S_week intersect S_weekend))(sum(w in W)(X[p, s, w]) <= max_assignments[s]);
+constraint forall(p in P, s in (S_week union S_weekend))(sum(w in W)(X[p, s, w]) <= max_assignments[s]);
 constraint forall(p in P, s in S_holiday)(sum(h in H)(Xh[p, s, h]) <= max_assignments[s]);     
 
 % optimization objective: fairness
 array[P] of var float: workload;
-constraint forall(p in P)(workload[p] = (sum(w in W, s in (S_week intersect S_weekend))(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p])));
+constraint forall(p in P)(workload[p] = (sum(w in W, s in (S_week union S_weekend))(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p])));
 
 var float: fairness_score;
 constraint fairness_score = max(workload) - min(workload);
@@ -172,7 +172,7 @@ constraint forall(p in P, w in W)(
 
 predicate after_first(1..nb_personnel: p, 1..nb_days: d) =
   exists(h in H, s in S_holiday)(d > h /\ Xh[p, s, h] = 1) \/
-  exists(w in W, s in (S_week intersect S_weekend))(d > 7*w /\ X[p, s, w] = 1);
+  exists(w in W, s in (S_week union S_weekend))(d > 7*w /\ X[p, s, w] = 1);
            
 array[P, 1..nb_days] of var 0..nb_days: z;
 constraint forall(p in P, d in 1..nb_days)(
@@ -223,6 +223,6 @@ output
          if fix(X[p, SAWE, w]) == 1 then "FREE SAWE SAWE FREE FREE FREE FREE " else "" endif ++
          if fix(X[p, TPWE, w]) == 1 then "FREE TPWE TPWE FREE FREE FREE FREE " else "" endif ++
          if fix(X[p, CALL, w]) == 1 then "CALL CALL CALL CALL CALL CALL CALL " else "" endif ++
-         if w == nb_weeks then "\n" else "" endif 
+         if w == nb_weeks then "\n" else "" endif
          | p in P, w in W
        ];
