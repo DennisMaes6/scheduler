@@ -2,6 +2,7 @@ package schedule_generator
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -318,4 +319,136 @@ func stringToIntArray(str string) ([]int32, error) {
 	}
 
 	return result, nil
+}
+
+func (c DbController) getSchedule() (model.Schedule, error) {
+
+	scheduleQuery := `
+		SELECT fairness_score, balance_score, jaev_fairness_score, jaev_balance_score
+		FROM schedule
+		WHERE id = 1
+	`
+
+	var (
+		fairnessScore     float32
+		balanceScore      int
+		jaevFairnessScore float32
+		jaevBalanceScore  int
+	)
+
+	err := c.db.QueryRow(scheduleQuery).Scan(
+		&fairnessScore,
+		&balanceScore,
+		&jaevFairnessScore,
+		&jaevBalanceScore,
+	)
+
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed getting schedule scores from db")
+	}
+
+	individualSchedules, err := c.getIndividualSchedules()
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed getting individual schedules from db")
+	}
+
+	return model.Schedule{
+		FairnessScore:       fairnessScore,
+		BalanceScore:        int32(balanceScore),
+		JaevFairnessScore:   jaevFairnessScore,
+		JaevBalanceScore:    int32(jaevBalanceScore),
+		IndividualSchedules: individualSchedules,
+	}, nil
+
+}
+
+func (c DbController) getIndividualSchedules() ([]model.IndividualSchedule, error) {
+	isQuery := `
+		SELECT assistant_id, workload 
+		FROM individual_schedule
+	`
+
+	rows, err := c.db.Query(isQuery)
+	if err != nil {
+		return []model.IndividualSchedule{}, err
+	}
+
+	result := []model.IndividualSchedule{}
+	for rows.Next() {
+		var (
+			assistantId int32
+			workload    float32
+		)
+
+		if err := rows.Scan(&assistantId, &workload); err != nil {
+			return []model.IndividualSchedule{}, err
+		}
+
+		assignments, err := c.getAssignments(assistantId)
+		if err != nil {
+			return []model.IndividualSchedule{},
+				errors.Wrap(err, fmt.Sprintf("failed getting assignments for assistant with id %d", assistantId))
+		}
+
+		is := model.IndividualSchedule{
+			AssistantId: assistantId,
+			Workload:    workload,
+			Assignments: assignments,
+		}
+		result = append(result, is)
+	}
+
+	if rows.Err() != nil {
+		return []model.IndividualSchedule{}, err
+	}
+
+	return result, nil
+}
+
+func (c DbController) getAssignments(assistantId int32) ([]model.Assignment, error) {
+
+	assignmentsQuery := `
+		SELECT day_nb, shift_type
+		FROM assignment
+		WHERE assistant_id = ?
+		ORDER BY day_nb ASC
+	`
+
+	rows, err := c.db.Query(assignmentsQuery, assistantId)
+	if err != nil {
+		return []model.Assignment{}, err
+	}
+
+	result := []model.Assignment{}
+	for rows.Next() {
+		var (
+			dayNb        int32
+			rawShiftType string
+		)
+
+		if err := rows.Scan(&dayNb, &rawShiftType); err != nil {
+			return []model.Assignment{}, errors.Wrap(err, "failed scanning assignment")
+		}
+
+		shiftType, err := parseShiftType(rawShiftType)
+		if err != nil {
+			return []model.Assignment{}, errors.Wrap(err, fmt.Sprintf("failed parsing shift type: %s", rawShiftType))
+		}
+
+		assignment := model.Assignment{
+			DayNb:            dayNb,
+			ShiftType:        shiftType,
+			PartOfMinBalance: false, // TODO
+		}
+
+		result = append(result, assignment)
+
+	}
+
+	if rows.Err() != nil {
+		return []model.Assignment{}, err
+	}
+
+	return result, nil
+
 }
