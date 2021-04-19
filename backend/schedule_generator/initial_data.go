@@ -12,8 +12,13 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 			MaxBuffer:     1,
 		},
 		{
-			ShiftType:     model.JAWH,
+			ShiftType:     model.JAWE,
 			ShiftWorkload: 2,
+			MaxBuffer:     1,
+		},
+		{
+			ShiftType:     model.JAHO,
+			ShiftWorkload: 1,
 			MaxBuffer:     1,
 		},
 		{
@@ -22,13 +27,23 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 			MaxBuffer:     1,
 		},
 		{
-			ShiftType:     model.SAWH,
+			ShiftType:     model.SAWE,
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{
-			ShiftType:     model.TSPT,
+			ShiftType:     model.SAHO,
+			ShiftWorkload: 1,
+			MaxBuffer:     1,
+		},
+		{
+			ShiftType:     model.TPWE,
 			ShiftWorkload: 3,
+			MaxBuffer:     1,
+		},
+		{
+			ShiftType:     model.TPHO,
+			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{

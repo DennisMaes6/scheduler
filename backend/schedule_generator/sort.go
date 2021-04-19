@@ -7,10 +7,13 @@ type ByShiftType []model.ShiftTypeModelParameters
 
 var shiftTypeOrder []model.ShiftType = []model.ShiftType{
 	model.JANW,
-	model.JAWH,
+	model.JAWE,
+	model.JAHO,
 	model.SAEW,
-	model.SAWH,
-	model.TSPT,
+	model.SAWE,
+	model.SAHO,
+	model.TPWE,
+	model.TPHO,
 	model.CALL,
 }
 

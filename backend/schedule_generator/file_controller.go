@@ -15,6 +15,7 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 	skeleton := `
 		nb_weeks = %d;
 		H = %s;
+		nb_holidays = %d;
 		nb_personnel = %d;
 		personnel_id = %s;
 		T = %s;
@@ -27,6 +28,7 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 	content := fmt.Sprintf(skeleton,
 		len(data.Days)/7,
 		buildHolidaysString(data.Days),
+		nbHolidays(data.Days),
 		len(data.Assistants),
 		buildIdsString(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
@@ -42,6 +44,16 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 
 	return nil
 
+}
+
+func nbHolidays(days []model.Day) int {
+	result := 0
+	for _, day := range days {
+		if day.IsHoliday {
+			result += 1
+		}
+	}
+	return result
 }
 
 func buildHolidaysString(days []model.Day) string {
