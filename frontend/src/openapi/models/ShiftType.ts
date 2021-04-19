@@ -7,11 +7,14 @@
  */
 export enum ShiftType {
     JAEV = 'JAEV',
-    JAWH = 'JAWH',
+    JAWE = 'JAWE',
+    JAHO = 'JAHO',
     JANW = 'JANW',
     SAEW = 'SAEW',
-    SAWH = 'SAWH',
-    TSPT = 'TSPT',
+    SAWE = 'SAWE',
+    SAHO = 'SAHO',
+    TPWE = 'TPWE',
+    TPHO = 'TPHO',
     CALL = 'CALL',
     FREE = 'FREE',
 }
