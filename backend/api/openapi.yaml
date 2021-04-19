@@ -313,11 +313,14 @@ components:
       description: Identifies a specific shift type. Includes the FREE shift type.
       enum:
       - JAEV
-      - JAWH
+      - JAWE
+      - JAHO
       - JANW
       - SAEW
-      - SAWH
-      - TSPT
+      - SAWE
+      - SAHO
+      - TPWE
+      - TPHO
       - CALL
       - FREE
       type: string
