@@ -188,6 +188,8 @@ func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Reques
 
 // DbScheduleGet - Returns the schedule as found in the db.
 func (c *DefaultApiController) DbScheduleGet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
 	result, err := c.service.DbScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
