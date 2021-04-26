@@ -182,7 +182,7 @@ func buildScheduleString(schedule firstStageSchedule, jas []model.Assistant) str
 	for _, is := range schedule.individualSchedules {
 		if idIn(is.assistantId, jas) {
 			result += "\n\t\t\t"
-			for _, assignment := range is.assigments {
+			for _, assignment := range is.assignments {
 				result += fmt.Sprintf("%s, ", string(assignment.shiftType))
 			}
 			result += " |"

@@ -347,7 +347,7 @@ func (c DbController) getSchedule() (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed getting schedule scores from db")
 	}
 
-	individualSchedules, err := c.getIndividualSchedules()
+	individualSchedules, err := c.getIndividualSchedules(balanceScore)
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed getting individual schedules from db")
 	}
@@ -362,7 +362,7 @@ func (c DbController) getSchedule() (model.Schedule, error) {
 
 }
 
-func (c DbController) getIndividualSchedules() ([]model.IndividualSchedule, error) {
+func (c DbController) getIndividualSchedules(balanceScore int) ([]model.IndividualSchedule, error) {
 	isQuery := `
 		SELECT assistant_id, workload 
 		FROM individual_schedule
@@ -373,7 +373,7 @@ func (c DbController) getIndividualSchedules() ([]model.IndividualSchedule, erro
 		return []model.IndividualSchedule{}, err
 	}
 
-	result := []model.IndividualSchedule{}
+	result := []untaggedIndividualSchedule{}
 	for rows.Next() {
 		var (
 			assistantId int32
@@ -390,10 +390,10 @@ func (c DbController) getIndividualSchedules() ([]model.IndividualSchedule, erro
 				errors.Wrap(err, fmt.Sprintf("failed getting assignments for assistant with id %d", assistantId))
 		}
 
-		is := model.IndividualSchedule{
-			AssistantId: assistantId,
-			Workload:    workload,
-			Assignments: assignments,
+		is := untaggedIndividualSchedule{
+			assistantId: assistantId,
+			workload:    workload,
+			assignments: assignments,
 		}
 		result = append(result, is)
 	}
@@ -402,10 +402,10 @@ func (c DbController) getIndividualSchedules() ([]model.IndividualSchedule, erro
 		return []model.IndividualSchedule{}, err
 	}
 
-	return result, nil
+	return tagIndividualSchedules(result, int32(balanceScore)), nil
 }
 
-func (c DbController) getAssignments(assistantId int32) ([]model.Assignment, error) {
+func (c DbController) getAssignments(assistantId int32) ([]untaggedAssignment, error) {
 
 	assignmentsQuery := `
 		SELECT day_nb, shift_type
@@ -416,10 +416,10 @@ func (c DbController) getAssignments(assistantId int32) ([]model.Assignment, err
 
 	rows, err := c.db.Query(assignmentsQuery, assistantId)
 	if err != nil {
-		return []model.Assignment{}, err
+		return []untaggedAssignment{}, err
 	}
 
-	result := []model.Assignment{}
+	result := []untaggedAssignment{}
 	for rows.Next() {
 		var (
 			dayNb        int32
@@ -427,26 +427,24 @@ func (c DbController) getAssignments(assistantId int32) ([]model.Assignment, err
 		)
 
 		if err := rows.Scan(&dayNb, &rawShiftType); err != nil {
-			return []model.Assignment{}, errors.Wrap(err, "failed scanning assignment")
+			return []untaggedAssignment{}, errors.Wrap(err, "failed scanning assignment")
 		}
 
 		shiftType, err := parseShiftType(rawShiftType)
 		if err != nil {
-			return []model.Assignment{}, errors.Wrap(err, fmt.Sprintf("failed parsing shift type: %s", rawShiftType))
+			return []untaggedAssignment{}, errors.Wrap(err, fmt.Sprintf("failed parsing shift type: %s", rawShiftType))
 		}
 
-		assignment := model.Assignment{
-			DayNb:            dayNb,
-			ShiftType:        shiftType,
-			PartOfMinBalance: false, // TODO
+		assignment := untaggedAssignment{
+			dayNb:     dayNb,
+			shiftType: shiftType,
 		}
 
 		result = append(result, assignment)
-
 	}
 
 	if rows.Err() != nil {
-		return []model.Assignment{}, err
+		return []untaggedAssignment{}, err
 	}
 
 	return result, nil

@@ -18,7 +18,7 @@ type firstStageSchedule struct {
 type untaggedIndividualSchedule struct {
 	assistantId int32
 	workload    float32
-	assigments  []untaggedAssignment
+	assignments []untaggedAssignment
 }
 
 type untaggedAssignment struct {
@@ -96,7 +96,7 @@ func extractIndividualSchedules(scheduleStr string) ([]untaggedIndividualSchedul
 		is := untaggedIndividualSchedule{
 			assistantId: int32(assistantId),
 			workload:    float32(workload),
-			assigments:  assignments,
+			assignments: assignments,
 		}
 
 		result = append(result, is)
@@ -209,7 +209,7 @@ func tagIndividualSchedules(iss []untaggedIndividualSchedule, balanceScore int32
 	for _, uis := range iss {
 		streaks := streaksOfLength(findStreaks(uis), balanceScore)
 		taggedAssignments := []model.Assignment{}
-		for _, ua := range uis.assigments {
+		for _, ua := range uis.assignments {
 			taggedAssignment := model.Assignment{
 				DayNb:            ua.dayNb,
 				ShiftType:        ua.shiftType,
@@ -245,7 +245,7 @@ func findStreaks(uis untaggedIndividualSchedule) []streak {
 
 	streaks := []streak{}
 
-	for _, ua := range uis.assigments {
+	for _, ua := range uis.assignments {
 		if firstShiftDone {
 			if !streakActive && (ua.shiftType == model.FREE || ua.shiftType == model.JAEV) {
 				firstDay = int32(ua.dayNb)

@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/jorensjongers/scheduler/backend/model"
 	"github.com/pkg/errors"
@@ -55,50 +54,52 @@ func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) e
 }
 
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
+	return s.dbc.getSchedule()
+	/*
+		if !cached {
 
-	if !cached {
+			if err := s.generateDataFile(); err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed generating data file")
+			}
 
-		if err := s.generateDataFile(); err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed generating data file")
+			resStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleArgs)
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+			}
+
+			if strings.Contains(resStr, "UNSATISFIABLE") {
+				return model.Schedule{}, errors.New("model unsatisfiable")
+			}
+
+			res, err := parseFirstStageSchedule(resStr)
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
+			}
+
+			if err := s.generateJaevDataFile(res); err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed generating jaev data file")
+			}
+
+			jaevResStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleJaevArgs)
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
+			}
+
+			if strings.Contains(jaevResStr, "UNSATISFIABLE") {
+				return model.Schedule{}, errors.New("JAEV model unsatisfiable")
+			}
+
+			combinedRes, err := parseAndCombineSchedule(jaevResStr, res)
+			if err != nil {
+				return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
+			}
+
+			cachedSchedule = combinedRes
+			//cached = true
 		}
 
-		resStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleArgs)
-		if err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
-		}
-
-		if strings.Contains(resStr, "UNSATISFIABLE") {
-			return model.Schedule{}, errors.New("model unsatisfiable")
-		}
-
-		res, err := parseFirstStageSchedule(resStr)
-		if err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
-		}
-
-		if err := s.generateJaevDataFile(res); err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed generating jaev data file")
-		}
-
-		jaevResStr, err := executeGenerateScheduleCmd(generateScheduleCmd, generateScheduleJaevArgs)
-		if err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed generating schedule")
-		}
-
-		if strings.Contains(jaevResStr, "UNSATISFIABLE") {
-			return model.Schedule{}, errors.New("JAEV model unsatisfiable")
-		}
-
-		combinedRes, err := parseAndCombineSchedule(jaevResStr, res)
-		if err != nil {
-			return model.Schedule{}, errors.Wrap(err, "failed parsing schedule")
-		}
-
-		cachedSchedule = combinedRes
-		//cached = true
-	}
-
-	return cachedSchedule, nil
+		return cachedSchedule, nil
+	*/
 }
 
 func (s ScheduleGenerator) generateDataFile() error {
