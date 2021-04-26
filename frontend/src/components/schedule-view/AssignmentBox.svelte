@@ -36,7 +36,7 @@
 
 <main>
     {#if assignment.part_of_min_balance && assignment.shift_type == ShiftType.FREE}
-        <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default">
+        <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default bg-gray-100">
             <div class="text-xs text-red-500 font-bold"> ! </div>
         </div>
     {:else}
