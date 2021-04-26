@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const fileName = "sqlite-database-new.db"
+const fileName = "real-instance.db"
 
 func createDB() *sql.DB {
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
