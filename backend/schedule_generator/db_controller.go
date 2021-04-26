@@ -357,12 +357,12 @@ func (c DbController) getSchedule() (model.Schedule, error) {
 		BalanceScore:        int32(balanceScore),
 		JaevFairnessScore:   jaevFairnessScore,
 		JaevBalanceScore:    int32(jaevBalanceScore),
-		IndividualSchedules: individualSchedules,
+		IndividualSchedules: tagIndividualSchedules(individualSchedules, int32(balanceScore)),
 	}, nil
 
 }
 
-func (c DbController) getIndividualSchedules(balanceScore int) ([]model.IndividualSchedule, error) {
+func (c DbController) getIndividualSchedules(balanceScore int) ([]untaggedIndividualSchedule, error) {
 	isQuery := `
 		SELECT assistant_id, workload 
 		FROM individual_schedule
@@ -370,7 +370,7 @@ func (c DbController) getIndividualSchedules(balanceScore int) ([]model.Individu
 
 	rows, err := c.db.Query(isQuery)
 	if err != nil {
-		return []model.IndividualSchedule{}, err
+		return []untaggedIndividualSchedule{}, err
 	}
 
 	result := []untaggedIndividualSchedule{}
@@ -381,12 +381,12 @@ func (c DbController) getIndividualSchedules(balanceScore int) ([]model.Individu
 		)
 
 		if err := rows.Scan(&assistantId, &workload); err != nil {
-			return []model.IndividualSchedule{}, err
+			return []untaggedIndividualSchedule{}, err
 		}
 
 		assignments, err := c.getAssignments(assistantId)
 		if err != nil {
-			return []model.IndividualSchedule{},
+			return []untaggedIndividualSchedule{},
 				errors.Wrap(err, fmt.Sprintf("failed getting assignments for assistant with id %d", assistantId))
 		}
 
@@ -399,10 +399,10 @@ func (c DbController) getIndividualSchedules(balanceScore int) ([]model.Individu
 	}
 
 	if rows.Err() != nil {
-		return []model.IndividualSchedule{}, err
+		return []untaggedIndividualSchedule{}, err
 	}
 
-	return tagIndividualSchedules(result, int32(balanceScore)), nil
+	return result, nil
 }
 
 func (c DbController) getAssignments(assistantId int32) ([]untaggedAssignment, error) {
