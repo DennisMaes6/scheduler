@@ -37,7 +37,7 @@
         </div>
 
         <div class="flex-grow container">
-            {#await Promise.all([Service.getSchedule(), Service.getInstanceData()])}
+            {#await Promise.all([Service.getDbSchedule(), Service.getInstanceData()])}
                 <div class="mt-56">
                     <p class="mx-auto w-20"> Loading... </p>
                 </div>
