@@ -51,47 +51,63 @@
 
 <div class="flex flex-col space-y-1">
     <div class="flex flex-row">
-        <div class="flex flex-none w-48">
-            <Modal>
-                <div slot="trigger" let:open>
-                    <Button callback={open}> New </Button>
-                </div>
-                <div class="my-2" slot="header">
-                    <h1 class="font-bold"> New assistant </h1>
-                </div>
-                <div class="my-2" slot="content">
-                    <NewAssistant bind:assistant={new_assistant}/>
-                </div>
-                <div class="my-5 flex flex-row justify-end space-x-2" slot="footer" let:close>
-                    <Button primary={false} callback={close}> Close </Button>
-                    <Button callback={() => {addAssistant(); close()}}> Create </Button>
-                </div>
-            </Modal>
-        </div>
-        <div class="flex flex-none w-11"></div>
-        <div class="flex flex-row space-x-1">
-            {#each data.days as day}
-                <DayHeader {day}/>
+        <div class="flex flex-col space-y-2">
+            <div class="flex flex-none w-48 mb-2">
+                <Modal>
+                    <div slot="trigger" let:open>
+                        <Button callback={open}> New </Button>
+                    </div>
+                    <div class="my-2" slot="header">
+                        <h1 class="font-bold"> New assistant </h1>
+                    </div>
+                    <div class="my-2" slot="content">
+                        <NewAssistant bind:assistant={new_assistant}/>
+                    </div>
+                    <div class="my-5 flex flex-row justify-end space-x-2" slot="footer" let:close>
+                        <Button primary={false} callback={close}> Close </Button>
+                        <Button callback={() => {addAssistant(); close()}}> Create </Button>
+                    </div>
+                </Modal>
+            </div>
+            {#each types as type}
+                {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
+                    <div class="w32 flex flex-row justify-end">
+                        <IconButton callback={() => removeAssistant(assistant)}>
+                            <span class="h-4 w-8 color-gray-500 iconify" 
+                                data-icon="ic:round-remove-circle-outline" 
+                                data-inline="false"/>
+                        </IconButton>
+                        <p class="flex flex-none w-32 text-black text-sm"> {assistant.name} </p>
+                        <p class="flex flex-none w-20 text-black text-sm"> {assistant.type} </p>
+                    </div>   
+                {/each}
             {/each}
         </div>
-
-    </div>
-    {#each types as type}
-        {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
+        <div class="flex flex-col space-y-1 overflow-x-scroll">
+            <div class="flex flex-none w-11"></div>
             <div class="flex flex-row space-x-1">
-                <IconButton callback={() => removeAssistant(assistant)}>
-                    <span class="h-4 w-X color-gray-500 iconify" 
-                          data-icon="ic:round-remove-circle-outline" 
-                          data-inline="false"/>
-                </IconButton>
-                <p class="flex flex-none w-32 text-black text-sm"> {assistant.name} </p>
-                <p class="flex flex-none w-20 text-black text-sm"> {assistant.type} </p>
                 {#each data.days as day}
-                    <div on:click={() => toggle(assistant, day.id)} class="flex-none w-12 h-6 {assistant.free_days.includes(day.id) ? "bg-yellow-400" : "bg-gray-100"} rounded cursor-pointer flex justify-center items-center">
-                        <div class="text-xs text-white font-bold"> FREE </div>
-                    </div>
+                    <DayHeader {day}/>
+                    {#if day.id % 7 === 0}
+                        <div class="flex flex-none w-4"/>
+                    {/if}
                 {/each}
             </div>
-        {/each}
-    {/each}
+            {#each types as type}
+                {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
+                    <div class="flex flex-row space-x-1">
+                        {#each data.days as day}
+                            <div on:click={() => toggle(assistant, day.id)} class="flex-none w-12 h-6 {assistant.free_days.includes(day.id) ? "bg-yellow-400" : "bg-gray-100"} rounded cursor-pointer flex justify-center items-center">
+                                <div class="text-xs text-white font-bold"> FREE </div>
+                            </div>
+                            {#if day.id % 7 === 0}
+                                <div class="flex flex-none w-4"/>
+                            {/if}
+                        {/each}
+                    </div>
+                {/each}
+            {/each}
+        </div>
+    </div>
+    
 </div>
