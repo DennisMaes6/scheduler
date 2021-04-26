@@ -16,7 +16,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Schedule'
           description: A schedule.
-      summary: Returns a generated schedule.
+      summary: Returns a schedule generated with MiniZinc.
+  /db-schedule:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns the schedule as found in the db.
   /model-parameters/get:
     get:
       responses:

@@ -8,7 +8,17 @@ servers:
 paths:
   /schedule:
     get:
-      summary: Returns a generated schedule.
+      summary: Returns a schedule generated with MiniZinc.
+      responses:
+        '200':
+          description: A schedule.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Schedule"
+  /db-schedule:
+    get:
+      summary: Returns the schedule as found in the db.
       responses:
         '200':
           description: A schedule.
