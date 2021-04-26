@@ -88,11 +88,15 @@ func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *h
 	result, err := c.service.ModelParametersGetGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -111,11 +115,15 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 	result, err := c.service.ModelParametersSetPost(r.Context(), *modelParameters)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -140,11 +148,15 @@ func (c *DefaultApiController) InstanceDataGetGet(w http.ResponseWriter, r *http
 	result, err := c.service.InstanceDataGetGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -163,11 +175,15 @@ func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *htt
 	result, err := c.service.InstanceDataSetPost(r.Context(), *instanceData)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -179,11 +195,15 @@ func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Reques
 	result, err := c.service.ScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 }
 
 // DbScheduleGet - Returns the schedule as found in the db.
@@ -193,10 +213,14 @@ func (c *DefaultApiController) DbScheduleGet(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.DbScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
 		return
 	}
 	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
 
 }
