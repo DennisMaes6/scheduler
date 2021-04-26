@@ -9,7 +9,7 @@ import { request as __request } from '../core/request';
 export class Service {
 
     /**
-     * Returns a generated schedule.
+     * Returns a schedule generated with MiniZinc.
      * @returns Schedule A schedule.
      * @throws ApiError
      */
@@ -17,6 +17,19 @@ export class Service {
         const result = await __request({
             method: 'GET',
             path: `/schedule`,
+        });
+        return result.body;
+    }
+
+    /**
+     * Returns the schedule as found in the db.
+     * @returns Schedule A schedule.
+     * @throws ApiError
+     */
+    public static async getDbSchedule(): Promise<Schedule> {
+        const result = await __request({
+            method: 'GET',
+            path: `/db-schedule`,
         });
         return result.body;
     }
