@@ -1,4 +1,4 @@
-sqlite-*.db
+*.db
 minizinc/data.dzn
 minizinc/data_jaev.dzn
 __debug_bin
