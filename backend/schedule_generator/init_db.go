@@ -13,6 +13,8 @@ import (
 const fileName = "real-instance.db"
 
 func createDB() *sql.DB {
+	newDb := false
+
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 
 		file, err := os.Create(fileName) // Create SQLite file
@@ -21,17 +23,20 @@ func createDB() *sql.DB {
 		}
 
 		file.Close()
+		newDb = true
 		log.Printf("New db file created")
 	}
 
 	sqliteDatabase, _ := sql.Open("sqlite3", fileName)
 
-	if err := createTables(sqliteDatabase); err != nil {
-		log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
-	}
+	if newDb {
+		if err := createTables(sqliteDatabase); err != nil {
+			log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
+		}
 
-	if err := initializeData(sqliteDatabase); err != nil {
-		log.Fatal(errors.Wrap(err, "failed initializing data in db"))
+		if err := initializeData(sqliteDatabase); err != nil {
+			log.Fatal(errors.Wrap(err, "failed initializing data in db"))
+		}
 	}
 
 	log.Printf("Database initialized succesfully")
