@@ -17,7 +17,7 @@
 </script>
 
 <main>
-    <form class="mt-10 flex flex-col"> 
+    <form class="flex flex-col"> 
         <p class="font-semibold text-sm cursor-default"> Model parameters </p>
         <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Minimun balance score </p>
         <InputField bind:value={modelParams.min_balance} step={1} />
@@ -35,7 +35,7 @@
             {/each}
         </div>
 
-        <div class="my-1 mx-auto">
+        <div class="my-4 mx-auto">
             <Button callback={handleSubmit}> Submit </Button>
         </div>
     </form>

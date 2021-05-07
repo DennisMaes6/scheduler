@@ -79,7 +79,6 @@
                         </IconButton>
                         <p class="flex flex-none w-32 text-black text-sm"> {assistant.name} </p>
                         <p class="flex flex-none w-20 text-black text-sm"> {assistant.type} </p>
-                        <p class="flex flex-none w-20 text-black text-sm"> {26*7 - assistant.free_days.length} </p>
                     </div>   
                 {/each}
             {/each}

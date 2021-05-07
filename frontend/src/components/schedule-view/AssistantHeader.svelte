@@ -18,9 +18,8 @@
     }
 </script>
 
-<main>
-    <div class="flex flex-row h-6 justify-between place-items-center cursor-default">
-        <p class="mx-2 {getWorkloadTextStyle()} text-xs"> {workload.toFixed(2)} </p>
-        <p class="mx-2 text-black text-xs font-bold"> {assistant.type} </p>
-    </div>
-</main>
+
+<div class="flex flex-row h-6 justify-between place-items-center cursor-default">
+    <p class="{getWorkloadTextStyle()} text-xs"> {workload.toFixed(2)} </p>
+    <p class="w-32 text-right text-black text-xs font-bold "> {assistant.name} </p>
+</div>

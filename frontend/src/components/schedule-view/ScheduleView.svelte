@@ -24,31 +24,37 @@
 
 </script>
 
-<main>
-    <div class="ml-12 font-bold text-sm">
+<main class="mx-4">
+    <div class="font-bold text-sm">
         <p> fairness score: {schedule.fairness_score.toFixed(2)} </p>
         <p> JAEV fairness score: {schedule.jaev_fairness_score.toFixed(2)} </p>
     </div>
-    <div class="ml-10 mt-5 flex flex-row pr-2">
+    <div class="mt-5 flex flex-row">
         <!-- Assistant list -->
-        <div class="flex flex-col w-32 mx-4 space-y-2">
+        <div class="flex flex-grow flex-col space-y-1 mr-4">
             <p class="mt-4 text-xs"> Workload </p>
             {#each schedule.individual_schedules as is}
                 <AssistantHeader assistant={getAssistant(is.assistant_id)} workload={is.workload} {max_workload} {min_workload}/>
             {/each}
         </div>
-        <div class="flex flex-col space-y-2 overflow-x-scroll">
+        <div class="flex flex-col space-y-1 overflow-x-scroll">
             <!-- Header with days of scheduling period -->
-            <div class="flex flex-row space-x-2">
+            <div class="flex flex-row space-x-1">
                 {#each data.days as day}
                     <DayHeader {day}/>
+                    {#if day.id % 7 === 0}
+                        <div class="flex flex-none w-4"/>
+                    {/if}
                 {/each}
             </div>
             <!-- Schedule -->
             {#each schedule.individual_schedules as is}
-                <div class="flex flex-row space-x-2">
+                <div class="flex flex-row space-x-1">
                     {#each data.days as day}
                         <AssignmentBox assignment={is.assignments.find(a => a.day_nb === day.id)}/>
+                        {#if day.id % 7 === 0}
+                            <div class="flex flex-none w-4"/>
+                        {/if}
                     {/each}
                 </div>
             {/each}
