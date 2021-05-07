@@ -72,14 +72,17 @@
         <p class="font-semibold text-sm cursor-default"> Instance data </p>
 
         <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Number of weeks </p>
-        <div class="flex flex-row justify-start space-x-4">
+        <div class="flex flex-row justify-start space-x-2 items-center">
             <Button callback={() => removeWeek()}> - </Button>
             <p class="font-semibold text-sm text-black-500 cursor-default"> {data.days.length / 7} </p>
             <Button callback={() => addWeek()}> + </Button>
         </div>
-        <Button callback={() => {handleSubmit()}}> Submit </Button>
+        <div>
+            <Button callback={() => {handleSubmit()}}> Submit </Button>
+        </div>
+        
         <Modal>
-            <div slot="trigger" let:open> 
+            <div class="mt-4" slot="trigger" let:open> 
                 <Button callback={open}> Edit holidays </Button>
             </div>
             <div class="my-2" slot="header">
@@ -100,7 +103,7 @@
             </div>
         </Modal>
         <Modal>
-            <div slot="trigger" let:open>
+            <div class="mt-4" slot="trigger" let:open>
                 <Button callback={open}> Edit assistants </Button>
             </div>
             <div class="my-2" slot="header">
