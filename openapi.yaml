@@ -223,10 +223,22 @@ components:
           type: integer
           description: The day number of this day in the current scheduling period.
         date:
-          type: string
-          format: date
-          description: A string representation of the date that is represented by this day.
-          example: "2021-07-21"
+          type: object
+          required: 
+            - day
+            - month
+            - year
+          properties:
+            day:
+              type: integer
+              description: The day of month of this day.
+            month:
+              type: integer
+              description: The month of this day. 1 = January, 12 = December
+            year:
+              type: integer
+              description: The year of this day.
+          description: Represents the date of this day.
         is_holiday:
           type: boolean
           description: Indicates whether or not this day should be considered a holiday in the produced schedule.
