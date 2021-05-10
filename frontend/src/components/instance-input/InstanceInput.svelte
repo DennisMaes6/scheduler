@@ -7,6 +7,7 @@
     import Button from "../model-input/Button.svelte";
     import AssistantInput from "./AssistantInput.svelte";
     import DatePicker from "./DatePicker.svelte";
+    import HolidayPicker from "./HolidayPicker.svelte";
 
     export let data: InstanceData
 
@@ -24,11 +25,6 @@
         var result: Date = new Date(date.year, date.month-1, date.day);
         result.setDate(result.getDate() + days);
         return {day: result.getDate(), month: result.getMonth()+1, year: result.getFullYear()};
-    }
-
-    function toggleHoliday(day: Day) {
-        day.is_holiday = !day.is_holiday
-        data.days = data.days
     }
 
     function removeWeek() {
@@ -52,14 +48,16 @@
 
     }
 
-    function setStartDate(date: Date) {
-        data.days = data.days.map((_,i) => {
+    function setStartDate(startDate: Date) {
+        let newDays = data.days.map((_,i) => {
+            let date = addDays({day: startDate.getDate(), month: startDate.getMonth() + 1, year: startDate.getFullYear()}, i)
             return {
                 id: i+1,
-                date: addDays({day: date.getDate(), month: date.getMonth() + 1, year: date.getFullYear()}, i),
-                is_holiday: false
+                date,
+                is_holiday: data.days.some(d => d.date.day === date.day && d.date.month == date.month && d.date.year === date.year) && data.days.find(d => d.date.day === date.day && d.date.month == date.month && d.date.year === date.year).is_holiday
             }
         }) 
+        data.days = newDays
     }
 
 </script>
@@ -85,28 +83,7 @@
         <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default">
             {new Date(data.days[data.days.length-1].date.year, data.days[data.days.length-1].date.month-1, data.days[data.days.length-1].date.day).toDateString()}
         </p>
-        
-        <Modal>
-            <div class="mt-4" slot="trigger" let:open> 
-                <Button callback={open}> Edit holidays </Button>
-            </div>
-            <div class="my-2" slot="header">
-                <h1 class="font-bold"> Edit holidays </h1>
-            </div>
-            <div class="my-2" slot="content">
-                <div class="grid grid-cols-7 gap-4">
-                    {#each data.days as day}
-                        <div on:click={() => toggleHoliday(day)} class="cursor-pointer flex flex-row justify-items-center w-12 h-6 rounded {day.is_holiday ? "bg-yellow-200" : "bg-gray-100"}">
-                            <p class="m-auto text-sm font-bold text-black"> {day.id} </p>
-                        </div>
-                    {/each}
-                </div>
-            </div>
-            <div class="my-5 flex flex-row justify-end space-x-2" slot="footer" let:close>
-                <Button primary={false} callback={close}> Close </Button>
-                <Button callback={() => {handleSubmit(); close()}}> Submit </Button>
-            </div>
-        </Modal>
+        <HolidayPicker bind:days={data.days} {handleSubmit}/>
         <Modal>
             <div class="mt-4" slot="trigger" let:open>
                 <Button callback={open}> Edit assistants </Button>
