@@ -27,10 +27,7 @@
 
 
 <main>
-    <div class="flex flex-col h-12 w-12 justify-end items-center cursor-default">
-        {#if day.id % 7 == 1}
-            <p class="text-xs font-bold text-black"> WEEK {(Math.floor(day.id/7) + 1)}</p>
-        {/if}
+    <div class="flex flex-col h-8 w-12 justify-end items-center cursor-default">
         <div class="flex w-12 rounded">
             <p class="m-auto text-xs font-bold text-black"> {day_of_week(day)}</p>
         </div>
