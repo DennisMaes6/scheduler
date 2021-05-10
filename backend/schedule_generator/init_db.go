@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -148,7 +147,7 @@ func initializeData(db *sql.DB) error {
 	`
 
 	for _, day := range initialInstanceData.Days {
-		if _, err := db.Exec(initDaysQuery, day.Id, day.Date, day.IsHoliday); err != nil {
+		if _, err := db.Exec(initDaysQuery, day.Id, dateToString(day.Date), day.IsHoliday); err != nil {
 			return errors.Wrap(err, "failed initializing days in database")
 		}
 	}
@@ -163,12 +162,4 @@ func initializeData(db *sql.DB) error {
 		}
 	}
 	return nil
-}
-
-func integerArrayToString(array []int32) string {
-	result := ""
-	for _, h := range array {
-		result += fmt.Sprintf("%s,", strconv.Itoa(int(h)))
-	}
-	return result
 }

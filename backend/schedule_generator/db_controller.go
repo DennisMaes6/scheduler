@@ -3,8 +3,6 @@ package schedule_generator
 import (
 	"database/sql"
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/jorensjongers/scheduler/backend/model"
 	_ "github.com/mattn/go-sqlite3"
@@ -146,7 +144,7 @@ func (c DbController) GetInstanceData() (model.InstanceData, error) {
 
 	days, err := c.getDays()
 	if err != nil {
-		return model.InstanceData{}, errors.Wrap(err, "failed retreiving days from database")
+		return model.InstanceData{}, errors.Wrap(err, "failed retrieving days from database")
 	}
 
 	result := model.InstanceData{
@@ -236,12 +234,17 @@ func (c DbController) getDays() ([]model.Day, error) {
 	for rows.Next() {
 		var (
 			id        int32
-			date      string
+			rawDate   string
 			isHoliday bool
 		)
 
-		if err := rows.Scan(&id, &date, &isHoliday); err != nil {
+		if err := rows.Scan(&id, &rawDate, &isHoliday); err != nil {
 			return []model.Day{}, errors.Wrap(err, "failed scanning day row")
+		}
+
+		date, err := parseDate(rawDate)
+		if err != nil {
+			return []model.Day{}, errors.Wrap(err, fmt.Sprintf("failed parsing day: %s", rawDate))
 		}
 
 		day := model.Day{
@@ -296,29 +299,12 @@ func (c DbController) setDays(days []model.Day) error {
 		VALUES (?, ?, ?)
 	`
 	for _, day := range days {
-		if _, err := c.db.Exec(insertDayQuery, day.Id, day.Date, day.IsHoliday); err != nil {
+		if _, err := c.db.Exec(insertDayQuery, day.Id, dateToString(day.Date), day.IsHoliday); err != nil {
 			return errors.Wrap(err, "failed inserting day in database")
 		}
 	}
 
 	return nil
-}
-
-func stringToIntArray(str string) ([]int32, error) {
-	if str == "" {
-		return []int32{}, nil
-	}
-	splitStr := strings.Split(strings.TrimSuffix(str, ","), ",")
-	result := []int32{}
-	for _, s := range splitStr {
-		i, err := strconv.Atoi(s)
-		if err != nil {
-			return []int32{}, err
-		}
-		result = append(result, int32(i))
-	}
-
-	return result, nil
 }
 
 func (c DbController) getSchedule() (model.Schedule, error) {
