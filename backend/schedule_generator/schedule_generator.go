@@ -98,7 +98,7 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 		}
 
 		cachedSchedule = combinedRes
-		//cached = true
+		cached = true
 	}
 
 	return cachedSchedule, nil

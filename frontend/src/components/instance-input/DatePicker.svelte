@@ -1,12 +1,14 @@
 <script lang=typescript>
   import Modal from "../Modal.svelte"
   import Button from "../model-input/Button.svelte"
+import DayHeader from "../schedule-view/DayHeader.svelte";
 
-  export let currentDate: Date;
+  export let currentDate: {day: number, month: number, year: number};
   export let handleSubmit: VoidFunction;
+  export let setStartDate: (date: Date) => void;
 
-  let visibleMonth = currentDate.getMonth()
-  let visibleYear = currentDate.getFullYear()
+  let visibleMonth = currentDate.month
+  let visibleYear = currentDate.year
   let blankDays: Date[];
   let monthDays: Date[];
 
@@ -14,20 +16,16 @@
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   function updateMonthDays() {
-    blankDays = Array((new Date(visibleYear, visibleMonth).getDay()+6) % 7);
+    blankDays = Array((new Date(visibleYear, visibleMonth-1).getDay()+6) % 7);
     monthDays = new Array(31)
       .fill('')
-      .map((_,i) => new Date(visibleYear,visibleMonth,i+1))
-      .filter((v) =>v.getMonth()===visibleMonth)
-  }
-
-  function selectDate(date: Date) {
-    currentDate = date;
+      .map((_,i) => new Date(visibleYear,visibleMonth-1,i+1))
+      .filter((v) => v.getMonth() === visibleMonth-1)
   }
 
   function incrementMonth() {
-    if (visibleMonth == 11) {
-      visibleMonth = 0
+    if (visibleMonth == 12) {
+      visibleMonth = 1
       visibleYear++
     } else {
       visibleMonth++
@@ -37,8 +35,8 @@
     
 
   function decrementMonth() {
-    if (visibleMonth == 0) {
-      visibleMonth = 11;
+    if (visibleMonth == 1) {
+      visibleMonth = 12;
       visibleYear--
     } else {
       visibleMonth--
@@ -49,8 +47,8 @@
   updateMonthDays()
 
   function resetStateAnd(callback: VoidFunction) {
-    visibleMonth = currentDate.getMonth()
-    visibleYear = currentDate.getFullYear()
+    visibleMonth = currentDate.month
+    visibleYear = currentDate.year
     updateMonthDays()
     callback()
   }
@@ -63,7 +61,7 @@
     <input 
     class="p-2 w-full leading-none rounded-lg shadow-sm focus:outline-none focus:shadow-outline text-gray-600 font-medium text-xs"
     type="text"
-    value={currentDate.toDateString()}
+    value={new Date(currentDate.year, currentDate.month-1, currentDate.day).toDateString()}
     readonly
     placeholder="Select date">
 
@@ -81,7 +79,7 @@
   <div slot="content" class="w-64 h-72 bg-white m-6 rounded-lg border border-black p-4">
     <div class="flex justify-between items-center">
       <div>
-        <span class="text-lg font-bold text-gray-800"> {MONTH_NAMES[visibleMonth]}</span>
+        <span class="text-lg font-bold text-gray-800"> {MONTH_NAMES[visibleMonth-1]}</span>
         <span class="ml-1 text-lg text-gray-600 font-normal"> {visibleYear}</span>
       </div>
       <div>
@@ -118,18 +116,24 @@
       {/each}
       {#each monthDays as day}
         <div style="width: 14.28%" class="px-0.5 mb-1">
-          <div 
-            class={"cursor-pointer leading-loose text-center text-sm rounded-full " + 
-                    (currentDate.getFullYear() === day.getFullYear()
-                      && currentDate.getMonth() === day.getMonth()
-                      && currentDate.getDate() === day.getDate() 
-                    ? "font-bold bg-green-500 text-white" 
-                    : "text-gray-700 font-normal hover:bg-green-300")
-                  }
-            on:click={() => selectDate(day)}
-          >
-            {day.getDate()}
-          </div>   
+          {#if day.getDay() == 5}
+            <div 
+              class={"cursor-pointer leading-loose text-center text-sm rounded-full font-bold " + 
+                      (currentDate.year === day.getFullYear()
+                        && currentDate.month-1 === day.getMonth()
+                        && currentDate.day === day.getDate() 
+                      ? "bg-green-500 text-white" 
+                      : "text-gray-700 hover:bg-green-300")
+                    }
+              on:click={() => setStartDate(day)}
+            >
+              {day.getDate()}
+            </div>   
+          {:else}
+            <div class={"leading-loose text-center text-sm rounded-full text-gray-500 font-normal"}>     
+              {day.getDate()}
+            </div>
+          {/if}
         </div>
       {/each}
     </div>
