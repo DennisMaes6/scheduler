@@ -1,7 +1,7 @@
 <script lang=typescript>
   import Modal from "../Modal.svelte"
   import Button from "../model-input/Button.svelte"
-import DayHeader from "../schedule-view/DayHeader.svelte";
+  import DayHeader from "../schedule-view/DayHeader.svelte";
 
   export let currentDate: {day: number, month: number, year: number};
   export let handleSubmit: VoidFunction;
