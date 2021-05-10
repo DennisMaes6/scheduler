@@ -7,6 +7,7 @@
     import Modal from "../Modal.svelte";
     import Button from "../model-input/Button.svelte";
     import AssistantInput from "./AssistantInput.svelte";
+    import DatePicker from "./DatePicker.svelte";
 
     export let data: InstanceData
 
@@ -61,7 +62,6 @@
                 is_holiday: false
             },
         )
-        console.log(data.days)
         data.days = data.days
     }
 
@@ -70,7 +70,8 @@
 <main>
     <div class="flex flex-col space-y-2"> 
         <p class="font-semibold text-sm cursor-default"> Instance data </p>
-
+        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Start date </p>
+        <DatePicker currentDate={new Date()} {handleSubmit}/>
         <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Number of weeks </p>
         <div class="flex flex-row justify-start space-x-2 items-center">
             <Button callback={() => removeWeek()}> - </Button>
