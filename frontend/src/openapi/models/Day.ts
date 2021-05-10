@@ -11,9 +11,22 @@ export type Day = {
      */
     id: number;
     /**
-     * A string representation of the date that is represented by this day.
+     * Represents the date of this day.
      */
-    date: string;
+    date: {
+        /**
+         * The day of month of this day.
+         */
+        day: number,
+        /**
+         * The month of this day. 1 = January, 12 = December
+         */
+        month: number,
+        /**
+         * The year of this day.
+         */
+        year: number,
+    };
     /**
      * Indicates whether or not this day should be considered a holiday in the produced schedule.
      */
