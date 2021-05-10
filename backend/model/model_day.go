@@ -15,8 +15,7 @@ type Day struct {
 	// The day number of this day in the current scheduling period.
 	Id int32 `json:"id"`
 
-	// A string representation of the date that is represented by this day.
-	Date string `json:"date"`
+	Date DayDate `json:"date"`
 
 	// Indicates whether or not this day should be considered a holiday in the produced schedule.
 	IsHoliday bool `json:"is_holiday"`

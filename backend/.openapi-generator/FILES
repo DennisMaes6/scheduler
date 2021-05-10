@@ -10,6 +10,7 @@ go/model_assignment.go
 go/model_assistant.go
 go/model_assistant_type.go
 go/model_day.go
+go/model_day_date.go
 go/model_individual_schedule.go
 go/model_instance_data.go
 go/model_model_parameters.go

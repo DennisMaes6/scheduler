@@ -232,10 +232,16 @@ components:
           - 6
           id: 0
         days:
-        - date: 2021-07-21T00:00:00.000+0000
+        - date:
+            month: 5
+            year: 2
+            day: 5
           is_holiday: true
           id: 1
-        - date: 2021-07-21T00:00:00.000+0000
+        - date:
+            month: 5
+            year: 2
+            day: 5
           is_holiday: true
           id: 1
       properties:
@@ -287,7 +293,10 @@ components:
     Day:
       description: Represents a single day in the scheduling period.
       example:
-        date: 2021-07-21T00:00:00.000+0000
+        date:
+          month: 5
+          year: 2
+          day: 5
         is_holiday: true
         id: 1
       properties:
@@ -295,11 +304,7 @@ components:
           description: The day number of this day in the current scheduling period.
           type: integer
         date:
-          description: A string representation of the date that is represented by
-            this day.
-          example: 2021-07-21
-          format: date
-          type: string
+          $ref: '#/components/schemas/Day_date'
         is_holiday:
           description: Indicates whether or not this day should be considered a holiday
             in the produced schedule.
@@ -334,3 +339,24 @@ components:
       - CALL
       - FREE
       type: string
+    Day_date:
+      description: Represents the date of this day.
+      example:
+        month: 5
+        year: 2
+        day: 5
+      properties:
+        day:
+          description: The day of month of this day.
+          type: integer
+        month:
+          description: The month of this day. 1 = January, 12 = December
+          type: integer
+        year:
+          description: The year of this day.
+          type: integer
+      required:
+      - day
+      - month
+      - year
+      type: object
