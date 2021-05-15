@@ -55,7 +55,7 @@
 </slot>
 
 {#if $isOpen}
-<div use:modalAction tabindex="0" class="fixed top-0 left-0 w-full h-full flex justify-center items-center">
+<div use:modalAction tabindex="0" class="fixed top-0 left-0 w-screen h-screen flex justify-center items-center">
     <!-- backdrop -->
     <div on:click={close} class="fixed w-full h-full bg-white bg-opacity-60" />
 
@@ -72,7 +72,7 @@
         </div>
 
     
-        <div class="max-h-3/4 max-w-7xl overflow-auto">
+        <div class="max-h-3/4 max-w-3/4">
             <slot name="content" {store}/>
         </div>
     
