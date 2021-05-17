@@ -317,9 +317,9 @@ func (c DbController) getSchedule() (model.Schedule, error) {
 
 	var (
 		fairnessScore     float32
-		balanceScore      int
+		balanceScore      float32
 		jaevFairnessScore float32
-		jaevBalanceScore  int
+		jaevBalanceScore  float32
 	)
 
 	err := c.db.QueryRow(scheduleQuery).Scan(
@@ -333,22 +333,29 @@ func (c DbController) getSchedule() (model.Schedule, error) {
 		return model.Schedule{}, errors.Wrap(err, "failed getting schedule scores from db")
 	}
 
-	individualSchedules, err := c.getIndividualSchedules(balanceScore)
+	modelParams, err := c.GetModelParameters()
+	if err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed getting model parameters")
+	}
+
+	individualSchedules, err := c.getIndividualSchedules()
 	if err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed getting individual schedules from db")
 	}
 
+	fmt.Print(int32(balanceScore))
+
 	return model.Schedule{
 		FairnessScore:       fairnessScore,
-		BalanceScore:        int32(balanceScore),
+		BalanceScore:        balanceScore,
 		JaevFairnessScore:   jaevFairnessScore,
-		JaevBalanceScore:    int32(jaevBalanceScore),
-		IndividualSchedules: tagIndividualSchedules(individualSchedules, int32(balanceScore)),
+		JaevBalanceScore:    jaevBalanceScore,
+		IndividualSchedules: tagIndividualSchedules(individualSchedules, modelParams.MinBalance),
 	}, nil
 
 }
 
-func (c DbController) getIndividualSchedules(balanceScore int) ([]untaggedIndividualSchedule, error) {
+func (c DbController) getIndividualSchedules() ([]untaggedIndividualSchedule, error) {
 	isQuery := `
 		SELECT assistant_id, workload 
 		FROM individual_schedule
