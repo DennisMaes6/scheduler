@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const fileName = "test.db"
+const fileName = "real-instance-second-semester.db"
 
 func createDB() *sql.DB {
 	newDb := false
@@ -82,7 +82,7 @@ func createTables(db *sql.DB) error {
 			CREATE TABLE IF NOT EXISTS schedule (
 				id INTEGER PRIMARY_KEY,
 				fairness_score REAL NOT NULL,
-				balance_score INTEGER NOT NULL,
+				balance_score REAL NOT NULL,
 				jaev_fairness_score REAL NOT NULL,
 				jaev_balance_score REAL NOT NULL
 			)
