@@ -180,11 +180,6 @@ func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *htt
 		}
 		return
 	}
-	//If no error, encode the body and the result code
-	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
-		panic(err)
-	}
-
 }
 
 // ScheduleGet - Returns a generated schedule.
