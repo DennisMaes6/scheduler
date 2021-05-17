@@ -18,3 +18,6 @@ run-frontend:
 
 run:
 	make run-backend; make run-frontend
+
+run-greedy-search:
+	java -cp /Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar Main
