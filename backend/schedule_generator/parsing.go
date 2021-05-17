@@ -167,9 +167,9 @@ func parseAndCombineSchedule(jaevResStr string, res firstStageSchedule) (model.S
 
 	return model.Schedule{
 		FairnessScore:       res.fairnessScore,
-		BalanceScore:        res.balanceScore,
+		BalanceScore:        float32(res.balanceScore),
 		JaevFairnessScore:   float32(jaevFairnessScore),
-		JaevBalanceScore:    int32(jaevBalanceScore),
+		JaevBalanceScore:    float32(jaevBalanceScore),
 		IndividualSchedules: tagIndividualSchedules(individualSchedules, res.balanceScore),
 	}, nil
 }
