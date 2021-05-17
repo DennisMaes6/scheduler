@@ -55,6 +55,12 @@ func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) e
 }
 
 func (s ScheduleGenerator) GetScheduleFromDb() (model.Schedule, error) {
+	//cmd := exec.Command("java", "-cp", "/Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar", "Main")
+
+	//if err := cmd.Run(); err != nil {
+	//	return model.Schedule{}, errors.Wrap(err, "failed starting schedule generation")
+	//}
+
 	return s.dbc.getSchedule()
 }
 
