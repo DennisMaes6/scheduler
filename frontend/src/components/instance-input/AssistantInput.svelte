@@ -83,6 +83,26 @@
         }
         data.assistants = data.assistants
     }
+
+    function setWeek(assistant: Assistant, weekNb: number, selected: boolean) {
+        if (selected) {
+            [7*weekNb+1, 7*weekNb+2, 7*weekNb+3, 7*weekNb+4, 7*weekNb+5, 7*weekNb+6, 7*weekNb+7]
+                .forEach((day) => {
+                    if (!assistant.free_days.includes(day)) assistant.free_days.push(day)
+                })
+        } else {
+            [7*weekNb+1, 7*weekNb+2, 7*weekNb+3, 7*weekNb+4, 7*weekNb+5, 7*weekNb+6, 7*weekNb+7]
+                .forEach((day) => {
+                    assistant.free_days = assistant.free_days.filter((d: number) => d != day) 
+                })   
+        }
+        data.assistants = data.assistants 
+    }
+
+    function freeWeek(assistant: Assistant, weekNb: number) {
+        return [7*weekNb+1, 7*weekNb+2, 7*weekNb+3, 7*weekNb+4, 7*weekNb+5, 7*weekNb+6, 7*weekNb+7]
+            .every((day) => assistant.free_days.includes(day))
+    }
 </script>
 
 
@@ -106,10 +126,11 @@
     </div>
     <div id="top" class="scrollbar-hidden flex flex-row col-span-9 space-x-1 overflow-auto">
         {#each data.days as day}
-            <DayHeader {day}/>
-            {#if day.id % 7 === 0}
-                <div class="flex flex-none w-8 font-bold"/>
+            {#if day.id % 7 === 1}
+                <!-- placeholder -->
+                <div class="flex flex-none w-8"/>
             {/if}
+            <DayHeader {day}/>
         {/each}
     </div>
     <div id="left" class="scrollbar-hidden flex flex-col space-y-1 col-span-3 overflow-auto">
@@ -132,12 +153,14 @@
             {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
                 <div class="flex flex-row space-x-1">
                     {#each data.days as day}
+                        {#if day.id % 7 === 1}
+                        <div class="flex w-8 justify-items-end items-center">
+                            <input type="checkbox" checked={freeWeek(assistant, (day.id-1)/7)} class="ml-4 w-4 text-xs text-black font-bold" on:change={e => setWeek(assistant, (day.id-1)/7, e.target.checked)}/>
+                        </div>
+                        {/if}
                         <div on:click={() => toggle(assistant, day.id)} class="flex-none w-12 h-6 {assistant.free_days.includes(day.id) ? "bg-yellow-400" : "bg-gray-100"} rounded cursor-pointer flex justify-center items-center">
                             <div class="text-xs text-white font-bold"> FREE </div>
                         </div>
-                        {#if day.id % 7 === 0}
-                            <div class="flex flex-none w-8"/>
-                        {/if}
                     {/each}
                 </div>
             {/each}
