@@ -93,9 +93,9 @@ components:
           - day_nb: 7
             part_of_min_balance: true
           workload: 2.3021358869347655
-        jaev_balance_score: 5
+        jaev_balance_score: 5.962133916683182
         fairness_score: 0.8008281904610115
-        balance_score: 6
+        balance_score: 6.027456183070403
         jaev_fairness_score: 1.4658129805029452
       properties:
         fairness_score:
@@ -103,13 +103,13 @@ components:
           type: number
         balance_score:
           description: The balance score of this schedule.
-          type: integer
+          type: number
         jaev_fairness_score:
           description: The fairness score for the JAEV shifts of this schedule.
           type: number
         jaev_balance_score:
           description: The balance score for the JAEV shifts of this schedule.
-          type: integer
+          type: number
         individual_schedules:
           items:
             $ref: '#/components/schemas/IndividualSchedule'

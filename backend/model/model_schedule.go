@@ -16,13 +16,13 @@ type Schedule struct {
 	FairnessScore float32 `json:"fairness_score"`
 
 	// The balance score of this schedule.
-	BalanceScore int32 `json:"balance_score"`
+	BalanceScore float32 `json:"balance_score"`
 
 	// The fairness score for the JAEV shifts of this schedule.
 	JaevFairnessScore float32 `json:"jaev_fairness_score"`
 
 	// The balance score for the JAEV shifts of this schedule.
-	JaevBalanceScore int32 `json:"jaev_balance_score"`
+	JaevBalanceScore float32 `json:"jaev_balance_score"`
 
 	IndividualSchedules []IndividualSchedule `json:"individual_schedules,omitempty"`
 }

@@ -88,13 +88,13 @@ components:
           type: number
           description: The fairness score of this schedule.
         balance_score:
-          type: integer
+          type: number
           description: The balance score of this schedule.
         jaev_fairness_score:
           type: number
           description: The fairness score for the JAEV shifts of this schedule.
         jaev_balance_score:
-          type: integer
+          type: number
           description: The balance score for the JAEV shifts of this schedule.
         individual_schedules: 
             type: array

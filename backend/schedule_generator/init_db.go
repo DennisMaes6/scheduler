@@ -100,7 +100,7 @@ func createTables(db *sql.DB) error {
 				day_nb INTEGER NOT NULL,
 				shift_type TEXT NOT NULL,
 				PRIMARY KEY (assistant_id, day_nb),
-				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE,
+				FOREIGN KEY (assistant_id) REFERENCES assistant(id) ON DELETE CASCADE,
 				FOREIGN KEY (day_nb) REFERENCES day(id) ON DELETE CASCADE
 			)
 		`,
