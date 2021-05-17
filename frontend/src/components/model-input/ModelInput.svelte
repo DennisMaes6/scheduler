@@ -19,9 +19,9 @@
 <main>
     <form class="flex flex-col"> 
         <p class="font-semibold text-sm cursor-default"> Model parameters </p>
-        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Minimun balance score </p>
+        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Minimum balance score </p>
         <InputField bind:value={modelParams.min_balance} step={1} />
-        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> JAEV minimun balance </p>
+        <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> JAEV minimum balance </p>
         <InputField bind:value={modelParams.min_balance_jaev} step={1} />
 
         <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Workload + Max Buffer </p>
