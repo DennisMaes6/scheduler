@@ -51,7 +51,7 @@
             {#each schedule.individual_schedules as is}
                 <div class="flex flex-row space-x-1">
                     {#each data.days as day}
-                        <AssignmentBox assignment={is.assignments.find(a => a.day_nb === day.id)}/>
+                        <AssignmentBox assignment={is.assignments.find(a => a.day_nb === day.id)} free_day={getAssistant(is.assistant_id).free_days.includes(day.id)}/>
                         {#if day.id % 7 === 0}
                             <div class="flex flex-none w-4"/>
                         {/if}

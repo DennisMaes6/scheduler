@@ -4,6 +4,7 @@
     import { ShiftType } from '../../openapi'
 
     export let assignment: Assignment
+    export let free_day: boolean
 
     function getColor(st: ShiftType): string {
         switch (st) {
@@ -28,6 +29,7 @@
             case ShiftType.TPHO:
                 return "bg-blue-700";
             case ShiftType.FREE:
+                if (free_day) return "bg-gray-300";
                 return "bg-gray-100";
         }
     }
@@ -36,7 +38,7 @@
 
 <main>
     {#if assignment.part_of_min_balance && assignment.shift_type == ShiftType.FREE}
-        <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default bg-gray-100">
+        <div class="flex w-12 h-6 rounded-lg justify-center items-center cursor-default {free_day ? " bg-gray-300" : " bg-gray-100"}">
             <div class="text-xs text-red-500 font-bold"> ! </div>
         </div>
     {:else}
