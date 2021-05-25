@@ -32,7 +32,7 @@ func writeData(file *os.File, params model.ModelParameters, data model.InstanceD
 		len(data.Assistants),
 		buildIdsString(data.Assistants),
 		buildAssistantTypesString(data.Assistants),
-		buildFreeDaysString(data.Assistants),
+		buildFreeDaysString(data.Assistants, data.Days),
 		buildShiftWorkloadString(params.ShiftTypeParameters),
 		buildMaxBufferString(params.ShiftTypeParameters),
 		params.MinBalance,
@@ -94,15 +94,44 @@ func buildAssistantTypesString(ais []model.Assistant) string {
 	return result
 }
 
-func buildFreeDaysString(assistants []model.Assistant) string {
+func buildFreeDaysString(assistants []model.Assistant, days []model.Day) string {
 	result := "["
 
 	for _, assistant := range assistants {
-		result += fmt.Sprintf("{%s},", integerArrayToString(assistant.FreeDays))
+		freeDays := union(assistant.FreeDays, days)
+		result += fmt.Sprintf("{%s},", integerArrayToString(freeDays))
 	}
 
 	result += "]"
 
+	return result
+}
+
+func union(daysIds []int32, days []model.Day) []int32 {
+	result := []int32{}
+
+	for _, dayId := range daysIds {
+		if intInArray(dayId, daysToIds(days)) {
+			result = append(result, dayId)
+		}
+	}
+	return result
+}
+
+func intInArray(i int32, array []int32) bool {
+	for _, b := range array {
+		if b == i {
+			return true
+		}
+	}
+	return false
+}
+
+func daysToIds(days []model.Day) []int32 {
+	result := []int32{}
+	for _, day := range days {
+		result = append(result, day.Id)
+	}
 	return result
 }
 
@@ -154,7 +183,7 @@ func writeJaevData(file *os.File,
 		len(jas),
 		buildIdsString(jas),
 		buildScheduleString(schedule, jas),
-		buildFreeDaysString(jas),
+		buildFreeDaysString(jas, data.Days),
 		params.MinBalanceJaev,
 	)
 

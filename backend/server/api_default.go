@@ -120,11 +120,6 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 		}
 		return
 	}
-	//If no error, encode the body and the result code
-	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
-		panic(err)
-	}
-
 }
 
 // ModelParametersSetOptions

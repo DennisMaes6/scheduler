@@ -6,8 +6,8 @@ include "all_equal.mzn";
 
 % days
 int: nb_weeks;
-int: nb_days = 7 * nb_weeks;
-set of int: D = 1..nb_days;
+int: nb_days = 7 * (nb_weeks+1);
+set of int: D = 1..nb_days+1;
 set of int: W = 1..nb_weeks;
 set of int: H;                 % holidays
 int: nb_holidays; 
@@ -58,7 +58,7 @@ int: nb_personnel;
 set of 1..nb_personnel: P = 1..nb_personnel;            % employees
 array[1..nb_personnel] of int: personnel_id;            % mapping from employee to external id
 array[1..nb_personnel] of PersonnelType: T;             % mapping from employee to personnel type
-array[1..nb_personnel] of set of 1..nb_days: F;         % granted holidays per employee 
+array[1..nb_personnel] of set of D: F;                  % granted holidays per employee 
 
 % coverage requirements 
 array[ShiftType] of int: R = [1, 2, 2, 1, 2, 2, 1, 1, 1, 0];
@@ -108,14 +108,20 @@ constraint forall(s in S_weekend, p in P, w in W)(X[p, s, w] = 1 -> (7*w-5..7*w-
 constraint forall(s in S_holiday, p in P, d in H)(Xh[p, s, d] = 1 -> not(d in F[p]));
 
 % HC7 - no consecutive assignements
-constraint forall(p in P, w in 1..nb_weeks-1, s in (S_week union S_weekend))(
-             exists(s_prev in (S_week union S_weekend))(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
+constraint forall(p in P, w in 1..nb_weeks-1, s in (S_week))(
+             exists(s_prev in (S_week))(X[p, s_prev, w] = 1) -> X[p, s, w+1] = 0
            );
 constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h-1)]) = 0
 );
 constraint forall(p in P, h in H where h mod 7 = 0 /\ h < 7*nb_weeks)(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h+1)]) = 0
+);
+constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
+  exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
+);
+constraint forall(p in P, h in H where h mod 7 = 4 /\ h < 7*nb_weeks)(
+  exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
 );
            
 % HC8 - respect max assignments per shift type
@@ -170,12 +176,12 @@ constraint forall(p in P, w in W)(
              endif);
 
 
-predicate after_first(1..nb_personnel: p, 1..nb_days: d) =
+predicate after_first(1..nb_personnel: p, D: d) =
   exists(h in H, s in S_holiday)(d > h /\ Xh[p, s, h] = 1) \/
   exists(w in W, s in (S_week union S_weekend))(d > 7*w /\ X[p, s, w] = 1);
            
-array[P, 1..nb_days] of var 0..nb_days: z;
-constraint forall(p in P, d in 1..nb_days)(
+array[P, D] of var 0..nb_days: z;
+constraint forall(p in P, d in D)(
              if d = nb_days
              then  z[p, d] = nb_days
              else
