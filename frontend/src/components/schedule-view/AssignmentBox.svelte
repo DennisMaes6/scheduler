@@ -29,7 +29,7 @@
             case ShiftType.TPHO:
                 return "bg-blue-700";
             case ShiftType.FREE:
-                if (free_day) return "bg-gray-300";
+                if (free_day) return "bg-gray-200";
                 return "bg-gray-100";
         }
     }
