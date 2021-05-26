@@ -19,7 +19,7 @@
 </script>
 
 
-<div class="flex flex-row h-6 justify-between place-items-center cursor-default">
+<div class="flex flex-row flex-none h-6 justify-between place-items-center cursor-default">
     <p class="{getWorkloadTextStyle()} text-xs"> {workload.toFixed(2)} </p>
     <p class="w-32 text-right text-black text-xs font-bold "> {assistant.name} </p>
 </div>
