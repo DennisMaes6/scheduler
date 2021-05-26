@@ -126,7 +126,13 @@ constraint forall(p in P, h in H where h mod 7 = 4 /\ h < 7*nb_weeks)(
            
 % HC8 - respect max assignments per shift type
 constraint forall(p in P, s in (S_week union S_weekend))(sum(w in W)(X[p, s, w]) <= max_assignments[s]);
-constraint forall(p in P, s in S_holiday)(sum(h in H)(Xh[p, s, h]) <= max_assignments[s]);     
+constraint forall(p in P, s in S_holiday)(sum(h in H)(Xh[p, s, h]) <= max_assignments[s]);
+
+
+% consecutive holidays same person
+constraint forall(h1 in H, h2 in H where h1 + 1 = h2)(
+  forall(p in P, s in S_holiday)(Xh[p, s, h1] = 1 -> Xh[p, s, h2] = 1)
+)
 
 % optimization objective: fairness
 array[P] of var float: workload;
