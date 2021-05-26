@@ -77,6 +77,14 @@ array[ShiftType] of set of PersonnelType: Q = [{JA},                            
 
 function int: day_to_week(D: d) =
   ceil((d-0.5) / 7);
+
+function int: weekend_to_holiday_shift(S_weekend: s) =
+  s+1;
+
+function bool: is_weekend(D: d) = 
+  d mod 7 = 2 \/ d mod 7 = 3
+
+
                                                                                           
 % model variables
 int: min_balance;
@@ -134,15 +142,29 @@ constraint forall(h1 in H, h2 in H where h1 + 1 = h2)(
   forall(p in P, s in S_holiday)(Xh[p, s, h1] = 1 -> Xh[p, s, h2] = 1)
 )
 
+% holidays in weekend same person
+constraint forall(h in H where is_weekend(h))(
+  forall(p in P, s in S_weekend)(X[p, s, day_to_week(h)] = 1 -> Xh[p, weekend_to_holiday_shift(s), h] = 1)
+)
+
 % optimization objective: fairness
 array[P] of var float: workload;
-constraint forall(p in P)(workload[p] = (sum(w in W, s in (S_week union S_weekend))(X[p, s, w] * shift_workload[s]) + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p])));
+constraint forall(p in P)(workload[p] = (
+  sum(w in W, s in S_week)(X[p, s, w] * shift_workload[s]) 
+  + sum(w in W, s in S_weekend)(
+      if exists(h in H, sh in S_holiday where is_weekend(h) /\ day_to_week(h) = w /\ Xh[p, sh, h] = 1)
+        then (X[p, s, w] * shift_workload[s]) / 2 + shift_workload(weekend_to_holiday_shift(s) /2)
+        else X[p, s, w] * shift_workload[s]
+      endif
+    ) 
+  + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p]))
+);
 
 var float: fairness_score;
 constraint fairness_score = max(workload) - min(workload);
 
 
-% optimization objective: balance
+% balance
 array[P, 1..nb_days] of var 0..nb_days: a;
 constraint forall(p in P, w in W)(
              if w = 1
