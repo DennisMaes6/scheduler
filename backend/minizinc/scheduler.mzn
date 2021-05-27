@@ -6,8 +6,8 @@ include "all_equal.mzn";
 
 % days
 int: nb_weeks;
-int: nb_days = 7 * (nb_weeks+1);
-set of int: D = 1..nb_days+1;
+int: nb_days = 7 * nb_weeks;
+set of int: D = 1..nb_days;
 set of int: W = 1..nb_weeks;
 set of int: H;                 % holidays
 int: nb_holidays; 
@@ -78,11 +78,15 @@ array[ShiftType] of set of PersonnelType: Q = [{JA},                            
 function int: day_to_week(D: d) =
   ceil((d-0.5) / 7);
 
-function int: weekend_to_holiday_shift(S_weekend: s) =
-  s+1;
+function ShiftType: weekend_to_holiday_shift(S_weekend: s) =
+  if s = JAWE then JAHO else
+    if s = SAWE then SAHO else
+      if s = TPWE then TPHO else s endif % default case should not be reached!
+    endif
+  endif;
 
 function bool: is_weekend(D: d) = 
-  d mod 7 = 2 \/ d mod 7 = 3
+  d mod 7 = 2 \/ d mod 7 = 3;
 
 
                                                                                           
@@ -108,7 +112,7 @@ constraint forall(s in S_holiday, p in P, d in H)(Xh[p, s, d] = 1 -> T[p] in Q[s
 % HC3 - exaclty one assignment per personnel member on every week
 constraint forall(p in P, w in W)(sum(s in (S_week union S_weekend union {FREE}))(X[p, s, w]) = 1);
 constraint forall(p in P, d in H)(sum(s in S_holiday)(Xh[p, s, d]) <= 1);
-constraint forall(p in P, h in H)(sum(sh in S_holiday)(Xh[p, sh, h]) = 1 -> sum(s in (S_week union S_weekend))(X[p, s, day_to_week(h)]) = 0);
+constraint forall(p in P, d in H)(sum(s in S_holiday)(Xh[p, s, d]) = 1 -> sum(s in S_week)(X[p, s, day_to_week(d)]) = 0);
 
 % HC6 - no assignments on free days
 constraint forall(s in S_week, p in P, w in W)(X[p, s, w] = 1 -> (7*w-6..7*w intersect F[p] = {}));
@@ -128,36 +132,33 @@ constraint forall(p in P, h in H where h mod 7 = 0 /\ h < 7*nb_weeks)(
 constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
 );
-constraint forall(p in P, h in H where h mod 7 = 4 /\ h < 7*nb_weeks)(
-  exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
-);
            
 % HC8 - respect max assignments per shift type
 constraint forall(p in P, s in (S_week union S_weekend))(sum(w in W)(X[p, s, w]) <= max_assignments[s]);
 constraint forall(p in P, s in S_holiday)(sum(h in H)(Xh[p, s, h]) <= max_assignments[s]);
 
 
+
 % consecutive holidays same person
-constraint forall(h1 in H, h2 in H where h1 + 1 = h2)(
-  forall(p in P, s in S_holiday)(Xh[p, s, h1] = 1 -> Xh[p, s, h2] = 1)
-)
+constraint forall(h1 in H, h2 in H where h1 + 1 = h2 /\ not is_weekend(h1) /\ not is_weekend(h2))(
+  forall(p in P, s in S)(Xh[p, s, h1] = 1 <-> Xh[p, s, h2] = 1)
+);
 
 % holidays in weekend same person
 constraint forall(h in H where is_weekend(h))(
   forall(p in P, s in S_weekend)(X[p, s, day_to_week(h)] = 1 -> Xh[p, weekend_to_holiday_shift(s), h] = 1)
-)
+);
+
 
 % optimization objective: fairness
 array[P] of var float: workload;
-constraint forall(p in P)(workload[p] = (
-  sum(w in W, s in S_week)(X[p, s, w] * shift_workload[s]) 
-  + sum(w in W, s in S_weekend)(
-      if exists(h in H, sh in S_holiday where is_weekend(h) /\ day_to_week(h) = w /\ Xh[p, sh, h] = 1)
-        then (X[p, s, w] * shift_workload[s]) / 2 + shift_workload(weekend_to_holiday_shift(s) /2)
-        else X[p, s, w] * shift_workload[s]
-      endif
-    ) 
-  + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p]))
+constraint forall(p in P)(workload[p] = 
+  if card(F[p]) == nb_days
+  then 0
+  else (sum(w in W, s in S_week)(X[p, s, w] * shift_workload[s]) 
+        + sum(w in W, s in S_weekend)(X[p, s, w] * shift_workload[s]) 
+        + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p]))
+  endif
 );
 
 var float: fairness_score;
@@ -206,7 +207,8 @@ constraint forall(p in P, w in W)(
 
 predicate after_first(1..nb_personnel: p, D: d) =
   exists(h in H, s in S_holiday)(d > h /\ Xh[p, s, h] = 1) \/
-  exists(w in W, s in (S_week union S_weekend))(d > 7*w /\ X[p, s, w] = 1);
+  exists(w in W, s in S_week)(d > 7*w /\ X[p, s, w] = 1) \/
+  exists(w in W, s in S_weekend)(d > 7*(w-1)+3 /\ X[p, s, w] = 1);
            
 array[P, D] of var 0..nb_days: z;
 constraint forall(p in P, d in D)(
@@ -229,6 +231,8 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output
+       [if d = 1 then "\n" else " " endif ++ show(fix(a[p, d])) | p in P, d in D] ++ ["\n\n"] ++
+       [if d = 1 then "\n" else " " endif ++ show(fix(z[p, d])) | p in P, d in D] ++
        ["balance_score:"] ++ [show(min(z))] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        [
@@ -253,9 +257,60 @@ output
          endif ++
          if fix(X[p, JANW, w]) == 1 then "JANW JANW JANW JANW JANW JANW JANW " else "" endif ++
          if fix(X[p, SAEW, w]) == 1 then "SAEW SAEW SAEW SAEW SAEW SAEW SAEW " else "" endif ++
-         if fix(X[p, JAWE, w]) == 1 then "FREE JAWE JAWE FREE FREE FREE FREE " else "" endif ++
-         if fix(X[p, SAWE, w]) == 1 then "FREE SAWE SAWE FREE FREE FREE FREE " else "" endif ++
-         if fix(X[p, TPWE, w]) == 1 then "FREE TPWE TPWE FREE FREE FREE FREE " else "" endif ++
+         if fix(X[p, JAWE, w]) == 1 
+         then if 7*w-6..7*w intersect H = {} 
+          then "FREE JAWE JAWE FREE FREE FREE FREE "
+            else concat([
+              if fix(Xh[p, JAHO, d]) == 1 then "JAHO " else
+                if fix(Xh[p, SAHO, d]) == 1 then "SAHO " else
+                  if fix(Xh[p, TPHO, d]) == 1 then "TPHO " else
+                    if d mod 7 = 2 \/ d mod 7 = 3
+                    then "JAWE "
+                    else "FREE "
+                    endif
+                  endif
+                endif
+              endif
+              | d in 7*w-6..7*w])
+            endif
+         else "" 
+         endif ++
+         if fix(X[p, SAWE, w]) == 1 
+          then if 7*w-6..7*w intersect H = {} 
+            then "FREE SAWE SAWE FREE FREE FREE FREE "
+              else concat([
+                if fix(Xh[p, JAHO, d]) == 1 then "JAHO " else
+                  if fix(Xh[p, SAHO, d]) == 1 then "SAHO " else
+                    if fix(Xh[p, TPHO, d]) == 1 then "TPHO " else
+                      if d mod 7 = 2 \/ d mod 7 = 3
+                      then "SAWE "
+                      else "FREE "
+                      endif
+                    endif
+                  endif
+                endif
+                | d in 7*w-6..7*w])
+              endif
+         else "" 
+         endif ++
+         if fix(X[p, TPWE, w]) == 1 
+          then if 7*w-6..7*w intersect H = {} 
+            then "FREE TPWE TPWE FREE FREE FREE FREE "
+              else concat([
+                if fix(Xh[p, JAHO, d]) == 1 then "JAHO " else
+                  if fix(Xh[p, SAHO, d]) == 1 then "SAHO " else
+                    if fix(Xh[p, TPHO, d]) == 1 then "TPHO " else
+                      if d mod 7 = 2 \/ d mod 7 = 3
+                      then "TPWE "
+                      else "FREE "
+                      endif
+                    endif
+                  endif
+                endif
+                | d in 7*w-6..7*w])
+              endif
+         else "" 
+         endif ++
          if fix(X[p, CALL, w]) == 1 then "CALL CALL CALL CALL CALL CALL CALL " else "" endif ++
          if w == nb_weeks then "\n" else "" endif
          | p in P, w in W
