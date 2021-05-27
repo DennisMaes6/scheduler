@@ -38,7 +38,7 @@
 
 <main>
     {#if assignment.part_of_min_balance && assignment.shift_type == ShiftType.FREE}
-        <div class="flex flex-none w-12 h-6 rounded-lg justify-center items-center cursor-default {free_day ? " bg-gray-300" : " bg-gray-100"}">
+        <div class="flex flex-none w-12 h-6 rounded-lg justify-center items-center cursor-default {free_day ? " bg-gray-200" : " bg-gray-100"}">
             <div class="text-xs text-red-500 font-bold"> ! </div>
         </div>
     {:else}
