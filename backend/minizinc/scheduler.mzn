@@ -129,7 +129,10 @@ constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
 constraint forall(p in P, h in H where h mod 7 = 0 /\ h < 7*nb_weeks)(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_week)(X[p, s, day_to_week(h+1)]) = 0
 );
-constraint forall(p in P, h in H where h mod 7 = 1 /\ h > 1)(
+constraint forall(p in P, h in H where h mod 7 = 1 /\ not exists(h_after in H)(h + 1 = h_after))(
+  exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
+);
+constraint forall(p in P, h in H where h mod 7 = 4 /\ not exists(h_before in H)(h - 1 = h_before))(
   exists(sh in S_holiday)(Xh[p, sh, h] = 1) -> sum(s in S_weekend)(X[p, s, day_to_week(h)]) = 0
 );
            
@@ -140,7 +143,7 @@ constraint forall(p in P, s in S_holiday)(sum(h in H)(Xh[p, s, h]) <= max_assign
 
 
 % consecutive holidays same person
-constraint forall(h1 in H, h2 in H where h1 + 1 = h2 /\ not is_weekend(h1) /\ not is_weekend(h2))(
+constraint forall(h1 in H, h2 in H where h1 + 1 = h2)(
   forall(p in P, s in S)(Xh[p, s, h1] = 1 <-> Xh[p, s, h2] = 1)
 );
 
@@ -166,6 +169,7 @@ constraint fairness_score = max(workload) - min(workload);
 
 
 % balance
+/*
 array[P, 1..nb_days] of var 0..nb_days: a;
 constraint forall(p in P, w in W)(
              if w = 1
@@ -203,6 +207,47 @@ constraint forall(p in P, w in W)(
                     endif
                endif
              endif);
+*/
+
+array[P, 1..nb_days] of var 0..nb_days: a;
+constraint forall(p in P, w in W)(
+             if w = 1
+             then if sum(s in S_week)(X[p, s, w]) = 1
+                  then forall(i in 7*w-6..7*w)(a[p, i] = 0)
+                  else if sum(s in S_weekend)(X[p, s, w]) = 1
+                       then  a[p, 1] = 1
+                          /\ a[p, 2] = 0
+                          /\ a[p, 3] = 0 
+                          /\ a[p, 4] = 1 + a[p, 3]
+                          /\ a[p, 5] = 1 + a[p, 4]
+                          /\ a[p, 6] = 1 + a[p, 5]
+                          /\ a[p, 7] = 1 + a[p, 6]
+                       else  a[p, 1] = 1           
+                          /\ a[p, 2] = 1 + a[p, 1]
+                          /\ a[p, 3] = 1 + a[p, 2]
+                          /\ a[p, 4] = 1 + a[p, 3]
+                          /\ a[p, 5] = 1 + a[p, 4]
+                          /\ a[p, 6] = 1 + a[p, 5]
+                          /\ a[p, 7] = 1 + a[p, 6]
+                       endif
+                  endif
+             else 
+               if sum(s in S_week)(X[p, s, w]) = 1 
+               then forall(i in 7*w-6..7*w)(a[p, i] = 0)
+               else if sum(s in S_weekend)(X[p, s, w]) = 1
+                    then  a[p, 7*w-6] = 1 + a[p, 7*w-7]
+                       /\ a[p, 7*w-5] = 0
+                       /\ a[p, 7*w-4] = 0 
+                       /\ a[p, 7*w-3] = 1 + a[p, 7*w-4]
+                       /\ a[p, 7*w-2] = 1 + a[p, 7*w-3]
+                       /\ a[p, 7*w-1] = 1 + a[p, 7*w-2]
+                       /\ a[p, 7*w  ] = 1 + a[p, 7*w-1]
+                    else forall(i in 7*w-6..7*w)(a[p, i] = 1 + a[p, i-1])
+                    endif
+               endif
+             endif);
+
+
 
 
 predicate after_first(1..nb_personnel: p, D: d) =
