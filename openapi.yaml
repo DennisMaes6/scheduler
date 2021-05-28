@@ -26,6 +26,16 @@ paths:
             application/json:
               schema: 
                 $ref: "#/components/schemas/Schedule"
+  /file-schedule:
+    get:
+      summary: Returns the schedule as found in a file.
+      responses:
+        '200':
+          description: A schedule.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Schedule"
   /model-parameters/get:
     get:
       summary: Returns the current model parameters.
