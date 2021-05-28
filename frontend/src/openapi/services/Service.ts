@@ -34,6 +34,19 @@ export class Service {
         return result.body;
     }
 
+      /**
+     * Returns the schedule as found in a file.
+     * @returns Schedule A schedule.
+     * @throws ApiError
+     */
+    public static async getFileSchedule(): Promise<Schedule> {
+        const result = await __request({
+            method: 'GET',
+            path: `/file-schedule`,
+        });
+        return result.body;
+    }
+
     /**
      * Returns the current model parameters.
      * @returns ModelParameters Succesful operation.
