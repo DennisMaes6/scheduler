@@ -11,6 +11,8 @@ package openapi
 
 import (
 	"context"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/jorensjongers/scheduler/backend/model"
@@ -41,6 +43,19 @@ func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, erro
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) DbScheduleGet(ctx context.Context) (ImplResponse, error) {
 	res, err := s.scheduleGenerator.GetScheduleFromDb()
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
+}
+
+// ScheduleGet - Returns a generated schedule.
+func (s *DefaultApiService) FileScheduleGet(ctx context.Context) (ImplResponse, error) {
+	bytes, err := ioutil.ReadFile("schedule.json")
+	res := model.Schedule{}
+	if err := json.Unmarshal(bytes, &res); err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
 	}

@@ -78,6 +78,12 @@ func (c *DefaultApiController) Routes() Routes {
 			"/db-schedule",
 			c.DbScheduleGet,
 		},
+		{
+			"FileScheduleGet",
+			strings.ToUpper("Get"),
+			"/file-schedule",
+			c.FileScheduleGet,
+		},
 	}
 }
 
@@ -183,6 +189,25 @@ func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Reques
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 
 	result, err := c.service.ScheduleGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
+		return
+	}
+	//If no error, encode the body and the result code
+	if err := EncodeJSONResponse(result.Body, &result.Code, w); err != nil {
+		panic(err)
+	}
+}
+
+// ScheduleGet - Returns a generated schedule.
+func (c *DefaultApiController) FileScheduleGet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST")
+
+	result, err := c.service.FileScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
