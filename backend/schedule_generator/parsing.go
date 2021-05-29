@@ -247,11 +247,11 @@ func findStreaks(uis untaggedIndividualSchedule) []streak {
 
 	for _, ua := range uis.assignments {
 		if firstShiftDone {
-			if !streakActive && (ua.shiftType == model.FREE || ua.shiftType == model.JAEV) {
+			if !streakActive && !countBalance(ua) {
 				firstDay = int32(ua.dayNb)
 				streakActive = true
 			}
-			if streakActive && (ua.shiftType != model.FREE && ua.shiftType != model.JAEV) {
+			if streakActive && countBalance(ua) {
 				streakActive = false
 				streak := streak{
 					firstDay: firstDay,
@@ -267,6 +267,18 @@ func findStreaks(uis untaggedIndividualSchedule) []streak {
 	}
 
 	return streaks
+}
+
+func countBalance(ua untaggedAssignment) bool {
+	if ua.dayNb%7 == 2 || ua.dayNb%7 == 3 {
+		return ua.shiftType != model.FREE && ua.shiftType != model.JAEV
+	}
+
+	return ua.shiftType != model.FREE &&
+		ua.shiftType != model.JAEV &&
+		ua.shiftType != model.JAHO &&
+		ua.shiftType != model.SAHO &&
+		ua.shiftType != model.TPHO
 }
 
 func streaksOfLength(streaks []streak, length int32) []streak {

@@ -104,7 +104,7 @@ func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 		}
 
 		cachedSchedule = combinedRes
-		cached = true
+		//cached = true
 	}
 
 	return cachedSchedule, nil
@@ -122,10 +122,15 @@ func (s ScheduleGenerator) generateDataFile() error {
 		return errors.Wrap(err, "database controller error")
 	}
 
+	fmt.Printf("nb weeks: %d\n", len(instanceData.Days)/7)
+
 	modelParameters, err := s.dbc.GetModelParameters()
 	if err != nil {
 		return errors.Wrap(err, "databse controller error")
 	}
+
+	fmt.Printf("min balance: %d\n", modelParameters.MinBalance)
+	fmt.Printf("min balance JAEV: %d\n", modelParameters.MinBalanceJaev)
 
 	if err := writeData(file, modelParameters, instanceData); err != nil {
 		return errors.Wrap(err, "failed writing instance specific data")

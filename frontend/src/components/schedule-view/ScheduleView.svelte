@@ -71,7 +71,7 @@
 <div class="flex flex-row flex-nowrap space-x-2 w-full overflow-y-scroll">
     <div class="flex flex-col h-full">
         <div class="flex flex-none h-10"/> <!--placeholder-->
-        <div id="assistantlist" class=" scrollbar-hidden flex flex-row overflow-y-scroll">
+        <div id="assistantlist" class="scrollbar-hidden flex flex-row h-full overflow-y-scroll">
             <div  class="flex flex-none flex-col h-full space-y-1">
                 {#each types as type}
                     {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
@@ -90,7 +90,7 @@
                 {/if}
             {/each}
         </div>
-        <div id="schedule" class="scrollable flex flex-col h-full w-full overflow-scroll space-y-1">
+        <div id="schedule" class="scrollable flex flex-col h-full w-full overflow-x-scroll overflow-y-scroll space-y-1">
             {#each types as type}
                 {#each data.assistants.filter((a) => a.type == type) as assistant (assistant.id)}
                     <div class="flex flex-row w-full space-x-1">
@@ -103,6 +103,6 @@
                     </div>
                 {/each}
             {/each}
-        </div>
+        </div>  
     </div>
 </div>
