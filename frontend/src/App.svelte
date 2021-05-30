@@ -36,7 +36,7 @@
     </div>
 
     <div class="flex flex-col h-full overflow-scroll space-y-5">
-        {#await Promise.all([Service.getDbSchedule(), Service.getInstanceData()])}
+        {#await Promise.all([Service.getFileSchedule(), Service.getInstanceData()])}
             <div class="flex h-full w-full">
                 <p class="m-auto w-20"> Loading... </p>
             </div>
