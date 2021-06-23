@@ -15,7 +15,7 @@ type Config = {
 }
 
 export const OpenAPI: Config = {
-    BASE: 'http://localhost:8080',
+    BASE: 'http://localhost:8080/backend',
     VERSION: '0.1.0',
     WITH_CREDENTIALS: false,
     TOKEN: undefined,

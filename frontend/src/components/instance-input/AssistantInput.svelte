@@ -103,6 +103,17 @@
         return [7*weekNb+1, 7*weekNb+2, 7*weekNb+3, 7*weekNb+4, 7*weekNb+5, 7*weekNb+6, 7*weekNb+7]
             .every((day) => assistant.free_days.includes(day))
     }
+
+    function getTypeString(type: AssistantType): string {
+        switch (type) {
+            case AssistantType.JA: return "JA"
+            case AssistantType.JA_F: return "JA_F"
+            case AssistantType.SA: return "SA"
+            case AssistantType.SA_F: return "SA_F"
+            case AssistantType.SA_NEO: return "SA_N"
+            case AssistantType.SA_F_NEO: return "SA_FN"
+        }
+    }
 </script>
 
 
@@ -142,8 +153,8 @@
                             data-icon="ic:round-remove-circle-outline" 
                             data-inline="false"/>
                     </IconButton>
-                    <p class="w-20 text-black text-xs"> {assistant.type} </p>
-                    <p class="font-bold w-32 h-6 text-black text-xs text-right truncate"> {assistant.name} </p>
+                    <p class="w-10 text-black text-xs"> {getTypeString(assistant.type)} </p>
+                    <p class="font-bold w-24 h-6 text-black text-xs text-right truncate"> {assistant.name} </p>
                 </div>   
             {/each}
         {/each}

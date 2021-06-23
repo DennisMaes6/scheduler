@@ -158,9 +158,8 @@ array[P] of var float: workload;
 constraint forall(p in P)(workload[p] = 
   if card(F[p]) == nb_days
   then 0
-  else (sum(w in W, s in S_week)(X[p, s, w] * shift_workload[s]) 
-        + sum(w in W, s in S_weekend)(X[p, s, w] * shift_workload[s]) 
-        + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s] / 2))/ (nb_days - card(F[p]))
+  else (sum(w in W, s in (S_week union S_weekend))(X[p, s, w] * shift_workload[s])
+        + sum(d in H, s in S_holiday)(Xh[p, s, d] * shift_workload[s]))/ (nb_days - card(F[p]))
   endif
 );
 
@@ -276,14 +275,14 @@ constraint min(z) >= min_balance;
 solve minimize fairness_score;
 
 output
-       [if d = 1 then "\n" else " " endif ++ show(fix(a[p, d])) | p in P, d in D] ++ ["\n\n"] ++
-       [if d = 1 then "\n" else " " endif ++ show(fix(z[p, d])) | p in P, d in D] ++
+       %[if d = 1 then "\n" else " " endif ++ show(fix(a[p, d])) | p in P, d in D] ++ ["\n\n"] ++
+       %£[if d = 1 then "\n" else " " endif ++ show(fix(z[p, d])) | p in P, d in D] ++
        ["balance_score:"] ++ [show(min(z))] ++ ["\n"] ++
        ["fairness_score:" ++ show(fairness_score)++"\n"] ++ 
        [
          if w == 1 then 
              "assistant_id:" ++ show(personnel_id[p]) ++ " " 
-          ++ "workload:" ++ show(workload[p]) ++ " " 
+          ++ "workload:" ++ if fix(workload[p]) <= 0.0 then "0.0" else show(workload[p]) endif ++ " " 
          else "" endif ++
          if fix(X[p, FREE, w]) == 1 
          then if 7*w-6..7*w intersect H = {} 

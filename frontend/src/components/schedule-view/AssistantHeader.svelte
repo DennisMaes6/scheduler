@@ -24,16 +24,16 @@
     {#if assistant.type === AssistantType.JA}
         <p class="text-xs mr-2">JA</p>
     {:else if assistant.type === AssistantType.JA_F}
-        <p class="text-xs mr-2">JA<sub>F</sub></p>
+        <p class="text-xs mr-2">JA_F</p>
     {:else if assistant.type === AssistantType.SA}
         <p class="text-xs mr-2">SA</p>
     {:else if assistant.type === AssistantType.SA_F}
-        <p class="text-xs mr-2">SA<sub>F</sub></p>
+        <p class="text-xs mr-2">SA_F</p>
     {:else if assistant.type === AssistantType.SA_NEO}
-        <p class="text-xs mr-2">SA<sub>N</sub></p>
+        <p class="text-xs mr-2">SA_N</p>
     {:else if assistant.type === AssistantType.SA_F_NEO}
-        <p class="text-xs mr-2">SA<sub>FN</sub></p>
+        <p class="text-xs mr-2">SA_FN</p>
     {/if}
     <p class="{getWorkloadTextStyle()} text-xs"> {workload.toFixed(2)} </p>
-    <p class="w-32 text-right text-black text-xs font-bold "> {assistant.name} </p>
+    <p class="w-24 text-right text-black text-xs font-bold "> {assistant.name} </p>
 </div>

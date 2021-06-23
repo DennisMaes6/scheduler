@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const fileName = "test.db"
+const fileName = "demo.db"
 
 func createDB() *sql.DB {
 	newDb := false
