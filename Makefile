@@ -2,7 +2,7 @@ generate-backend:
 	openapi-generator generate -i openapi.yaml -g go-server -o backend
 
 generate-frontend:
-	openapi --input openapi.yaml --output frontend/src/openapi
+	openapi-generator generate -i openapi.yaml --output frontend/src/openapi
 
 run-solver:
 	minizinc --solver gurobi  backend/minizinc/scheduler.mzn backend/minizinc/data.dzn

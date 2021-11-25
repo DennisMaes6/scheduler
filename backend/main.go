@@ -13,7 +13,7 @@ import (
 	"log"
 	"net/http"
 
-	openapi "github.com/jorensjongers/scheduler/backend/server"
+	openapi "github.com/DennisMaes6/scheduler/backend/server"
 )
 
 func main() {
@@ -22,7 +22,10 @@ func main() {
 	DefaultApiService := openapi.NewDefaultApiService()
 	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
 
+	log.Printf("Here")
 	router := openapi.NewRouter(DefaultApiController)
-
+	log.Printf("Here2")
+	
 	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Printf("Here3")
 }

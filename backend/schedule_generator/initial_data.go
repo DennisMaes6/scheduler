@@ -1,6 +1,6 @@
 package schedule_generator
 
-import "github.com/jorensjongers/scheduler/backend/model"
+import "github.com/DennisMaes6/scheduler/backend/model"
 
 var initialModelParameters model.ModelParameters = model.ModelParameters{
 	MinBalance:     7,

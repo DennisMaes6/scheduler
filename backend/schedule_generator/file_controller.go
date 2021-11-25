@@ -5,7 +5,7 @@ import (
 	"os"
 	"sort"
 
-	"github.com/jorensjongers/scheduler/backend/model"
+	"github.com/DennisMaes6/scheduler/backend/model"
 )
 
 func writeData(file *os.File, params model.ModelParameters, data model.InstanceData) error {

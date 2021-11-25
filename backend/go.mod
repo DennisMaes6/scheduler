@@ -1,4 +1,4 @@
-module github.com/jorensjongers/scheduler/backend
+module github.com/DennisMaes6/scheduler/backend
 
 go 1.13
 

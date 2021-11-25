@@ -15,8 +15,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/jorensjongers/scheduler/backend/model"
-	"github.com/jorensjongers/scheduler/backend/schedule_generator"
+	"github.com/DennisMaes6/scheduler/backend/model"
+	"github.com/DennisMaes6/scheduler/backend/schedule_generator"
 )
 
 // DefaultApiService is a service that implents the logic for the DefaultApiServicer

@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/jorensjongers/scheduler/backend/model"
+	"github.com/DennisMaes6/scheduler/backend/model"
 )
 
 // A DefaultApiController binds http requests to an api service and writes the service results to the http response
@@ -95,7 +95,7 @@ func (c *DefaultApiController) Routes() Routes {
 
 // ModelParametersGetGet - Returns the current model parameters.
 func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 
 	result, err := c.service.ModelParametersGetGet(r.Context())
 	//If an error occured, encode the error with the status code
@@ -114,7 +114,7 @@ func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *h
 
 // ModelParametersSetPost - Sets the model paramters in the backend.
 func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 	w.Header().Add("Content-Type", "application/json")
 
@@ -136,21 +136,21 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 
 // ModelParametersSetOptions
 func (c *DefaultApiController) ModelParametersSetOptions(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }
 
 // ModelParametersSetOptions
 func (c *DefaultApiController) InstanceDataSetOptions(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "OPTIONS, POST")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }
 
 // InstanceDataGetGet - Returns the current instance data.
 func (c *DefaultApiController) InstanceDataGetGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 
 	result, err := c.service.InstanceDataGetGet(r.Context())
 	//If an error occured, encode the error with the status code
@@ -169,7 +169,7 @@ func (c *DefaultApiController) InstanceDataGetGet(w http.ResponseWriter, r *http
 
 // InstanceDataSetPost - Sets the insatnce data in the backend.
 func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 	w.Header().Add("Content-Type", "application/json")
 
@@ -191,7 +191,7 @@ func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *htt
 
 // ScheduleGet - Returns a generated schedule.
 func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 
 	result, err := c.service.ScheduleGet(r.Context())
@@ -210,7 +210,7 @@ func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Reques
 
 // ScheduleGet - Returns a generated schedule.
 func (c *DefaultApiController) FileScheduleGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 
 	result, err := c.service.FileScheduleGet(r.Context())
@@ -229,7 +229,7 @@ func (c *DefaultApiController) FileScheduleGet(w http.ResponseWriter, r *http.Re
 
 // DbScheduleGet - Returns the schedule as found in the db.
 func (c *DefaultApiController) DbScheduleGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "POST")
 	result, err := c.service.DbScheduleGet(r.Context())
 	//If an error occured, encode the error with the status code
@@ -248,7 +248,7 @@ func (c *DefaultApiController) DbScheduleGet(w http.ResponseWriter, r *http.Requ
 
 // ModelParametersSetOptions
 func (c *DefaultApiController) FileScheduleGetOptions(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5000")
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5050")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, OPTIONS, POST")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }

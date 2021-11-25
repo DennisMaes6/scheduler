@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/jorensjongers/scheduler/backend/model"
+	"github.com/DennisMaes6/scheduler/backend/model"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 )

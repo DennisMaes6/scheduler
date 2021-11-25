@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jorensjongers/scheduler/backend/model"
+	"github.com/DennisMaes6/scheduler/backend/model"
 	"github.com/pkg/errors"
 )
 

@@ -1,6 +1,6 @@
 package schedule_generator
 
-import "github.com/jorensjongers/scheduler/backend/model"
+import "github.com/DennisMaes6/scheduler/backend/model"
 
 // Sort interface methods for shift type parameters
 type ByShiftType []model.ShiftTypeModelParameters
