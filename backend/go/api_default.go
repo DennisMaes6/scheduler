@@ -166,6 +166,7 @@ func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *h
 		c.errorHandler(w, r, err, &result)
 		return
 	}
+	
 	// If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
 
