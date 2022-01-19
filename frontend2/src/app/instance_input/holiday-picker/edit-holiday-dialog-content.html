@@ -1,0 +1,81 @@
+<div slot="content" class="w-64 h-72 bg-white m-6 rounded-lg border border-black p-4">
+    <div class="flex justify-between items-center">
+        <div>
+            <span class="text-lg font-bold text-gray-800"> {{MONTH_NAMES[visibleMonth-1]}}</span>
+            <span class="ml-1 text-lg text-gray-600 font-normal"> {{visibleYear}}</span>
+        </div>
+        <div class="flex flex-row">
+            <ng-container *ngIf="visibleYear === months[0].year && visibleMonth === months[0].month;else elseBlock1">
+                <div class="h-8 w-8"></div>
+            </ng-container>
+            <ng-template #elseBlock1>
+                <div type="button" class="inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                    (click)=decrementMonth()>
+                    <svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </div>
+            </ng-template>
+            <div *ngIf="visibleYear === months[months.length-1].year && visibleMonth === months[months.length-1].month;else elseBlock2">
+                <div class="h-8 w-8"></div>
+            </div>
+            <ng-template #elseBlock2>
+                <div type="button" class="inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                    (click)=incrementMonth()>
+                    <svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </ng-template>
+            
+        </div>
+    </div>
+
+    <div class="flex flex-wrap my-3 -mx-1">
+        <div *ngFor="let day of DAYS" style="width: 14.26%" class="px-1">
+                <div class="text-gray-800 font-medium text-center text-xs"> {{day}} </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap -mx-1">
+        <div *ngFor="let bd of blankDays" style="width: 14.28%">
+        
+        </div>
+        
+        <div *ngFor="let date of monthDays" style="width: 14.28%" class="px-0.5 mb-1">
+            <div *ngIf="isPartOfPlanningPeriod(date);else elseBlock3">
+                    <div *ngIf="getDay(date).is_holiday;else elseBlock4">
+                        <div class="cursor-pointer leading-loose text-center font-bold text-sm rounded-full
+                            text-gray-700 bg-yellow-200" (click)=toggleHoliday(getDay(date))>
+                            {{getDay(date).date.day}}
+                        </div>
+                    </div>
+                    <ng-template #elseBlock4>
+                        <div class="cursor-pointer leading-loose text-center font-bold text-sm rounded-full
+                                text-gray-700 hover:bg-yellow-100" (click)="toggleHoliday(getDay(date))">
+                            {{getDay(date).date.day}}
+                        </div>
+
+                    </ng-template>
+
+            </div>
+            <ng-template #elseBlock3>
+                <div style="width: 14.28%" class="px-0.5 mb-1">
+                    <div class="leading-loose text-center text-sm rounded-full text-gray-700">
+                        {{date.getDate()}}
+                    </div>
+                </div>
+            </ng-template>
+
+        </div>
+    </div>
+</div>
+
+
+
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="false">Close</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Submit</button>
+  </mat-dialog-actions>

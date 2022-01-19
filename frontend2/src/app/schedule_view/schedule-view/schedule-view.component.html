@@ -1,0 +1,58 @@
+
+<div class="flex flex-row space-x-10 justify-end w-full font-bold text-sm">
+    <p> fairness score: {{schedule.fairness_score.toFixed(2)}} </p>
+    <p> JAEV fairness score: {{schedule.jaev_fairness_score.toFixed(2)}} </p>
+</div>
+
+
+
+<div class="flex flex-row flex-nowrap space-x-2 w-full ">
+    <div class="flex flex-col h-full">
+        <div class="flex flex-none h-20"></div> <!--placeholder-->
+            <div id="assistantlist" class="scrollbar-hidden flex flex-row h-full overflow-y-scroll">
+                <div class="flex flex-none flex-col h-full space-y-1">
+                    
+                    <div  *ngFor="let type of types">
+                        
+                        <div *ngFor="let assistant of data.assistants | assistantPipe : type">
+                            
+                            <app-assistant-header [assistant]="assistant" [workload]="getIs(assistant.id).workload"></app-assistant-header>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>   
+        
+    <div class="flex flex-col h-full overflow-scroll space-y-2">
+        <div id="dayheaders" class="scrollbar-hidden flex flex-none flex-row overflow-x-scroll space-x-2">
+            
+            <div *ngFor="let day of data.days">
+                <app-day-header [day]="day" > </app-day-header>
+                <div *ngIf="day.id % 7 == 0">
+                    <div class="flex flex-none w-16"></div>
+                </div>
+            </div>
+            
+        </div>
+        <div id="schedule" class="scrollable flex flex-col h-full w-full overflow-x-scroll overflow-y-scroll space-y-1">
+            <div *ngFor="let type of types">
+                <div *ngFor="let assistant of data.assistants | assistantPipe : type">
+                    <div class="flex flex-row w-full space-x-2">
+                        <div *ngFor="let day of data.days">
+                            <app-assignment-box [assignment]="getAssignmentsOnDay(assistant, day)" ></app-assignment-box>
+                            <div *ngIf="day.id % 7 == 0" >
+                           
+                                <div class="flex flex-none w-16">
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+
+</div>
+

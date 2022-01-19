@@ -1,0 +1,14 @@
+<div class="flex flex-col flex-none w-12 justify-center align-center place-items-center cursor-default">
+    <div class="flex w-12 rounded justify-center">
+        <p class="m-auto text-xs font-bold text-black"> {{day_of_week(day)}}</p>
+    </div>
+    <div *ngIf="day.is_holiday; else elseBlock"  class="flex w-12 rounded bg-yellow-200 justify-center  place-items-center ">
+        <p class="m-auto text-xs font-bold text-black"> {{day.date.day + "/" + day.date.month}}</p>
+    </div> 
+    <ng-template #elseBlock>
+        <div class="flex w-12 rounded justify-center align-center">
+            <p class="m-auto text-xs font-bold text-black items-center align-center" style="text-align:right"> {{day.date.day + "/" + day.date.month}}</p>
+        </div> 
+    </ng-template>
+</div>
+

@@ -1,0 +1,77 @@
+
+<div class="my-2" slot="header">
+    <h1 class="font-bold"> Select start date </h1>
+</div>
+
+
+<div slot="content" class="w-64 h-72 bg-white m-6 rounded-lg border border-black p-4">
+    <div class="flex justify-between items-center">
+        <div>
+            <span class="text-lg font-bold text-gray-800"> {{MONTH_NAMES[visibleMonth-1]}}</span>
+            <span class="ml-1 text-lg text-gray-600 font-normal"> {{visibleYear}}</span>
+        </div>
+        <div>
+            <div type="button" class="inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                (click)=decrementMonth()>
+                <svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </div>
+            <div type="button" class="inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full"
+                (click)=incrementMonth()>
+                <svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap my-3 -mx-1">
+        <div *ngFor="let day of DAYS" style="width: 14.26%" class="px-1">
+                <div class="text-gray-800 font-medium text-center text-xs"> {{day}} </div>
+        </div>
+
+    </div>
+    <div class="flex flex-wrap -mx-1">
+        <div *ngFor="let item of blankDays" style="width: 14.28%" class="px-0.5 mb-1"></div>
+        
+        <div *ngFor="let day of monthDays" style="width: 14.28%" class="px-0.5 mb-1">
+
+                <div *ngIf="day.getDay() == 5;else dayNotFive">
+                    <div *ngIf="currentDate.year === day.getFullYear() && currentDate.month === day.getMonth() && currentDate.day === day.getDate();else elseBlock">
+                        <div class="cursor-pointer leading-loose text-center text-sm rounded-full font-bold bg-green-500 text-white"
+                            (click)=setStartDay(day)>
+                            {{day.getDate()}}
+                        </div>
+                    </div>
+                    <ng-template #elseBlock>
+                        <div class="cursor-pointer leading-loose text-center text-sm rounded-full font-bold text-gray-700 hover:bg-green-300" (click)=setStartDay(day)> 
+                            {{day.getDate()}}
+                        </div>
+                    </ng-template>
+                </div>
+
+                <ng-template #dayNotFive>
+                    <div class="leading-loose text-center text-sm rounded-full text-gray-500 font-normal">
+                        {{day.getDate()}}
+                    </div>
+                </ng-template>
+
+            
+        </div>
+    </div>
+</div>
+
+
+
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="false">Close</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Submit</button>
+  </mat-dialog-actions>
+
+  <!--  
+<div class="my-5 flex flex-row justify-end space-x-2" slot="footer" let:close>
+    <app-button buttonText="Close" (callback)=closeWindow()>  </app-button>
+    <app-button buttonText="Submit" (callback)=closeAndSubmit()>  </app-button>
+</div>
+-->
