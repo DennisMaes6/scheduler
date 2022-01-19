@@ -27,6 +27,7 @@ type DefaultApiRouter interface {
 	ModelParametersGetGet(http.ResponseWriter, *http.Request)
 	ModelParametersSetPost(http.ResponseWriter, *http.Request)
 	ScheduleGet(http.ResponseWriter, *http.Request)
+	GenerateScheduleGet(http.ResponseWriter, *http.Request)
 }
 
 
@@ -42,4 +43,5 @@ type DefaultApiServicer interface {
 	ModelParametersGetGet(context.Context) (ImplResponse, error)
 	ModelParametersSetPost(context.Context, ModelParameters) (ImplResponse, error)
 	ScheduleGet(context.Context) (ImplResponse, error)
+	GenerateScheduleGet(context.Context) (ImplResponse, error)
 }

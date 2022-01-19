@@ -15,14 +15,14 @@ const generateScheduleCmd string = "minizinc"
 
 var generateScheduleArgs []string = []string{
 	"--solver",
-	"gurobi",
+	"gecode",
 	"minizinc/scheduler.mzn",
 	"minizinc/data.dzn",
 }
 
 var generateScheduleJaevArgs []string = []string{
 	"--solver",
-	"gurobi",
+	"gecode",
 	"minizinc/scheduler_jaev.mzn",
 	"minizinc/data_jaev.dzn",
 }
@@ -54,19 +54,34 @@ func (s ScheduleGenerator) UpdateModelParameters(params model.ModelParameters) e
 	return s.dbc.SetModelParameters(params)
 }
 
-func (s ScheduleGenerator) GetScheduleFromDb() (model.Schedule, error) {
-	cmd := exec.Command("java", "-cp", "/Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar", "Main")
+func (s ScheduleGenerator) GenerateScheduleFromDb() (model.Schedule, error) {
+	fmt.Println("GENERATE SCHEDULE FROM DB");
+	//cmd := exec.Command("java", "-cp", "/Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar", "Main")
+	cmd := exec.Command("java", "-cp", "/Users/dennismaes/Library/Mobile Documents/com~apple~CloudDocs/School/2021-2022/Thesis/applicatie/thesis/target/scheduler-1.0.0.jar:/Users/dennismaes/.m2/repository/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar:/Users/dennismaes/.m2/repository/org/javatuples/javatuples/1.2/javatuples-1.2.jar", "Main")
+
 
 	if err := cmd.Run(); err != nil {
 		return model.Schedule{}, errors.Wrap(err, "failed starting schedule generation")
-	}
+	} 
 
+	return s.dbc.getSchedule()
+}
+
+
+func (s ScheduleGenerator) GetScheduleFromDb() (model.Schedule, error) {
+	//cmd := exec.Command("java", "-cp", "/Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar", "Main")
+	/*cmd := exec.Command("java", "-cp", "/Users/dennismaes/Library/Mobile Documents/com~apple~CloudDocs/School/2021-2022/Thesis/applicatie/thesis/target/scheduler-1.0.0.jar:/Users/dennismaes/.m2/repository/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar:/Users/dennismaes/.m2/repository/org/javatuples/javatuples/1.2/javatuples-1.2.jar", "Main")
+
+	if err := cmd.Run(); err != nil {
+		return model.Schedule{}, errors.Wrap(err, "failed starting schedule generation")
+	} */
+	
 	return s.dbc.getSchedule()
 }
 
 func (s ScheduleGenerator) GenerateSchedule() (model.Schedule, error) {
 	if !cached {
-
+		fmt.Println("GENERATE SCHEDULE");
 		if err := s.generateDataFile(); err != nil {
 			return model.Schedule{}, errors.Wrap(err, "failed generating data file")
 		}

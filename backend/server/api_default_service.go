@@ -62,6 +62,17 @@ func (s *DefaultApiService) FileScheduleGet(ctx context.Context) (ImplResponse, 
 	return Response(http.StatusOK, res), nil
 }
 
+// Generate a new database and store in db file
+func (s *DefaultApiService) GenerateScheduleGet(ctx context.Context) (ImplResponse, error) {
+	res, err := s.scheduleGenerator.GenerateScheduleFromDb()
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
+}
+
+
+
 // SetModelParamsPost - Sets the model paramters in the backend.
 func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelParameters model.ModelParameters) (ImplResponse, error) {
 	if err := s.scheduleGenerator.UpdateModelParameters(modelParameters); err != nil {
