@@ -17,6 +17,16 @@ paths:
                 $ref: '#/components/schemas/Schedule'
           description: A schedule.
       summary: Returns a schedule generated with MiniZinc.
+  /schedule-generate:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns a schedule generated with Java.
   /db-schedule:
     get:
       responses:
@@ -188,8 +198,10 @@ components:
         shift_type_parameters:
         - max_buffer: 5
           shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
         - max_buffer: 5
           shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
       properties:
         min_balance:
           description: The minimal balance score for an acceptable solution.
@@ -212,11 +224,15 @@ components:
       example:
         max_buffer: 5
         shift_workload: 1.4658129805029452
+        shift_coverage: 5.962133916683182
       properties:
         shift_type:
           $ref: '#/components/schemas/ShiftType'
         shift_workload:
           description: The weight of this shift type in the fairness score.
+          type: number
+        shift_coverage:
+          description: The amount of personnel needed for this particular shift.
           type: number
         max_buffer:
           description: The number of assignments per assisant allowed above the minimun
@@ -224,6 +240,7 @@ components:
           type: integer
       required:
       - max_buffer
+      - shift_coverage
       - shift_type
       - shift_workload
       type: object

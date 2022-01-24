@@ -16,6 +16,7 @@
                     <app-assignment-box [assignment] = "{shift_type: item.shift_type, part_of_min_balance:false, day_nb:0}"></app-assignment-box>
                     <app-input-field [value]="item.shift_workload" (onChange)="wrapSubmit($event, item.shift_type)" [step]="1"></app-input-field>
                     <app-input-field [value]="item.max_buffer" (onChange)="getValueBufferChanged($event, item.shift_type)" [step]="1"></app-input-field>
+                    <app-input-field [value]="item.shift_coverage" (onChange)="getValueBufferChanged($event, item.shift_type)" [step]="0.05"></app-input-field>
 
                 </div>
                 

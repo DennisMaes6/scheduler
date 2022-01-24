@@ -22,6 +22,10 @@ export interface ShiftTypeModelParameters {
      */
     shift_workload: number;
     /**
+     * The amount of personnel needed for this particular shift.
+     */
+    shift_coverage: number;
+    /**
      * The number of assignments per assisant allowed above the minimun for this shift type.
      */
     max_buffer: number;

@@ -3,8 +3,8 @@ import {MatDialog} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormField } from '@angular/material/form-field';
 
-
-import { InstanceData, Assistant, Service } from "build/openapi";
+import { Service } from 'build/openapi/services/Service';
+import { InstanceData, Assistant } from "build/openapi";
 import { AssistantType } from "build/openapi";
 
 import { IconButtonComponent } from "../../model_input/icon-button/icon-button.component"

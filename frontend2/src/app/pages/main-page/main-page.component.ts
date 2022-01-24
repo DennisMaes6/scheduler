@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Service } from 'build/openapi';
+
 import { DefaultService } from 'build/openapi';
 
 @Component({
@@ -14,7 +14,7 @@ export class MainPageComponent implements OnInit {
 
   generateSchedule() {
       console.log("Button to generate schedule clicked.")
-      this.defaultService.scheduleGenerate().subscribe();
+      this.defaultService.scheduleGenerateGet().subscribe();
       
   }
 

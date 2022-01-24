@@ -4,11 +4,21 @@ info:
   description: API for getting generated schedules. Also used for getting and setting model parameters and instance data.
   version: 0.1.0
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8080/backend
 paths:
   /schedule:
     get:
       summary: Returns a schedule generated with MiniZinc.
+      responses:
+        '200':
+          description: A schedule.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Schedule"
+  /schedule-generate:
+    get:
+      summary: Returns a schedule generated with Java.
       responses:
         '200':
           description: A schedule.
@@ -170,6 +180,7 @@ components:
       required:
         - shift_type
         - shift_workload
+        - shift_coverage
         - max_buffer
       properties:
         shift_type:
@@ -177,6 +188,9 @@ components:
         shift_workload:
           type: number
           description: The weight of this shift type in the fairness score.
+        shift_coverage:
+          type: number
+          description: The amount of personnel needed for this particular shift.
         max_buffer:
           type: integer
           description: The number of assignments per assisant allowed above the minimun for this shift type. 

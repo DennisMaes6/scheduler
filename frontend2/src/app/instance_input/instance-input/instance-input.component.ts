@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import type { InstanceData, Day } from "build/openapi";
 
-import { Service } from 'build/openapi';
+import { Service } from 'build/openapi/services/Service';
 import { DefaultService } from 'build/openapi';
 
 // import Modal from "../Modal.svelte";

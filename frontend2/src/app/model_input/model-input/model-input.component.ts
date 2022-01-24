@@ -3,7 +3,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import type { ModelParameters} from "build/openapi";
   
 import { DefaultService } from 'build/openapi';
-import { Service } from 'build/openapi' // 
+import { Service } from 'build/openapi/services/Service';
 import { Observable } from 'rxjs';
 //import { Assignment } from "../assignment-box/assignment-box.component"
 

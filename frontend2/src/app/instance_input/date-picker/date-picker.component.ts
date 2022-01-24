@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 //import Modal from "../Modal.svelte"
 import { ButtonComponent } from "../../model_input/button/button.component"
 import { DayHeaderComponent } from "../../schedule_view/day-header/day-header.component";
-import { Service } from 'build/openapi' // 
+
 
 
 

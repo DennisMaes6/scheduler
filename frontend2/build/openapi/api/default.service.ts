@@ -18,10 +18,14 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { InstanceData } from '../model/models';
-import { ModelParameters } from '../model/models';
-import { Schedule } from '../model/models';
+// @ts-ignore
+import { InstanceData } from '../model/instanceData';
+// @ts-ignore
+import { ModelParameters } from '../model/modelParameters';
+// @ts-ignore
+import { Schedule } from '../model/schedule';
 
+// @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
@@ -145,7 +149,7 @@ export class DefaultService {
     public fileScheduleGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-        
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -215,7 +219,7 @@ export class DefaultService {
         if(localVarHttpHeaderAcceptSelected && localVarHttpHeaderAcceptSelected.startsWith('text')) {
             responseType_ = 'text';
         }
-        
+
         return this.httpClient.get<InstanceData>(`${this.configuration.basePath}/instance-data/get`,
             {
                 context: localVarHttpContext,
@@ -396,6 +400,53 @@ export class DefaultService {
     }
 
     /**
+     * Returns a schedule generated with Java.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public scheduleGenerateGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Schedule>;
+    public scheduleGenerateGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Schedule>>;
+    public scheduleGenerateGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Schedule>>;
+    public scheduleGenerateGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' = 'json';
+        if(localVarHttpHeaderAcceptSelected && localVarHttpHeaderAcceptSelected.startsWith('text')) {
+            responseType_ = 'text';
+        }
+
+        return this.httpClient.get<Schedule>(`${this.configuration.basePath}/schedule-generate`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Returns a schedule generated with MiniZinc.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -441,52 +492,5 @@ export class DefaultService {
             }
         );
     }
-
-    /**
-     * Returns a schedule generated with Java.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-     public scheduleGenerate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Schedule>;
-     public scheduleGenerate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Schedule>>;
-     public scheduleGenerate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Schedule>>;
-     public scheduleGenerate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
- 
-         let localVarHeaders = this.defaultHeaders;
- 
-         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-         if (localVarHttpHeaderAcceptSelected === undefined) {
-             // to determine the Accept header
-             const httpHeaderAccepts: string[] = [
-                 'application/json'
-             ];
-             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-         }
-         if (localVarHttpHeaderAcceptSelected !== undefined) {
-             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-         }
- 
-         let localVarHttpContext: HttpContext | undefined = options && options.context;
-         if (localVarHttpContext === undefined) {
-             localVarHttpContext = new HttpContext();
-         }
- 
- 
-         let responseType_: 'text' | 'json' = 'json';
-         if(localVarHttpHeaderAcceptSelected && localVarHttpHeaderAcceptSelected.startsWith('text')) {
-             responseType_ = 'text';
-         }
- 
-         return this.httpClient.get<Schedule>(`${this.configuration.basePath}/schedule-generate`,
-             {
-                 context: localVarHttpContext,
-                 responseType: <any>responseType_,
-                 withCredentials: this.configuration.withCredentials,
-                 headers: localVarHeaders,
-                 observe: observe,
-                 reportProgress: reportProgress
-             }
-         );
-     }
 
 }

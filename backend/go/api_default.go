@@ -87,16 +87,16 @@ func (c *DefaultApiController) Routes() Routes {
 			c.ModelParametersSetPost,
 		},
 		{
+			"ScheduleGenerateGet",
+			strings.ToUpper("Get"),
+			"/schedule-generate",
+			c.ScheduleGenerateGet,
+		},
+		{
 			"ScheduleGet",
 			strings.ToUpper("Get"),
 			"/schedule",
 			c.ScheduleGet,
-		},
-		{
-			"ScheduleGenerate",
-			strings.ToUpper("Get"),
-			"/schedule-generate",
-			c.GenerateScheduleGet,
 		},
 	}
 }
@@ -172,7 +172,6 @@ func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *h
 		c.errorHandler(w, r, err, &result)
 		return
 	}
-	
 	// If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
 
@@ -202,9 +201,9 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 
 }
 
-// ScheduleGet - Returns a schedule generated with MiniZinc.
-func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.ScheduleGet(r.Context())
+// ScheduleGenerateGet - Returns a schedule generated with Java.
+func (c *DefaultApiController) ScheduleGenerateGet(w http.ResponseWriter, r *http.Request) {
+	result, err := c.service.ScheduleGenerateGet(r.Context())
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -215,9 +214,9 @@ func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Reques
 
 }
 
-// ScheduleGenerate - Returns a schedule generated with Java.
-func (c *DefaultApiController) GenerateScheduleGet(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GenerateScheduleGet(r.Context())
+// ScheduleGet - Returns a schedule generated with MiniZinc.
+func (c *DefaultApiController) ScheduleGet(w http.ResponseWriter, r *http.Request) {
+	result, err := c.service.ScheduleGet(r.Context())
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
