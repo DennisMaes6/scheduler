@@ -16,7 +16,7 @@ const (
 	JAEV ShiftType = "JAEV"
 	JAWE ShiftType = "JAWE"
 	JAHO ShiftType = "JAHO"
-	JANW ShiftType = "JANW"
+	SANW ShiftType = "SANW"
 	SAEW ShiftType = "SAEW"
 	SAWE ShiftType = "SAWE"
 	SAHO ShiftType = "SAHO"

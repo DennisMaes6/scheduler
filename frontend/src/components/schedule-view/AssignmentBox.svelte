@@ -10,7 +10,7 @@
         switch (st) {
             case ShiftType.JAEV:
                 return "bg-yellow-400";
-            case ShiftType.JANW:
+            case ShiftType.SANW:
                 return "bg-green-400";
             case ShiftType.JAWE:
                 return "bg-red-500";

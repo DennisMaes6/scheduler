@@ -13,6 +13,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/DennisMaes6/scheduler/backend/model"
@@ -42,6 +43,7 @@ func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, erro
 
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) DbScheduleGet(ctx context.Context) (ImplResponse, error) {
+	log.Printf("DbScheduleGet")
 	res, err := s.scheduleGenerator.GetScheduleFromDb()
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
@@ -70,8 +72,6 @@ func (s *DefaultApiService) GenerateScheduleGet(ctx context.Context) (ImplRespon
 	}
 	return Response(http.StatusOK, res), nil
 }
-
-
 
 // SetModelParamsPost - Sets the model paramters in the backend.
 func (s *DefaultApiService) ModelParametersSetPost(ctx context.Context, modelParameters model.ModelParameters) (ImplResponse, error) {

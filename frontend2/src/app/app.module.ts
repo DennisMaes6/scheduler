@@ -45,6 +45,7 @@ import { AssistantInputDialogContent } from './instance_input/assistant-input/as
 import { EditAssistantComponent } from './instance_input/edit-assistant/edit-assistant.component';
 import { AssistantPipePipe } from './assistant-pipe.pipe';
 import { NewAssistantDialogComponent } from './instance_input/assistant-input/assistant-input.component';
+import { SchedulePickerPageComponent } from './pages/schedule-picker-page/schedule-picker-page.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { NewAssistantDialogComponent } from './instance_input/assistant-input/as
     AssistantInputDialogContent,
     EditAssistantComponent,
     AssistantPipePipe,
-    NewAssistantDialogComponent
+    NewAssistantDialogComponent,
+    SchedulePickerPageComponent
   ],
   imports: [
     BrowserModule,

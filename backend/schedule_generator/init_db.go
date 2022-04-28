@@ -12,7 +12,7 @@ import (
 const fileName = "demo.db"
 
 func createDB() *sql.DB {
-	newDb := false
+	newDb := false  // TODO: Hier op true zetten om db te initialiseren
 
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 
@@ -32,10 +32,10 @@ func createDB() *sql.DB {
 		if err := createTables(sqliteDatabase); err != nil {
 			log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
 		}
-
+		
 		if err := initializeData(sqliteDatabase); err != nil {
 			log.Fatal(errors.Wrap(err, "failed initializing data in db"))
-		}
+		} 
 	}
 
 	log.Printf("Database initialized succesfully")
@@ -60,6 +60,7 @@ func createTables(db *sql.DB) error {
 			CREATE TABLE IF NOT EXISTS shift_type_parameters (
 				shift_type TEXT PRIMARY KEY,
 				shift_workload REAL,
+				shift_coverage REAL,
 				max_buffer INTEGER
 			)
 		`,
@@ -111,7 +112,7 @@ func createTables(db *sql.DB) error {
 			return errors.Wrap(err, fmt.Sprintf("failed creating table with query: %s", query))
 		}
 	}
-
+	
 	return nil
 }
 
@@ -132,11 +133,11 @@ func initializeData(db *sql.DB) error {
 	}
 
 	initSTPsQuery := `
-		INSERT or IGNORE INTO shift_type_parameters(shift_type, shift_workload, max_buffer)
-		VALUES (?, ?, ?)
+		INSERT or IGNORE INTO shift_type_parameters(shift_type, shift_workload, shift_coverage, max_buffer)
+		VALUES (?, ?, ?, ?)
     `
 	for _, stp := range initialModelParameters.ShiftTypeParameters {
-		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
+		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.ShiftCoverage, stp.MaxBuffer); err != nil {
 			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
 	}

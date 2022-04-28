@@ -131,7 +131,9 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 	modelParameters := &model.ModelParameters{}
 	
 	log.Println("SETPOST")
+	
 	if err := json.NewDecoder(r.Body).Decode(&modelParameters); err != nil {
+		log.Println("BAD REQUEST")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

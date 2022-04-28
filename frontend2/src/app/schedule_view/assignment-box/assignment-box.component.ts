@@ -36,7 +36,7 @@ export class AssignmentBoxComponent implements OnInit {
     switch (st) {
       case ShiftType.Jaev:
           return "bg-yellow-400";
-      case ShiftType.Janw:
+      case ShiftType.Sanw:
           return "bg-green-400";
       case ShiftType.Jawe:
           return "bg-red-500";

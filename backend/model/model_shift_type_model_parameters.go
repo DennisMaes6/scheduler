@@ -16,6 +16,9 @@ type ShiftTypeModelParameters struct {
 	// The weight of this shift type in the fairness score.
 	ShiftWorkload float32 `json:"shift_workload"`
 
+	// The amount of personnel needed for this particular shift.
+	ShiftCoverage float32 `json:"shift_coverage"`
+
 	// The number of assignments per assisant allowed above the minimun for this shift type.
 	MaxBuffer int32 `json:"max_buffer"`
 }

@@ -73,7 +73,7 @@ func (c DbController) SetModelParameters(params model.ModelParameters) error {
 func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, error) {
 
 	shiftTypeParamsQuery := `
-		SELECT shift_type, shift_workload, max_buffer
+		SELECT shift_type, shift_workload, shift_coverage, max_buffer
 		FROM shift_type_parameters
 	`
 
@@ -88,16 +88,18 @@ func (c DbController) getShiftTypeParams() ([]model.ShiftTypeModelParameters, er
 		var (
 			shiftType     string
 			shiftWorkload float32
+			shiftCoverage float32
 			maxBuffer     int32
 		)
 
-		if err := rows.Scan(&shiftType, &shiftWorkload, &maxBuffer); err != nil {
+		if err := rows.Scan(&shiftType, &shiftWorkload, &shiftCoverage, &maxBuffer); err != nil {
 			return []model.ShiftTypeModelParameters{}, err
 		}
 
 		stp := model.ShiftTypeModelParameters{
 			ShiftType:     model.ShiftType(shiftType),
 			ShiftWorkload: shiftWorkload,
+			ShiftCoverage: shiftCoverage,
 			MaxBuffer:     maxBuffer,
 		}
 
@@ -118,14 +120,14 @@ func (c DbController) setShiftTypeParams(stps []model.ShiftTypeModelParameters) 
 	if _, err := c.db.Exec(deleteRowsQuery); err != nil {
 		return errors.Wrap(err, "failed truncating shift type parameters table")
 	}
-
+	
 	setSTPsQuery := `
-		INSERT INTO shift_type_parameters(shift_type, shift_workload, max_buffer)
-		VALUES (?, ?, ?)
+		INSERT INTO shift_type_parameters(shift_type, shift_workload, shift_coverage, max_buffer)
+		VALUES (?, ?, ?, ?)
 	`
 
 	for _, stp := range stps {
-		if _, err := c.db.Exec(setSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
+		if _, err := c.db.Exec(setSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.ShiftCoverage, stp.MaxBuffer); err != nil {
 			return errors.Wrap(err, "failed inserting shift type paramers in database")
 		}
 	}

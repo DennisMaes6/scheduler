@@ -7,47 +7,56 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 	MinBalanceJaev: 4,
 	ShiftTypeParameters: []model.ShiftTypeModelParameters{
 		{
-			ShiftType:     model.JANW,
+			ShiftType:     model.SANW,
+			ShiftCoverage: 2,
 			ShiftWorkload: 3,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.JAWE,
+			ShiftCoverage: 2,
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.JAHO,
+			ShiftCoverage: 2,
 			ShiftWorkload: 1,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.SAEW,
+			ShiftCoverage: 2,
 			ShiftWorkload: 3,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.SAWE,
+			ShiftCoverage: 2,
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.SAHO,
+			ShiftCoverage: 2,
 			ShiftWorkload: 1,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.TPWE,
+			ShiftCoverage: 2,
 			ShiftWorkload: 3,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.TPHO,
+			ShiftCoverage: 2,
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{
 			ShiftType:     model.CALL,
+			ShiftCoverage: 2,
 			ShiftWorkload: 0,
 			MaxBuffer:     1,
 		},

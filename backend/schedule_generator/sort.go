@@ -6,7 +6,7 @@ import "github.com/DennisMaes6/scheduler/backend/model"
 type ByShiftType []model.ShiftTypeModelParameters
 
 var shiftTypeOrder []model.ShiftType = []model.ShiftType{
-	model.JANW,
+	model.SANW,
 	model.JAWE,
 	model.JAHO,
 	model.SAEW,

@@ -9,7 +9,7 @@ export enum ShiftType {
     JAEV = 'JAEV',
     JAWE = 'JAWE',
     JAHO = 'JAHO',
-    JANW = 'JANW',
+    SANW = 'SANW',
     SAEW = 'SAEW',
     SAWE = 'SAWE',
     SAHO = 'SAHO',

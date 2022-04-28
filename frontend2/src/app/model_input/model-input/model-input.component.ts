@@ -30,7 +30,20 @@ export class ModelInputComponent implements OnInit {
   }
 
   // opgeroepen wanneer op button gedrukt wordt
-  getValueChanged(evt: any, shift_type: string){
+  getCoverageChanged(evt: any, shift_type: string){
+    if(typeof this.modelParameters.shift_type_parameters !== 'undefined'){
+      for (const prms of this.modelParameters.shift_type_parameters){
+        if(prms.shift_type == shift_type){
+      
+          prms.shift_coverage = evt;
+        }
+      }
+    }
+
+    Service.postModelParams(this.modelParameters);
+  }
+  getWorkloadChanged(evt: any, shift_type: string){
+    console.log("event: ", evt)
     if(typeof this.modelParameters.shift_type_parameters !== 'undefined'){
       for (const prms of this.modelParameters.shift_type_parameters){
         if(prms.shift_type == shift_type){
@@ -73,7 +86,7 @@ export class ModelInputComponent implements OnInit {
   // DIT IS AL NODIG OM GEEN UNDEFINED BODY TE KRIJGEN
   // TODO: MOMENTEEL 2X SUBMIT, NAAR 1 GAAN
   wrapSubmit(evt: any, shift_type: string): void {
-    this.getValueChanged(evt, shift_type)
+    this.getCoverageChanged(evt, shift_type)
     //this.handleSubmit() // TODO: zien of dit nodig is?
   }
 

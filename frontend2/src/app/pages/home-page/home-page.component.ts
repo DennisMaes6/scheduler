@@ -33,6 +33,10 @@ export class HomePageComponent implements OnInit {
         label: 'ScheduleViewPage',
         link: '/schedule-view',
         index: 4
+      },  {
+        label: 'SchedulePickerPage',
+        link: '/schedule-picker',
+        index: 5
       }
     ]
    }

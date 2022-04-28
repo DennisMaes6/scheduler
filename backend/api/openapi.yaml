@@ -5,7 +5,7 @@ info:
   title: Scheduler API
   version: 0.1.0
 servers:
-- url: http://localhost:8080
+- url: http://localhost:8080/backend
 paths:
   /schedule:
     get:
@@ -357,7 +357,7 @@ components:
       - JAEV
       - JAWE
       - JAHO
-      - JANW
+      - SANW
       - SAEW
       - SAWE
       - SAHO

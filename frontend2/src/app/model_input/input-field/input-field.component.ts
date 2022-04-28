@@ -32,7 +32,8 @@ export class InputFieldComponent implements OnInit {
   };
 
   valChanged(newVal: string){
-    const newValNumber = parseInt(newVal)
+  
+    const newValNumber = parseFloat(newVal)
     this.onChange.emit(newValNumber);
     console.log("VALCHANGEDDDDD")
     console.log(newValNumber)

@@ -24,7 +24,7 @@ func main() {
 
 	DefaultApiService := openapi.NewDefaultApiService()
 	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
-
+	
 
 	router := openapi.NewRouter(DefaultApiController)
 
