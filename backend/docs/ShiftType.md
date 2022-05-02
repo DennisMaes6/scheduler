@@ -23,8 +23,6 @@
 
 * `CALL` (value: `"CALL"`)
 
-* `TPNF` (value: `"TPNF"`)
-
 * `FREE` (value: `"FREE"`)
 
 

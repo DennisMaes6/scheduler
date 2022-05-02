@@ -1,7 +1,6 @@
 export * from './assignment';
 export * from './assistant';
 export * from './assistantType';
-export * from './dBFile';
 export * from './day';
 export * from './dayDate';
 export * from './individualSchedule';

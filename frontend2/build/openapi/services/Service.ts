@@ -5,7 +5,6 @@ import type { InstanceData } from 'build/openapi/model/instanceData';
 import type { ModelParameters } from 'build/openapi/model/modelParameters';
 import type { Schedule } from 'build/openapi/model/schedule';
 import { request as __request } from '../core/request';
-import { DBFile } from '../model/dBFile';
 
 export class Service {
 
@@ -120,22 +119,4 @@ export class Service {
         return result.body;
     }
 
-    /**
-     * Sets the DB FILE in the backend.
-     * @param requestBody The model parameters to be set.
-     * @returns any DB File succesfully updated
-     * @throws ApiError
-     */
-     public static async postDBFile(
-        requestBody: DBFile,
-    ): Promise<any> {
-        const result = await __request({
-            method: 'POST',
-            path: `/schedule-file/set`,
-            body: requestBody,
-        });
-        return result.body;
-    }
-
-    
 }

@@ -14,7 +14,7 @@
 /**
  * Identifies a specific shift type. Includes the FREE shift type.
  */
-export type ShiftType = 'JAEV' | 'JAWE' | 'JAHO' | 'SANW' | 'SAEW' | 'SAWE' | 'SAHO' | 'TPWE' | 'TPHO' | 'CALL' | 'TPNF' | 'FREE';
+export type ShiftType = 'JAEV' | 'JAWE' | 'JAHO' | 'SANW' | 'SAEW' | 'SAWE' | 'SAHO' | 'TPWE' | 'TPHO' | 'CALL' | 'FREE';
 
 export const ShiftType = {
     Jaev: 'JAEV' as ShiftType,
@@ -27,7 +27,6 @@ export const ShiftType = {
     Tpwe: 'TPWE' as ShiftType,
     Tpho: 'TPHO' as ShiftType,
     Call: 'CALL' as ShiftType,
-    Tpnf: 'TPNF' as ShiftType,
     Free: 'FREE' as ShiftType
 };
 

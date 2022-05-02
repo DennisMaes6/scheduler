@@ -10,7 +10,6 @@ Method | HTTP request | Description
 [**InstanceDataSetPost**](DefaultApi.md#InstanceDataSetPost) | **Post** /instance-data/set | Sets the insatnce data in the backend.
 [**ModelParametersGetGet**](DefaultApi.md#ModelParametersGetGet) | **Get** /model-parameters/get | Returns the current model parameters.
 [**ModelParametersSetPost**](DefaultApi.md#ModelParametersSetPost) | **Post** /model-parameters/set | Sets the model paramters in the backend.
-[**ScheduleFileSetPost**](DefaultApi.md#ScheduleFileSetPost) | **Post** /schedule-file/set | Sets the schedule DB file in the backend.
 [**ScheduleGenerateGet**](DefaultApi.md#ScheduleGenerateGet) | **Get** /schedule-generate | Returns a schedule generated with Java.
 [**ScheduleGet**](DefaultApi.md#ScheduleGet) | **Get** /schedule | Returns a schedule generated with MiniZinc.
 
@@ -357,68 +356,6 @@ Other parameters are passed through a pointer to a apiModelParametersSetPostRequ
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modelParameters** | [**ModelParameters**](ModelParameters.md) | The model parameters to be set. | 
-
-### Return type
-
- (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: Not defined
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## ScheduleFileSetPost
-
-> ScheduleFileSetPost(ctx).DBFile(dBFile).Execute()
-
-Sets the schedule DB file in the backend.
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
-)
-
-func main() {
-    dBFile := *openapiclient.NewDBFile("Filename_example") // DBFile | The db file to be set.
-
-    configuration := openapiclient.NewConfiguration()
-    api_client := openapiclient.NewAPIClient(configuration)
-    resp, r, err := api_client.DefaultApi.ScheduleFileSetPost(context.Background()).DBFile(dBFile).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `DefaultApi.ScheduleFileSetPost``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-}
-```
-
-### Path Parameters
-
-
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiScheduleFileSetPostRequest struct via the builder pattern
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **dBFile** | [**DBFile**](DBFile.md) | The db file to be set. | 
 
 ### Return type
 

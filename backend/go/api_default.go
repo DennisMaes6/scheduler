@@ -87,12 +87,6 @@ func (c *DefaultApiController) Routes() Routes {
 			c.ModelParametersSetPost,
 		},
 		{
-			"ScheduleFileSetPost",
-			strings.ToUpper("Post"),
-			"/backend/schedule-file/set",
-			c.ScheduleFileSetPost,
-		},
-		{
 			"ScheduleGenerateGet",
 			strings.ToUpper("Get"),
 			"/backend/schedule-generate",
@@ -197,30 +191,6 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 		return
 	}
 	result, err := c.service.ModelParametersSetPost(r.Context(), modelParametersParam)
-	// If an error occurred, encode the error with the status code
-	if err != nil {
-		c.errorHandler(w, r, err, &result)
-		return
-	}
-	// If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
-
-}
-
-// ScheduleFileSetPost - Sets the schedule DB file in the backend.
-func (c *DefaultApiController) ScheduleFileSetPost(w http.ResponseWriter, r *http.Request) {
-	dbFileParam := DbFile{}
-	d := json.NewDecoder(r.Body)
-	d.DisallowUnknownFields()
-	if err := d.Decode(&dbFileParam); err != nil {
-		c.errorHandler(w, r, &ParsingError{Err: err}, nil)
-		return
-	}
-	if err := AssertDbFileRequired(dbFileParam); err != nil {
-		c.errorHandler(w, r, err, nil)
-		return
-	}
-	result, err := c.service.ScheduleFileSetPost(r.Context(), dbFileParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

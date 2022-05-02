@@ -10,7 +10,6 @@ index.ts
 model/assignment.ts
 model/assistant.ts
 model/assistantType.ts
-model/dBFile.ts
 model/day.ts
 model/dayDate.ts
 model/individualSchedule.ts

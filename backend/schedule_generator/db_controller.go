@@ -18,17 +18,6 @@ func newDBController() DbController {
 	return DbController{db}
 }
 
-func newDBControllerFromFile(filename string) DbController {
-	fmt.Println("newDBFROMFILE " + filename)
-	db := createDBFromFile(filename)
-	return DbController{db}
-}
-
-func (c *DbController) updateDB(fname string)  {
-	fmt.Println("updateDB " + fname)
-	c.db = createDBFromFile(fname);
-}
-
 // GetModelParameters -- returns the model parameters a stored in the DB
 func (c DbController) GetModelParameters() (model.ModelParameters, error) {
 

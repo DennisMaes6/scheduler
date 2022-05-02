@@ -29,7 +29,6 @@ type DefaultApiRouter interface {
 	InstanceDataSetPost(http.ResponseWriter, *http.Request)
 	ModelParametersGetGet(http.ResponseWriter, *http.Request)
 	ModelParametersSetPost(http.ResponseWriter, *http.Request)
-	DbFileSetPost(http.ResponseWriter, *http.Request)
 	ScheduleGet(http.ResponseWriter, *http.Request)
 	GenerateScheduleGet(http.ResponseWriter, *http.Request)
 }
@@ -45,7 +44,6 @@ type DefaultApiServicer interface {
 	InstanceDataSetPost(context.Context, model.InstanceData) (ImplResponse, error)
 	ModelParametersGetGet(context.Context) (ImplResponse, error)
 	ModelParametersSetPost(context.Context, model.ModelParameters) (ImplResponse, error)
-	DbFileSetPost(context.Context, model.DbFile) (ImplResponse, error)
 	ScheduleGet(context.Context) (ImplResponse, error)
 	GenerateScheduleGet(context.Context) (ImplResponse, error)
 }

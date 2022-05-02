@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const fileName = "demo_const.db"
+const fileName = "demo.db"
 
 func createDB() *sql.DB {
 	newDb := false  // TODO: Hier op true zetten om db te initialiseren
@@ -39,37 +39,6 @@ func createDB() *sql.DB {
 	}
 
 	log.Printf("Database initialized succesfully")
-	return sqliteDatabase
-}
-
-func createDBFromFile(fname string) *sql.DB {
-	newDb := false  // TODO: Hier op true zetten om db te initialiseren
-
-	if _, err := os.Stat(fname); os.IsNotExist(err) {
-
-		file, err := os.Create(fname) // Create SQLite file
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-
-		file.Close()
-		newDb = true
-		log.Printf("New db file created")
-	}
-
-	sqliteDatabase, _ := sql.Open("sqlite3", fname)
-
-	if newDb {
-		if err := createTables(sqliteDatabase); err != nil {
-			log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
-		}
-		
-		if err := initializeData(sqliteDatabase); err != nil {
-			log.Fatal(errors.Wrap(err, "failed initializing data in db"))
-		} 
-	}
-
-	log.Printf("createDBFromFile... Database initialized succesfully " + fname)
 	return sqliteDatabase
 }
 
