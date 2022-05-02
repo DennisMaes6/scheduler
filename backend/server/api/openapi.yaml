@@ -1,0 +1,412 @@
+openapi: 3.0.0
+info:
+  description: API for getting generated schedules. Also used for getting and setting
+    model parameters and instance data.
+  title: Scheduler API
+  version: 0.1.0
+servers:
+- url: http://localhost:8080/backend
+paths:
+  /schedule:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns a schedule generated with MiniZinc.
+  /schedule-generate:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns a schedule generated with Java.
+  /db-schedule:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns the schedule as found in the db.
+  /file-schedule:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns the schedule as found in a file.
+  /model-parameters/get:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelParameters'
+          description: Succesful operation.
+      summary: Returns the current model parameters.
+  /model-parameters/set:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelParameters'
+        description: The model parameters to be set.
+        required: true
+      responses:
+        "204":
+          description: Model parameters succesfully updated in backend.
+      summary: Sets the model paramters in the backend.
+  /instance-data/get:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstanceData'
+          description: Succesful operation.
+      summary: Returns the current instance data.
+  /instance-data/set:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstanceData'
+        description: The instance data to be set.
+        required: true
+      responses:
+        "204":
+          description: Instance data succesfully updated in backend.
+      summary: Sets the insatnce data in the backend.
+  /schedule-file/set:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DBFile'
+        description: The db file to be set.
+        required: true
+      responses:
+        "204":
+          description: Schedule DB file succesfully updated in backend.
+      summary: Sets the schedule DB file in the backend.
+components:
+  schemas:
+    Schedule:
+      description: Holds all data of a generated schedule.
+      example:
+        individual_schedules:
+        - assistant_id: 5
+          assignments:
+          - day_nb: 7
+            part_of_min_balance: true
+          - day_nb: 7
+            part_of_min_balance: true
+          workload: 2.3021358869347655
+        - assistant_id: 5
+          assignments:
+          - day_nb: 7
+            part_of_min_balance: true
+          - day_nb: 7
+            part_of_min_balance: true
+          workload: 2.3021358869347655
+        jaev_balance_score: 5.962133916683182
+        fairness_score: 0.8008281904610115
+        balance_score: 6.027456183070403
+        jaev_fairness_score: 1.4658129805029452
+      properties:
+        fairness_score:
+          description: The fairness score of this schedule.
+          type: number
+        balance_score:
+          description: The balance score of this schedule.
+          type: number
+        jaev_fairness_score:
+          description: The fairness score for the JAEV shifts of this schedule.
+          type: number
+        jaev_balance_score:
+          description: The balance score for the JAEV shifts of this schedule.
+          type: number
+        individual_schedules:
+          items:
+            $ref: '#/components/schemas/IndividualSchedule'
+          type: array
+      required:
+      - balance_score
+      - fairness_score
+      - jaev_balance_score
+      - jaev_fairness_score
+      type: object
+    IndividualSchedule:
+      description: Represents the work schedule of an individual assistant.
+      example:
+        assistant_id: 5
+        assignments:
+        - day_nb: 7
+          part_of_min_balance: true
+        - day_nb: 7
+          part_of_min_balance: true
+        workload: 2.3021358869347655
+      properties:
+        assistant_id:
+          description: The identification number of the assistant for which this is
+            an individual schedule.
+          type: integer
+        workload:
+          description: The workload of this inidividual schedule. Used when calculating
+            the fairness score.
+          type: number
+        assignments:
+          description: Contains all the individual assignments of this individual
+            schedule.
+          items:
+            $ref: '#/components/schemas/Assignment'
+          type: array
+      required:
+      - assignments
+      - assistant_id
+      - workload
+      type: object
+    Assignment:
+      description: Represents a single shift assignment.
+      example:
+        day_nb: 7
+        part_of_min_balance: true
+      properties:
+        day_nb:
+          description: The day of the scheduling period for which this is an assignment.
+          type: integer
+        shift_type:
+          $ref: '#/components/schemas/ShiftType'
+        part_of_min_balance:
+          description: Indicates whether or not this assignment is part of a streak
+            of free days as long as the min_balance score for this schedule.
+          type: boolean
+      required:
+      - day_nb
+      - part_of_min_balance
+      - shift_type
+      type: object
+    DBFile:
+      description: Filename of current DB
+      properties:
+        filename:
+          description: filename of db file
+          type: string
+      required:
+      - filename
+      type: object
+    ModelParameters:
+      description: Holds all model parameters for generating schedules.
+      example:
+        min_balance: 0
+        min_balance_jaev: 6
+        shift_type_parameters:
+        - max_buffer: 5
+          shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
+        - max_buffer: 5
+          shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
+      properties:
+        min_balance:
+          description: The minimal balance score for an acceptable solution.
+          type: integer
+        min_balance_jaev:
+          description: The mininmal balance score for JAEV shifts for an acceptable
+            solution.
+          type: integer
+        shift_type_parameters:
+          items:
+            $ref: '#/components/schemas/ShiftTypeModelParameters'
+          type: array
+      required:
+      - balanace_minimun_jaev
+      - balance_munimun
+      - shift_type_params
+      type: object
+    ShiftTypeModelParameters:
+      description: Holds the shift type specific model parameters.
+      example:
+        max_buffer: 5
+        shift_workload: 1.4658129805029452
+        shift_coverage: 5.962133916683182
+      properties:
+        shift_type:
+          $ref: '#/components/schemas/ShiftType'
+        shift_workload:
+          description: The weight of this shift type in the fairness score.
+          type: number
+        shift_coverage:
+          description: The amount of personnel needed for this particular shift.
+          type: number
+        max_buffer:
+          description: The number of assignments per assisant allowed above the minimun
+            for this shift type.
+          type: integer
+      required:
+      - max_buffer
+      - shift_coverage
+      - shift_type
+      - shift_workload
+      type: object
+    InstanceData:
+      description: Holds the instance data for scheduling.
+      example:
+        assistants:
+        - name: Janssen J
+          free_days:
+          - 6
+          - 6
+          id: 0
+        - name: Janssen J
+          free_days:
+          - 6
+          - 6
+          id: 0
+        days:
+        - date:
+            month: 5
+            year: 2
+            day: 5
+          is_holiday: true
+          id: 1
+        - date:
+            month: 5
+            year: 2
+            day: 5
+          is_holiday: true
+          id: 1
+      properties:
+        assistants:
+          description: The assistant instances representing the assistants for which
+            to produce a schedule.
+          items:
+            $ref: '#/components/schemas/Assistant'
+          type: array
+        days:
+          description: The days for which to produce a schedule.
+          items:
+            $ref: '#/components/schemas/Day'
+          type: array
+      required:
+      - assistants
+      - days
+      type: object
+    Assistant:
+      description: Holds all information for one assistant.
+      example:
+        name: Janssen J
+        free_days:
+        - 6
+        - 6
+        id: 0
+      properties:
+        id:
+          description: The identification number of this assistant.
+          type: integer
+        name:
+          description: The name of this assistant.
+          example: Janssen J
+          type: string
+        type:
+          $ref: '#/components/schemas/AssistantType'
+        free_days:
+          description: The day numbers corresponding to the free days granted to this
+            assistant for the current scheduling period.
+          items:
+            type: integer
+          type: array
+      required:
+      - free_days
+      - id
+      - name
+      - type
+      type: object
+    Day:
+      description: Represents a single day in the scheduling period.
+      example:
+        date:
+          month: 5
+          year: 2
+          day: 5
+        is_holiday: true
+        id: 1
+      properties:
+        id:
+          description: The day number of this day in the current scheduling period.
+          type: integer
+        date:
+          $ref: '#/components/schemas/Day_date'
+        is_holiday:
+          description: Indicates whether or not this day should be considered a holiday
+            in the produced schedule.
+          type: boolean
+      required:
+      - date
+      - id
+      - is_holiday
+      type: object
+    AssistantType:
+      description: The skill category of an assistant.
+      enum:
+      - JA
+      - JA_F
+      - SA
+      - SA_F
+      - SA_NEO
+      - SA_F_NEO
+      type: string
+    ShiftType:
+      description: Identifies a specific shift type. Includes the FREE shift type.
+      enum:
+      - JAEV
+      - JAWE
+      - JAHO
+      - SANW
+      - SAEW
+      - SAWE
+      - SAHO
+      - TPWE
+      - TPHO
+      - CALL
+      - TPNF
+      - FREE
+      type: string
+    Day_date:
+      description: Represents the date of this day.
+      example:
+        month: 5
+        year: 2
+        day: 5
+      properties:
+        day:
+          description: The day of month of this day.
+          type: integer
+        month:
+          description: The month of this day. 1 = January, 12 = December
+          type: integer
+        year:
+          description: The year of this day.
+          type: integer
+      required:
+      - day
+      - month
+      - year
+      type: object

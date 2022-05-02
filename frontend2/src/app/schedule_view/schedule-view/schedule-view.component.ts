@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 
 
-import type { Schedule, InstanceData, Assistant, IndividualSchedule, Assignment, Day } from 'build/openapi';
+import type { Schedule, InstanceData, Assistant, IndividualSchedule, Assignment, Day, DBFile} from 'build/openapi';
 import { AssistantType } from 'build/openapi';
 import { DefaultService } from 'build/openapi';
+import { Service } from 'build/openapi/services/Service';
 
 import { AssistantHeaderComponent } from '../assistant-header/assistant-header.component';
 import { DayHeaderComponent } from '../day-header/day-header.component';
@@ -31,6 +32,10 @@ export class ScheduleViewComponent implements OnInit {
     assistants: [],
     days: []
   };
+
+  dbfile: DBFile = {
+    filename: "demo_dummy.db"
+  }
 
   
   workload_array = this.schedule?.individual_schedules?.map((a) => a.workload)
@@ -66,6 +71,7 @@ export class ScheduleViewComponent implements OnInit {
   getInstanceInput(): void {
     
     this.instanceInputService.instanceDataGetGet().subscribe(data => (this.data = data));
+    
     console.log("DATA ON GET= ", this.data)
   }
 
@@ -78,9 +84,15 @@ export class ScheduleViewComponent implements OnInit {
   ngOnInit(): void {
 
     console.log("Init Schedule View")
+
+    
+
     console.log(this.types)
     this.getInstanceInput();
     this.getScheduleInput();
+
+    Service.postDBFile(this.dbfile)
+
 
     let isSyncingLeftScroll: boolean = false;
     let isSyncingTopScroll: boolean = false;

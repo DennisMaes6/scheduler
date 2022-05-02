@@ -20,11 +20,6 @@ interface CustomDate {
 
 
 
-
-
-
-
-
 @Component({
   selector: 'app-instance-input',
   templateUrl: './instance-input.component.html',
@@ -56,7 +51,6 @@ export class InstanceInputComponent implements OnInit {
     console.log("POST INSTANCE DATA")
     console.log("Data:", this.data)
     
-  
     Service.postInstanceData(this.data)
   }
   

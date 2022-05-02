@@ -62,6 +62,12 @@ func (c *DefaultApiController) Routes() Routes {
 			c.InstanceDataSetPost,
 		},
 		{
+			"DbFileSetPost",
+			strings.ToUpper("Post"),
+			"/backend/schedule-file/set",
+			c.DBFileSetPost,
+		},
+		{
 			"InstanceDataSetOptions",
 			strings.ToUpper("Options"),
 			"/backend/instance-data/set",
@@ -104,7 +110,6 @@ func (c *DefaultApiController) Routes() Routes {
 func (c *DefaultApiController) ModelParametersGetGet(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
-	
 
 	result, err := c.service.ModelParametersGetGet(r.Context())
 	//If an error occured, encode the error with the status code
@@ -129,9 +134,9 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 	w.Header().Add("Content-Type", "application/json")
 
 	modelParameters := &model.ModelParameters{}
-	
+
 	log.Println("SETPOST")
-	
+
 	if err := json.NewDecoder(r.Body).Decode(&modelParameters); err != nil {
 		log.Println("BAD REQUEST")
 		w.WriteHeader(http.StatusBadRequest)
@@ -166,7 +171,7 @@ func (c *DefaultApiController) InstanceDataSetOptions(w http.ResponseWriter, r *
 func (c *DefaultApiController) InstanceDataGetGet(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
-	
+
 	result, err := c.service.InstanceDataGetGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -198,6 +203,31 @@ func (c *DefaultApiController) InstanceDataSetPost(w http.ResponseWriter, r *htt
 	}
 
 	result, err := c.service.InstanceDataSetPost(r.Context(), *instanceData)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
+			panic(err)
+		}
+		return
+	}
+}
+
+// InstanceDataSetPost - Sets the insatnce data in the backend.
+func (c *DefaultApiController) DBFileSetPost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+	//w.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+	//w.Header().Add("Access-Control-Allow-Methods", "POST")
+	//w.Header().Add("Content-Type", "application/json")
+
+	log.Println("SETPOST INSTANCE DATA")
+
+	dbFile := &model.DbFile{}
+	if err := json.NewDecoder(r.Body).Decode(&dbFile); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	result, err := c.service.DbFileSetPost(r.Context(), *dbFile)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		if err := EncodeJSONResponse(err.Error(), &result.Code, w); err != nil {
@@ -245,7 +275,6 @@ func (c *DefaultApiController) ScheduleGenerate(w http.ResponseWriter, r *http.R
 		panic(err)
 	}
 }
-
 
 // ScheduleGet - Returns a generated schedule.
 func (c *DefaultApiController) FileScheduleGet(w http.ResponseWriter, r *http.Request) {

@@ -12,6 +12,7 @@ package openapi
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -29,7 +30,8 @@ type DefaultApiService struct {
 
 // NewDefaultApiService creates a default api service
 func NewDefaultApiService() *DefaultApiService {
-	return &DefaultApiService{schedule_generator.NewScheduleGenerator()}
+	fmt.Println("NEW DEFAULT SERVICE")
+	return &DefaultApiService{schedule_generator.NewScheduleGenerator("demo.db")}
 }
 
 // ScheduleGet - Returns a generated schedule.
@@ -95,6 +97,12 @@ func (s *DefaultApiService) InstanceDataSetPost(ctx context.Context, instanceDat
 	if err := s.scheduleGenerator.UpdateInstanceData(instanceData); err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
 	}
+	return Response(204, nil), nil
+}
+
+// DbFilePost - Sets the db file in the backend.
+func (s *DefaultApiService) DbFileSetPost(ctx context.Context, DbFile model.DbFile) (ImplResponse, error) {
+	s.scheduleGenerator.UpdateDbFile(DbFile.Filename)
 	return Response(204, nil), nil
 }
 
