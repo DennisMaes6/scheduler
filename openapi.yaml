@@ -92,19 +92,6 @@ paths:
       responses:
         '204':
           description: Instance data succesfully updated in backend.
-  /schedule-file/set:
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DBFile'
-        description: The db file to be set.
-        required: true
-      responses:
-        "204":
-          description: Schedule DB file succesfully updated in backend.
-      summary: Sets the schedule DB file in the backend.
               
 components:
   schemas:
@@ -168,15 +155,7 @@ components:
         part_of_min_balance:
           type: boolean
           description: Indicates whether or not this assignment is part of a streak of free days as long as the min_balance score for this schedule.
-    DBFile:
-      type: object
-      description: "Filename of current DB"
-      required:
-        - filename
-      properties:
-        filename:
-          type: string
-          description: filename of db file
+    
     ModelParameters: 
       type: object
       description: Holds all model parameters for generating schedules.
@@ -312,6 +291,5 @@ components:
         - TPWE
         - TPHO
         - CALL
-        - TPNF
         - FREE 
           
