@@ -12,7 +12,7 @@ import (
 const fileName = "demo.db"
 
 func createDB() *sql.DB {
-	newDb := false  // TODO: Hier op true zetten om db te initialiseren
+	newDb := false // TODO: Hier op true zetten om db te initialiseren
 
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 
@@ -32,10 +32,10 @@ func createDB() *sql.DB {
 		if err := createTables(sqliteDatabase); err != nil {
 			log.Fatal(errors.Wrap(err, "failed initializing tables is db"))
 		}
-		
+
 		if err := initializeData(sqliteDatabase); err != nil {
 			log.Fatal(errors.Wrap(err, "failed initializing data in db"))
-		} 
+		}
 	}
 
 	log.Printf("Database initialized succesfully")
@@ -105,6 +105,13 @@ func createTables(db *sql.DB) error {
 				FOREIGN KEY (day_nb) REFERENCES day(id) ON DELETE CASCADE
 			)
 		`,
+		`
+			CREATE TABLE IF NOT EXISTS weights (
+				coverage REAL PRIMARY_KEY,
+				balance REAL NOT NULL,
+				fairness REAL NOT NULL
+			)
+		`,
 	}
 
 	for _, query := range queries {
@@ -112,7 +119,7 @@ func createTables(db *sql.DB) error {
 			return errors.Wrap(err, fmt.Sprintf("failed creating table with query: %s", query))
 		}
 	}
-	
+
 	return nil
 }
 
@@ -162,5 +169,12 @@ func initializeData(db *sql.DB) error {
 			return errors.Wrap(err, "failed initializing assistant instance")
 		}
 	}
+
+	initWeightsQuery := `
+		INSERT or IGNORE INTO weights(coverage, balance, fairness)
+		VALUES (?, ?, ?)
+	`
+	db.Exec(initWeightsQuery, 1, 1, 1)
+
 	return nil
 }

@@ -1,17 +1,13 @@
 <form class="flex flex-col"> 
     <p class="font-semibold text-sm cursor-default"> Model parameters </p>
-    <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Minimum balance score </p>
-    <app-input-field [value]="modelParameters.min_balance" (onChange)="balanceChanged($event)" [step]="1"></app-input-field>
-    <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> JAEV minimum balance </p>
-    <app-input-field [value]="modelParameters.min_balance_jaev" (onChange)="balanceJaevChanged($event)" [step]="1"></app-input-field>
+    
     
 
     <div class="flex flex-col space-y-2">
-        <div class="flex flex-row space-x-3 items-center"> 
+        <div class="flex flex-row space-x-8 items-center"> 
             <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Shift type </p>
             <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Workload </p>
             <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Coverage </p>
-            <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Max Buffer </p>
         </div>
         
 
@@ -19,9 +15,9 @@
                 <div class="flex flex-row space-x-1 items-center">
                     
                     <app-assignment-box [assignment] = "{shift_type: item.shift_type, part_of_min_balance:false, day_nb:0}"></app-assignment-box>
-                    <app-input-field [value]="item.shift_workload" (onChange)="getWorkloadChanged($event, item.shift_type)" [step]="0.05"></app-input-field>
+                    <app-input-field [value]="item.shift_workload" (onChange)="getWorkloadChanged($event, item.shift_type)" [step]="0.25"></app-input-field>
                     <app-input-field [value]="item.shift_coverage" (onChange)="getCoverageChanged($event, item.shift_type)" [step]="1"></app-input-field>
-                    <app-input-field [value]="item.max_buffer" (onChange)="getValueBufferChanged($event, item.shift_type)" [step]="1"></app-input-field>
+
                     
 
                 </div>

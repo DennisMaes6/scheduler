@@ -42,8 +42,6 @@ export class AssignmentBoxComponent implements OnInit {
           return "bg-red-500";
       case ShiftType.Jaho:
           return "bg-blue-500";
-      case ShiftType.Saew:
-          return "bg-green-500";
       case ShiftType.Sawe:
           return "bg-red-600";
       case ShiftType.Saho:
@@ -54,6 +52,12 @@ export class AssignmentBoxComponent implements OnInit {
           return "bg-red-700";
       case ShiftType.Tpho:
           return "bg-blue-700";
+      case ShiftType.Tpnf:
+          return "bg-green-800";
+      case ShiftType.Saev1:
+          return "bg-red-800";
+      case ShiftType.Saev2:
+          return "bg-blue-800";
       case ShiftType.Free:
           if (free_day) return "bg-gray-200";
           return "bg-gray-100";

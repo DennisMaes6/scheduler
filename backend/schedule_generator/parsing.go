@@ -122,10 +122,16 @@ func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
 		return model.SAWE, nil
 	case "SAHO":
 		return model.SAHO, nil
+	case "SAEV1":
+		return model.SAEV1, nil
+	case "SAEV2":
+		return model.SAEV2, nil
 	case "TPWE":
 		return model.TPWE, nil
 	case "TPHO":
 		return model.TPHO, nil
+	case "TPNF":
+		return model.TPNF, nil
 	case "CALL":
 		return model.CALL, nil
 	case "FREE":

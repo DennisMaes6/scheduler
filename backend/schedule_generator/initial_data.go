@@ -19,15 +19,15 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 			MaxBuffer:     1,
 		},
 		{
-			ShiftType:     model.JAHO,
+			ShiftType:     model.JAEV,
 			ShiftCoverage: 2,
-			ShiftWorkload: 1,
+			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
 		{
-			ShiftType:     model.SAEW,
+			ShiftType:     model.JAHO,
 			ShiftCoverage: 2,
-			ShiftWorkload: 3,
+			ShiftWorkload: 1,
 			MaxBuffer:     1,
 		},
 		{
@@ -43,6 +43,18 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 			MaxBuffer:     1,
 		},
 		{
+			ShiftType:     model.SAEV1,
+			ShiftCoverage: 2,
+			ShiftWorkload: 2,
+			MaxBuffer:     1,
+		},
+		{
+			ShiftType:     model.SAEV2,
+			ShiftCoverage: 2,
+			ShiftWorkload: 1,
+			MaxBuffer:     1,
+		},
+		{
 			ShiftType:     model.TPWE,
 			ShiftCoverage: 2,
 			ShiftWorkload: 3,
@@ -50,6 +62,12 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 		},
 		{
 			ShiftType:     model.TPHO,
+			ShiftCoverage: 2,
+			ShiftWorkload: 2,
+			MaxBuffer:     1,
+		},
+		{
+			ShiftType:     model.TPNF,
 			ShiftCoverage: 2,
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
