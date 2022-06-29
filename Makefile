@@ -20,4 +20,5 @@ run:
 	make run-backend; make run-frontend
 
 run-greedy-search:
-	java -cp /Users/jorensjongers/thesis/out/artifacts/scheduler_jar/scheduler.jar Main
+
+	java -cp "/Users/dennismaes/Library/Mobile Documents/com~apple~CloudDocs/School/2021-2022/Thesis/applicatie/thesis/target/scheduler-1.0.0.jar:/Users/dennismaes/.m2/repository/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar:/Users/dennismaes/.m2/repository/org/javatuples/javatuples/1.2/javatuples-1.2.jar" Main

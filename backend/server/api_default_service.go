@@ -13,6 +13,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/DennisMaes6/scheduler/backend/model"
@@ -42,6 +43,7 @@ func (s *DefaultApiService) ScheduleGet(ctx context.Context) (ImplResponse, erro
 
 // ScheduleGet - Returns a generated schedule.
 func (s *DefaultApiService) DbScheduleGet(ctx context.Context) (ImplResponse, error) {
+	log.Printf("DbScheduleGet")
 	res, err := s.scheduleGenerator.GetScheduleFromDb()
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
@@ -56,6 +58,15 @@ func (s *DefaultApiService) FileScheduleGet(ctx context.Context) (ImplResponse, 
 	if err := json.Unmarshal(bytes, &res); err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
 	}
+	if err != nil {
+		return Response(http.StatusInternalServerError, err.Error()), err
+	}
+	return Response(http.StatusOK, res), nil
+}
+
+// Generate a new database and store in db file
+func (s *DefaultApiService) GenerateScheduleGet(ctx context.Context) (ImplResponse, error) {
+	res, err := s.scheduleGenerator.GenerateScheduleFromDb()
 	if err != nil {
 		return Response(http.StatusInternalServerError, err.Error()), err
 	}

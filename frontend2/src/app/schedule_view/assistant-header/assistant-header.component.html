@@ -1,0 +1,43 @@
+<div class="flex flex-row flex-none h-6 justify-between place-items-center align-center cursor-default">
+    <div *ngIf="assistant.type == assistantType.Ja; else elseBlock1">
+        <p class="text-xs mr-2">JA</p>
+    </div>
+
+    <ng-template #elseBlock1>
+        <div *ngIf="assistant.type === assistantType.JaF; else elseBlock2">
+            <p class="text-xs mr-2">JA_F</p>
+        </div>
+    </ng-template> 
+        
+    
+
+    <ng-template #elseBlock2>
+        <div *ngIf="assistant.type === assistantType.Sa; else elseBlock3">
+            <p class="text-xs mr-2">SA</p>
+        </div>
+    </ng-template>
+
+    <ng-template #elseBlock3>
+        <div *ngIf="assistant.type === assistantType.SaF; else elseBlock4">
+            <p class="text-xs mr-2">SA_F</p>
+        </div>
+    </ng-template>
+        
+
+    <ng-template #elseBlock4>
+        <div *ngIf="assistant.type === assistantType.SaNeo; else elseBlock5">
+            <p class="text-xs mr-2">SA_N</p>
+        </div>
+    </ng-template> 
+
+    <ng-template #elseBlock5>
+        <div *ngIf="assistant.type === assistantType.SaFNeo">
+            <p class="text-xs mr-2">SA_FN</p>
+        </div>
+    </ng-template> 
+
+
+    <p class="getWorkloadTextStyle() text-xs"> {{workload.toFixed(2)}} </p>
+    <p class="w-36 text-right text-black text-xs font-bold "> {{assistant.name}} </p>
+
+</div>

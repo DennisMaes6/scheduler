@@ -16,8 +16,14 @@ type firstStageSchedule struct {
 }
 
 type untaggedIndividualSchedule struct {
-	assistantId int32
-	workload    float32
+	assistantId       int32
+	workload          float32
+	absolute_workload float32
+	days_available    int32
+	days_worked       int32
+	days_vacation     int32
+	avg_days_rest     float32
+
 	assignments []untaggedAssignment
 }
 
@@ -110,8 +116,8 @@ func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
 	switch shiftTypeStr {
 	case "JAEV":
 		return model.JAEV, nil
-	case "JANW":
-		return model.JANW, nil
+	case "SANW":
+		return model.SANW, nil
 	case "JAWE":
 		return model.JAWE, nil
 	case "JAHO":
@@ -122,10 +128,16 @@ func parseShiftType(shiftTypeStr string) (model.ShiftType, error) {
 		return model.SAWE, nil
 	case "SAHO":
 		return model.SAHO, nil
+	case "SAEV1":
+		return model.SAEV1, nil
+	case "SAEV2":
+		return model.SAEV2, nil
 	case "TPWE":
 		return model.TPWE, nil
 	case "TPHO":
 		return model.TPHO, nil
+	case "TPNF":
+		return model.TPNF, nil
 	case "CALL":
 		return model.CALL, nil
 	case "FREE":
@@ -219,9 +231,14 @@ func tagIndividualSchedules(iss []untaggedIndividualSchedule, balanceScore int32
 		}
 
 		taggedIndividualSchedule := model.IndividualSchedule{
-			AssistantId: uis.assistantId,
-			Workload:    uis.workload,
-			Assignments: taggedAssignments,
+			AssistantId:      uis.assistantId,
+			Workload:         uis.workload,
+			Assignments:      taggedAssignments,
+			AbsoluteWorkload: uis.absolute_workload,
+			DaysAvailable:    uis.days_available,
+			DaysWorked:       uis.days_worked,
+			DaysVacation:     uis.days_vacation,
+			AvgDaysRest:      uis.avg_days_rest,
 		}
 
 		result = append(result, taggedIndividualSchedule)

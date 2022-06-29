@@ -1,0 +1,18 @@
+
+
+<mat-toolbar color="primary">
+    <span class="span"> Scheduling Web Application </span>
+    <span class="example-fill-remaining-space"></span>  
+</mat-toolbar> 
+
+<nav mat-tab-nav-bar >
+    <a mat-tab-link
+    class="span"
+    *ngFor="let link of navLinks"
+    [routerLink]="link.link"
+    routerLinkActive #rla="routerLinkActive"
+    [active]="rla.isActive">
+    {{link.label}}
+    </a>
+</nav>
+

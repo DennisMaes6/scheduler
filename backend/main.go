@@ -14,18 +14,28 @@ import (
 	"net/http"
 
 	openapi "github.com/DennisMaes6/scheduler/backend/server"
+	//"github.com/gorilla/handlers"
+	"github.com/rs/cors"
 )
 
 func main() {
 	log.Printf("Server started")
+	//handlers.AllowedOrigins([]string{"*"})
 
 	DefaultApiService := openapi.NewDefaultApiService()
 	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
-
-	log.Printf("Here")
-	router := openapi.NewRouter(DefaultApiController)
-	log.Printf("Here2")
 	
-	log.Fatal(http.ListenAndServe(":8080", router))
-	log.Printf("Here3")
+
+	router := openapi.NewRouter(DefaultApiController)
+
+	c := cors.New(cors.Options{
+		AllowedMethods:   []string{"POST", "GET", "PUT", "OPTIONS"},
+		//AllowedHeaders:   []string{"content-type"},
+		//AllowCredentials: true,
+	})
+
+	handler := c.Handler(router)
+
+	log.Fatal(http.ListenAndServe(":8080", handler))
+
 }

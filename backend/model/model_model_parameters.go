@@ -19,4 +19,6 @@ type ModelParameters struct {
 	MinBalanceJaev int32 `json:"min_balance_jaev,omitempty"`
 
 	ShiftTypeParameters []ShiftTypeModelParameters `json:"shift_type_parameters,omitempty"`
+
+	Weights []WeightModelParameters `json:"weights,omitempty"`
 }

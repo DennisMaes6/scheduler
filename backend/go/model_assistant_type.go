@@ -19,6 +19,7 @@ const (
 	SA_F AssistantType = "SA_F"
 	SA_NEO AssistantType = "SA_NEO"
 	SA_F_NEO AssistantType = "SA_F_NEO"
+	FELLOWS AssistantType = "FELLOWS"
 )
 
 // AssertAssistantTypeRequired checks if the required fields are not zero-ed

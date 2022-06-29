@@ -1,0 +1,31 @@
+
+<div class="relative mt-2" slot="trigger" let:open (click)=openDialog()>
+    <input
+        class="p-2 w-full leading-none rounded-lg shadow-sm focus:outline-none focus:shadow-outline text-gray-600 font-medium text-xs"
+        type="text" value={{dateToValue()}} readonly placeholder="Select date">
+
+    <div class="absolute top-0 right-0 p-1.5">
+        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+    </div>
+</div>
+
+
+<!-- TODO dit deel hieronder-->
+<!--
+<div class="relative mt-4" slot="trigger" let:open (click)=resetStateAnd(openWindow())>
+    <input
+        class="p-2 w-full leading-none rounded-lg shadow-sm focus:outline-none focus:shadow-outline text-gray-600 font-medium text-xs"
+        type="text" value={{dateToValue()}} readonly placeholder="Select date">
+
+    <div class="absolute top-0 right-0 p-1.5">
+        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+    </div>
+</div>
+
+-->

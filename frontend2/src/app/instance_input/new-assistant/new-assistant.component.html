@@ -1,0 +1,14 @@
+<form>
+    <label class="text-sm" for="name"> Name </label>
+    <input #assistantNameInput class="text-sm pl-2" id="name" [value]="assistantName"
+        (change)="(assistantNameChanged(assistantNameInput.value))" placeholder="Jansen J" />
+
+    <label class="text-sm mt-3" for="type"> Type </label>
+    <select #assistantTypeInput class="text-sm pl-2" id="type" 
+        (change)="(assistantTypeChanged(assistantTypeInput.value))">
+        <option *ngFor="let type of assistantTypes" class="text-sm pl-2" value="type">
+            <p class="text-sm">{{type}}</p>
+        </option>
+    </select>
+
+</form>

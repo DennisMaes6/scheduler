@@ -1,0 +1,106 @@
+
+
+    <!-- 
+<div class="grid grid-cols-12" style="height: 70vh; width: 180vw">
+    <div class="flex-none mb-2 col-span-3">
+        --><!-- <Modal> --><!-- 
+        <div slot="trigger" let:open>
+            <app-button buttonText=New (callback)="openWindow()">  </app-button>
+        </div>
+        <div class="my-2" slot="header">
+            <h1 class="font-bold"> New assistant </h1>
+        </div>
+        <div class="my-2" slot="content">
+            <app-new-assistant [value]="new_assistant.name" (onAssistantNameChange)="changeNewAssistantName($event)">
+            </app-new-assistant>
+        </div>
+        <div class="my-5 flex flex-row justify-end space-x-2" slot="footer" let:close>
+            <app-button buttonText=Close (callback)=closeWindow()> </app-button>
+            <app-button buttonText=Create (callback)="addAndClose()">  </app-button>
+        </div>
+    --><!-- </Modal> --><!-- 
+    </div>
+
+-->
+<!--
+
+    <div id="top" class="scrollbar-hidden flex flex-row col-span-9 space-x-1 overflow-auto">
+
+        <div *ngFor="let day of data.days">
+            <div *ngIf="day.id % 7 === 1;else notFriday">
+                <div class="flex flex-none w-8">
+                    <app-day-header [day]=day></app-day-header>
+                </div>
+            </div>
+            <ng-template #notFriday>
+                <app-day-header [day]=day></app-day-header>
+            </ng-template>
+
+        </div>
+    </div>
+
+    <div id="left" class="scrollbar-hidden flex flex-col space-y-1 col-span-3 overflow-auto">
+        <div *ngFor="let type of assistantTypes">
+            <div *ngFor="let assistant of data.assistants">
+                <div *ngIf="assistant.type == type">
+                    <div class="p-2 flex-none flex h-6 flex-row w-full justify-between">
+                        <app-icon-button (callback)=removeAssistant(assistant)>
+                            <span class=" h-4 w-8 color-gray-500 iconify" data-icon="ic:round-remove-circle-outline"
+                                data-inline="false">
+                            </span>
+                        </app-icon-button>
+                        <p class="w-10 text-black text-xs"> {{getTypeString(assistant.type)}} </p>
+                        <p class="font-bold w-24 h-6 text-black text-xs text-right truncate"> {{assistant.name}} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="center" class="scrollable flex flex-col col-span-9 space-y-1 overflow-auto">
+
+    <div *ngFor="let type of assistantTypes">
+        <div *ngFor="let assistant of data.assistants">
+            <div *ngIf="assistant.type == type">
+
+                <div class="flex flex-row space-x-1">
+
+                    <div *ngFor="let day of data.days">
+                        <div *ngIf="day.id % 7 === 1">
+
+                            <div class="flex w-8 justify-items-end items-center">
+                                <input #freeWeekInput type="checkbox" checked="freeWeek(assistant, (day.id-1)/7)"
+                                    class="ml-4 w-4 text-xs text-black font-bold" (change)="setWeek(assistant, (day.id-1)/7, freeWeekInput.checked)"/>
+                            </div>
+
+
+                        </div>
+                        <div (click)="toggle(assistant, day.id)"
+                            class="flex-none w-12 h-6 bg-yellow-400 rounded cursor-pointer flex justify-center items-center">
+                            <div class="text-xs text-white font-bold"> FREE </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <app-button buttonText="-" (click)=removeWeek()> </app-button>
+
+</div>
+-->
+
+<div class="my-2" slot="header" (click)=openDialog()>
+    
+    <button mat-raised-button color="primary">Edit assistants</button>
+</div>
+<div class="my-2" slot="content">
+    <!-- <app-assistant-input-dialog-content [data]=data></app-assistant-input-dialog-content> -->
+</div>

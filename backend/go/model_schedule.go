@@ -24,6 +24,21 @@ type Schedule struct {
 	// The balance score for the JAEV shifts of this schedule.
 	JaevBalanceScore float32 `json:"jaev_balance_score"`
 
+	// The coverage score of this schedule.
+	Coverage float32 `json:"Coverage"`
+
+	// The balance score of this schedule.
+	Balance float32 `json:"Balance"`
+
+	// The fairness score.
+	Fairness float32 `json:"Fairness"`
+
+	// The total number of shifts that should be assigned.
+	TotalNbShifts float32 `json:"TotalNbShifts"`
+
+	// The total number of shifts that are assigned.
+	TotalNbShiftsAssigned float32 `json:"TotalNbShiftsAssigned"`
+
 	IndividualSchedules []IndividualSchedule `json:"individual_schedules,omitempty"`
 }
 
@@ -34,6 +49,11 @@ func AssertScheduleRequired(obj Schedule) error {
 		"balance_score": obj.BalanceScore,
 		"jaev_fairness_score": obj.JaevFairnessScore,
 		"jaev_balance_score": obj.JaevBalanceScore,
+		"Coverage": obj.Coverage,
+		"Balance": obj.Balance,
+		"Fairness": obj.Fairness,
+		"TotalNbShifts": obj.TotalNbShifts,
+		"TotalNbShiftsAssigned": obj.TotalNbShiftsAssigned,
 	}
 	for name, el := range elements {
 		if isZero := IsZeroValue(el); isZero {

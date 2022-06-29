@@ -53,43 +53,49 @@ func (c *DefaultApiController) Routes() Routes {
 		{
 			"DbScheduleGet",
 			strings.ToUpper("Get"),
-			"/db-schedule",
+			"/backend/db-schedule",
 			c.DbScheduleGet,
 		},
 		{
 			"FileScheduleGet",
 			strings.ToUpper("Get"),
-			"/file-schedule",
+			"/backend/file-schedule",
 			c.FileScheduleGet,
 		},
 		{
 			"InstanceDataGetGet",
 			strings.ToUpper("Get"),
-			"/instance-data/get",
+			"/backend/instance-data/get",
 			c.InstanceDataGetGet,
 		},
 		{
 			"InstanceDataSetPost",
 			strings.ToUpper("Post"),
-			"/instance-data/set",
+			"/backend/instance-data/set",
 			c.InstanceDataSetPost,
 		},
 		{
 			"ModelParametersGetGet",
 			strings.ToUpper("Get"),
-			"/model-parameters/get",
+			"/backend/model-parameters/get",
 			c.ModelParametersGetGet,
 		},
 		{
 			"ModelParametersSetPost",
 			strings.ToUpper("Post"),
-			"/model-parameters/set",
+			"/backend/model-parameters/set",
 			c.ModelParametersSetPost,
+		},
+		{
+			"ScheduleGenerateGet",
+			strings.ToUpper("Get"),
+			"/backend/schedule-generate",
+			c.ScheduleGenerateGet,
 		},
 		{
 			"ScheduleGet",
 			strings.ToUpper("Get"),
-			"/schedule",
+			"/backend/schedule",
 			c.ScheduleGet,
 		},
 	}
@@ -185,6 +191,19 @@ func (c *DefaultApiController) ModelParametersSetPost(w http.ResponseWriter, r *
 		return
 	}
 	result, err := c.service.ModelParametersSetPost(r.Context(), modelParametersParam)
+	// If an error occurred, encode the error with the status code
+	if err != nil {
+		c.errorHandler(w, r, err, &result)
+		return
+	}
+	// If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+
+}
+
+// ScheduleGenerateGet - Returns a schedule generated with Java.
+func (c *DefaultApiController) ScheduleGenerateGet(w http.ResponseWriter, r *http.Request) {
+	result, err := c.service.ScheduleGenerateGet(r.Context())
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

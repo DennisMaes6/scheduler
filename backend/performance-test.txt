@@ -1,0 +1,2 @@
+nb_weeks, min_balance, time, succeeded
+3,12,283593,101042,false

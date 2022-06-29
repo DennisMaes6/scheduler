@@ -16,13 +16,14 @@ const (
 	JAEV ShiftType = "JAEV"
 	JAWE ShiftType = "JAWE"
 	JAHO ShiftType = "JAHO"
-	JANW ShiftType = "JANW"
-	SAEW ShiftType = "SAEW"
+	SANW ShiftType = "SANW"
 	SAWE ShiftType = "SAWE"
 	SAHO ShiftType = "SAHO"
+	SAEV1 ShiftType = "SAEV1"
+	SAEV2 ShiftType = "SAEV2"
 	TPWE ShiftType = "TPWE"
 	TPHO ShiftType = "TPHO"
-	CALL ShiftType = "CALL"
+	TPNF ShiftType = "TPNF"
 	FREE ShiftType = "FREE"
 )
 

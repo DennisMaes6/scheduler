@@ -5,7 +5,7 @@ info:
   title: Scheduler API
   version: 0.1.0
 servers:
-- url: http://localhost:8080
+- url: http://localhost:8080/backend
 paths:
   /schedule:
     get:
@@ -17,6 +17,16 @@ paths:
                 $ref: '#/components/schemas/Schedule'
           description: A schedule.
       summary: Returns a schedule generated with MiniZinc.
+  /schedule-generate:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: A schedule.
+      summary: Returns a schedule generated with Java.
   /db-schedule:
     get:
       responses:
@@ -89,23 +99,38 @@ components:
       description: Holds all data of a generated schedule.
       example:
         individual_schedules:
-        - assistant_id: 5
+        - assistant_id: 2
           assignments:
           - day_nb: 7
             part_of_min_balance: true
           - day_nb: 7
             part_of_min_balance: true
-          workload: 2.3021358869347655
-        - assistant_id: 5
+          days_worked: 1
+          avg_days_rest: 7.457744773683766
+          days_vacation: 6
+          workload: 4.145608029883936
+          absolute_workload: 1.2315135367772556
+          days_available: 1
+        - assistant_id: 2
           assignments:
           - day_nb: 7
             part_of_min_balance: true
           - day_nb: 7
             part_of_min_balance: true
-          workload: 2.3021358869347655
+          days_worked: 1
+          avg_days_rest: 7.457744773683766
+          days_vacation: 6
+          workload: 4.145608029883936
+          absolute_workload: 1.2315135367772556
+          days_available: 1
         jaev_balance_score: 5.962133916683182
+        TotalNbShiftsAssigned: 3.616076749251911
         fairness_score: 0.8008281904610115
         balance_score: 6.027456183070403
+        Coverage: 5.637376656633329
+        TotalNbShifts: 9.301444243932576
+        Balance: 2.3021358869347655
+        Fairness: 7.061401241503109
         jaev_fairness_score: 1.4658129805029452
       properties:
         fairness_score:
@@ -120,11 +145,31 @@ components:
         jaev_balance_score:
           description: The balance score for the JAEV shifts of this schedule.
           type: number
+        Coverage:
+          description: The coverage score of this schedule.
+          type: number
+        Balance:
+          description: The balance score of this schedule.
+          type: number
+        Fairness:
+          description: The fairness score.
+          type: number
+        TotalNbShifts:
+          description: The total number of shifts that should be assigned.
+          type: number
+        TotalNbShiftsAssigned:
+          description: The total number of shifts that are assigned.
+          type: number
         individual_schedules:
           items:
             $ref: '#/components/schemas/IndividualSchedule'
           type: array
       required:
+      - Balance
+      - Coverage
+      - Fairness
+      - TotalNbShifts
+      - TotalNbShiftsAssigned
       - balance_score
       - fairness_score
       - jaev_balance_score
@@ -133,13 +178,18 @@ components:
     IndividualSchedule:
       description: Represents the work schedule of an individual assistant.
       example:
-        assistant_id: 5
+        assistant_id: 2
         assignments:
         - day_nb: 7
           part_of_min_balance: true
         - day_nb: 7
           part_of_min_balance: true
-        workload: 2.3021358869347655
+        days_worked: 1
+        avg_days_rest: 7.457744773683766
+        days_vacation: 6
+        workload: 4.145608029883936
+        absolute_workload: 1.2315135367772556
+        days_available: 1
       properties:
         assistant_id:
           description: The identification number of the assistant for which this is
@@ -155,6 +205,21 @@ components:
           items:
             $ref: '#/components/schemas/Assignment'
           type: array
+        absolute_workload:
+          description: Sum of all shifts with their weights
+          type: number
+        days_available:
+          description: Total days available
+          type: integer
+        days_worked:
+          description: Total days worked
+          type: integer
+        days_vacation:
+          description: Total days vacation
+          type: integer
+        avg_days_rest:
+          description: Average days rest between 2 shifts
+          type: number
       required:
       - assignments
       - assistant_id
@@ -188,8 +253,17 @@ components:
         shift_type_parameters:
         - max_buffer: 5
           shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
         - max_buffer: 5
           shift_workload: 1.4658129805029452
+          shift_coverage: 5.962133916683182
+        weights:
+        - coverage: 2.3021358869347655
+          fairness: 9.301444243932576
+          balance: 7.061401241503109
+        - coverage: 2.3021358869347655
+          fairness: 9.301444243932576
+          balance: 7.061401241503109
       properties:
         min_balance:
           description: The minimal balance score for an acceptable solution.
@@ -202,21 +276,50 @@ components:
           items:
             $ref: '#/components/schemas/ShiftTypeModelParameters'
           type: array
+        weights:
+          items:
+            $ref: '#/components/schemas/WeightParameters'
+          type: array
       required:
       - balanace_minimun_jaev
       - balance_munimun
       - shift_type_params
+      type: object
+    WeightParameters:
+      description: Holds the shift type specific model parameters.
+      example:
+        coverage: 2.3021358869347655
+        fairness: 9.301444243932576
+        balance: 7.061401241503109
+      properties:
+        coverage:
+          description: The weight of coverage in the fitness function of schedule
+          type: number
+        balance:
+          description: The weight of balance in the fitness function of schedule
+          type: number
+        fairness:
+          description: The weight of fairness in the fitness function of schedule
+          type: number
+      required:
+      - balance
+      - coverage
+      - fairness
       type: object
     ShiftTypeModelParameters:
       description: Holds the shift type specific model parameters.
       example:
         max_buffer: 5
         shift_workload: 1.4658129805029452
+        shift_coverage: 5.962133916683182
       properties:
         shift_type:
           $ref: '#/components/schemas/ShiftType'
         shift_workload:
           description: The weight of this shift type in the fairness score.
+          type: number
+        shift_coverage:
+          description: The amount of personnel needed for this particular shift.
           type: number
         max_buffer:
           description: The number of assignments per assisant allowed above the minimun
@@ -224,6 +327,7 @@ components:
           type: integer
       required:
       - max_buffer
+      - shift_coverage
       - shift_type
       - shift_workload
       type: object
@@ -333,6 +437,7 @@ components:
       - SA_F
       - SA_NEO
       - SA_F_NEO
+      - FELLOWS
       type: string
     ShiftType:
       description: Identifies a specific shift type. Includes the FREE shift type.
@@ -340,13 +445,14 @@ components:
       - JAEV
       - JAWE
       - JAHO
-      - JANW
-      - SAEW
+      - SANW
       - SAWE
       - SAHO
+      - SAEV1
+      - SAEV2
       - TPWE
       - TPHO
-      - CALL
+      - TPNF
       - FREE
       type: string
     Day_date:

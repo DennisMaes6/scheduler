@@ -24,5 +24,20 @@ type Schedule struct {
 	// The balance score for the JAEV shifts of this schedule.
 	JaevBalanceScore float32 `json:"jaev_balance_score"`
 
+	// The coverage score of this schedule.
+	Coverage float32 `json:"Coverage"`
+
+	// The balance score of this schedule.
+	Balance float32 `json:"Balance"`
+
+	// The fairness score.
+	Fairness float32 `json:"Fairness"`
+
+	// The total number of shifts that should be assigned.
+	TotalNbShifts float32 `json:"TotalNbShifts"`
+
+	// The total number of shifts that are assigned.
+	TotalNbShiftsAssigned float32 `json:"TotalNbShiftsAssigned"`
+
 	IndividualSchedules []IndividualSchedule `json:"individual_schedules,omitempty"`
 }

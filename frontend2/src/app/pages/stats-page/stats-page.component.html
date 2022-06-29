@@ -1,0 +1,122 @@
+<app-home-page></app-home-page>
+
+
+<mat-grid-list cols="2" rowHeight="6:1">
+
+    <mat-grid-tile >
+        <div class="example-container mat-elevation-z8">
+            <table mat-table [dataSource]="globalStats" class=" example-container mat-elevation-z8" >
+
+            <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+        
+            <!-- Position Column -->
+            <ng-container matColumnDef="Coverage">
+                <th mat-header-cell *matHeaderCellDef> Coverage </th>
+                <td mat-cell *matCellDef="let element"> {{element.Coverage ?? "-"}} </td>
+                </ng-container>
+            
+                <!-- Name Column -->
+                <ng-container matColumnDef="Balance">
+                <th mat-header-cell *matHeaderCellDef> Balance </th>
+                <td mat-cell *matCellDef="let element"> {{element.Balance}} </td>
+                </ng-container>
+            
+                <!-- Weight Column -->
+                <ng-container matColumnDef="Fairness">
+                <th mat-header-cell *matHeaderCellDef> Fairness </th>
+                <td mat-cell *matCellDef="let element"> {{element.Fairness}} </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="TotalNbShifts">
+                    <th mat-header-cell *matHeaderCellDef> TotalNbShifts </th>
+                    <td mat-cell *matCellDef="let element"> {{element.TotalNbShifts}} </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="TotalNbShiftsAssigned">
+                    <th mat-header-cell *matHeaderCellDef> TotalNbShiftsAssigned </th>
+                    <td mat-cell *matCellDef="let element"> {{element.TotalNbShiftsAssigned}} </td>
+                </ng-container>
+            
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsGlobal"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsGlobal;"></tr>
+        </table>
+        </div>
+        
+
+    
+
+    </mat-grid-tile>
+
+
+
+    <mat-grid-tile rowspan="12">  
+        <div class="example-container mat-elevation-z8">
+            <table mat-table [dataSource]="schedule.individual_schedules" class=" example-container mat-elevation-z8" >
+
+            <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+        
+            <!-- Position Column -->
+            <ng-container matColumnDef="assistant_id">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{getAssistant(element.assistant_id).name}} </td>
+            </ng-container>
+        
+            <!-- Name Column -->
+            <ng-container matColumnDef="workload">
+            <th mat-header-cell *matHeaderCellDef> Relative workload </th>
+            <td mat-cell *matCellDef="let element"> {{element.workload}} </td>
+            </ng-container>
+        
+            <!-- Weight Column -->
+            <ng-container matColumnDef="absolute_workload">
+            <th mat-header-cell *matHeaderCellDef> Absolute workload </th>
+            <td mat-cell *matCellDef="let element"> {{element.absolute_workload ?? 0}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="days_available">
+                <th mat-header-cell *matHeaderCellDef> Days available </th>
+                <td mat-cell *matCellDef="let element"> {{element.days_available ?? 0}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="days_worked">
+                <th mat-header-cell *matHeaderCellDef> Days worked </th>
+                <td mat-cell *matCellDef="let element"> {{element.days_worked ?? 0}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="days_vacation">
+                <th mat-header-cell *matHeaderCellDef> Days vacation </th>
+                <td mat-cell *matCellDef="let element"> {{element.days_vacation ?? 0}} </td>
+            </ng-container>
+        
+
+            <ng-container matColumnDef="avg_days_rest">
+            <th mat-header-cell *matHeaderCellDef> Average days rest </th>
+            <td mat-cell *matCellDef="let element"> {{element.avg_days_rest ?? "-"}} </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        </div>
+    </mat-grid-tile>
+
+
+    <mat-grid-tile >
+
+
+
+
+
+
+    </mat-grid-tile>
+
+  </mat-grid-list>
+
+
+
+
+
+

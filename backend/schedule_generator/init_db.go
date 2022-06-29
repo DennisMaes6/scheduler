@@ -12,7 +12,7 @@ import (
 const fileName = "demo.db"
 
 func createDB() *sql.DB {
-	newDb := false
+	newDb := false // TODO: Hier op true zetten om db te initialiseren
 
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 
@@ -60,6 +60,7 @@ func createTables(db *sql.DB) error {
 			CREATE TABLE IF NOT EXISTS shift_type_parameters (
 				shift_type TEXT PRIMARY KEY,
 				shift_workload REAL,
+				shift_coverage REAL,
 				max_buffer INTEGER
 			)
 		`,
@@ -84,13 +85,23 @@ func createTables(db *sql.DB) error {
 				fairness_score REAL NOT NULL,
 				balance_score REAL NOT NULL,
 				jaev_fairness_score REAL NOT NULL,
-				jaev_balance_score REAL NOT NULL
+				jaev_balance_score REAL NOT NULL,
+				Coverage REAL NOT NULL,
+				Balance REAL NOT NULL,
+				Fairness REAL NOT NULL,
+				TotalNbShifts REAL NOT NULL,
+				TotalNbShiftsAssigned REAL NOT NULL
 			)
 		`,
 		`
 			CREATE TABLE IF NOT EXISTS individual_schedule (
 				assistant_id INTEGER PRIMARY_KEY,
-				workload REAL NOT NULL,
+				absolute_workload REAL NOT NULL,
+				relative_workload REAL NOT NULL,
+				days_available INTEGER NOT NULL,
+				days_worked INTEGER NOT NULL,
+				days_vacation INTEGER NOT NULL,
+				avg_days_rest REAL NOT NULL,
 				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE
 			)
 		`,
@@ -102,6 +113,21 @@ func createTables(db *sql.DB) error {
 				PRIMARY KEY (assistant_id, day_nb),
 				FOREIGN KEY (assistant_id) REFERENCES assistant(id) ON DELETE CASCADE,
 				FOREIGN KEY (day_nb) REFERENCES day(id) ON DELETE CASCADE
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS weights (
+				coverage REAL PRIMARY_KEY,
+				balance REAL NOT NULL,
+				fairness REAL NOT NULL
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS stats (
+				id INTEGER PRIMARY_KEY,
+				Coverage REAL NOT NULL,
+				Balance REAL NOT NULL,
+				Fairness REAL NOT NULL
 			)
 		`,
 	}
@@ -132,11 +158,11 @@ func initializeData(db *sql.DB) error {
 	}
 
 	initSTPsQuery := `
-		INSERT or IGNORE INTO shift_type_parameters(shift_type, shift_workload, max_buffer)
-		VALUES (?, ?, ?)
+		INSERT or IGNORE INTO shift_type_parameters(shift_type, shift_workload, shift_coverage, max_buffer)
+		VALUES (?, ?, ?, ?)
     `
 	for _, stp := range initialModelParameters.ShiftTypeParameters {
-		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.MaxBuffer); err != nil {
+		if _, err := db.Exec(initSTPsQuery, stp.ShiftType, stp.ShiftWorkload, stp.ShiftCoverage, stp.MaxBuffer); err != nil {
 			return errors.Wrap(err, "failed initailizing shift type parameters")
 		}
 	}
@@ -161,5 +187,18 @@ func initializeData(db *sql.DB) error {
 			return errors.Wrap(err, "failed initializing assistant instance")
 		}
 	}
+
+	initWeightsQuery := `
+		INSERT or IGNORE INTO weights(coverage, balance, fairness)
+		VALUES (?, ?, ?)
+	`
+	db.Exec(initWeightsQuery, 1, 1, 1)
+
+	initStatsQuery := `
+		INSERT or IGNORE INTO stats(id, Coverage, Balance, Fairness)
+		VALUES (?, ?, ?, ?)
+	`
+	db.Exec(initStatsQuery, 1, 1, 1, 1)
+
 	return nil
 }

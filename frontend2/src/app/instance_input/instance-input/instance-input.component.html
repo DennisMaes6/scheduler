@@ -1,0 +1,33 @@
+<div class="flex flex-col space-y-2 w-64">
+    <p class="font-semibold text-sm cursor-default"> Instance data </p>
+    <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Start date </p>
+    <app-date-picker [currentDate]="data.days[0].date" [handleSubmit]= "handleSubmit" (dateChanged)="updateAndSubmit($event)" setStartDate></app-date-picker>
+
+    <p class="mt-4 font-semibold text-xs text-gray-500 cursor-default"> Number of weeks </p>
+    <div class="flex flex-row justify-start space-x-2 items-center">
+        <div *ngIf="data.days.length > 7;else lessThanSeven">
+            <app-button buttonText="-" (click)=removeWeek()> </app-button>
+        </div>
+        <ng-template #lessThanSeven>
+            <button disabled class="bg-gray-500 text-white font-bold px-2 py-1 rounded text-xs border-transparent">
+                -
+            </button>
+        </ng-template>
+        <p class="font-semibold text-sm text-black-500 cursor-default"> {{data.days.length / 7}} </p>
+        <app-button buttonText="+"  (click)=addWeek()>  </app-button>
+    </div>
+    <p class="mt-4 font-bold text-s text-gray-500 cursor-default"> End date:
+            <span class="mt-4 font-semibold text-s text-gray-900 cursor-default">
+                {{dateToValue(data.days[data.days.length-1].date.day, data.days[data.days.length-1].date.month-1, data.days[data.days.length-1].date.year)}}
+            </span> 
+    </p>
+    <app-holiday-picker [days]="data.days" handleSubmit (holidaysChanged)="holidaysUpdateAndSubmit($event)"> </app-holiday-picker>
+
+    <div class="mt-4" slot="trigger" let:open>
+        
+        
+        <app-assistant-input [data]=data></app-assistant-input>
+    </div>
+    
+
+</div> 

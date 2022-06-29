@@ -1,0 +1,29 @@
+<form class="flex flex-col"> 
+    <p class="font-semibold text-sm cursor-default"> Model parameters </p>
+    
+    
+
+    <div class="flex flex-col space-y-2">
+        <div class="flex flex-row space-x-14 items-center"> 
+            <p class="mt-4 font-semibold text-s text-black-500 cursor-default"> Shift type </p>
+            <p class="mt-4 font-semibold text-s text-black-500 cursor-default"> Workload </p>
+            <p class="mt-4 font-semibold text-s text-black-500 cursor-default"> Coverage </p>
+        </div>
+        
+
+        <div *ngFor="let item of modelParameters.shift_type_parameters">  
+                <div class="flex flex-row space-x-1 items-center">
+                    
+                    <app-assignment-box [assignment] = "{shift_type: item.shift_type, part_of_min_balance:false, day_nb:0}"></app-assignment-box>
+                    <app-input-field [value]="item.shift_workload" (onChange)="getWorkloadChanged($event, item.shift_type)" [step]="0.25"></app-input-field>
+                    <app-input-field [value]="item.shift_coverage" (onChange)="getCoverageChanged($event, item.shift_type)" [step]="1"></app-input-field>
+
+                    
+
+                </div>
+                
+        </div>
+
+    </div>
+
+</form>

@@ -20,6 +20,21 @@ type IndividualSchedule struct {
 
 	// Contains all the individual assignments of this individual schedule.
 	Assignments []Assignment `json:"assignments"`
+
+	// Sum of all shifts with their weights
+	AbsoluteWorkload float32 `json:"absolute_workload,omitempty"`
+
+	// Total days available
+	DaysAvailable int32 `json:"days_available,omitempty"`
+
+	// Total days worked
+	DaysWorked int32 `json:"days_worked,omitempty"`
+
+	// Total days vacation
+	DaysVacation int32 `json:"days_vacation,omitempty"`
+
+	// Average days rest between 2 shifts
+	AvgDaysRest float32 `json:"avg_days_rest,omitempty"`
 }
 
 // AssertIndividualScheduleRequired checks if the required fields are not zero-ed
