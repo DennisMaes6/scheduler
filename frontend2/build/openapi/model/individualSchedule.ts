@@ -28,5 +28,25 @@ export interface IndividualSchedule {
      * Contains all the individual assignments of this individual schedule.
      */
     assignments: Array<Assignment>;
+    /**
+     * Sum of all shifts with their weights
+     */
+    absolute_workload?: number;
+    /**
+     * Total days available
+     */
+    days_available?: number;
+    /**
+     * Total days worked
+     */
+    days_worked?: number;
+    /**
+     * Total days vacation
+     */
+    days_vacation?: number;
+    /**
+     * Average days rest between 2 shifts
+     */
+    avg_days_rest?: number;
 }
 

@@ -7,6 +7,7 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { ModelParametersPageComponent } from './pages/model-parameters-page/model-parameters-page.component';
 import { SchedulePickerPageComponent } from './pages/schedule-picker-page/schedule-picker-page.component';
 import { ScheduleViewPageComponent } from './pages/schedule-view-page/schedule-view-page.component';
+import { StatsPageComponent } from './pages/stats-page/stats-page.component';
 
 
 const routes: Routes = [
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path: 'model-parameters', component: ModelParametersPageComponent },
   {path: 'instance-data', component: InstanceDataPageComponent },
   {path: 'schedule-view', component: ScheduleViewPageComponent },
-  {path: 'schedule-picker', component: SchedulePickerPageComponent }      
+  {path: 'schedule-picker', component: SchedulePickerPageComponent },
+  {path: 'stats-page', component: StatsPageComponent }            
 ];
 
 @NgModule({

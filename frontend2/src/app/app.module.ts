@@ -7,6 +7,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { GoogleChartsModule } from 'angular-google-charts';
+
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MatSliderModule } from '@angular/material/slider';
@@ -18,6 +20,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import {MatFormFieldModule} from '@angular/material/form-field'
 import { MatOptionModule } from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatTableModule} from '@angular/material/table';
+import {MatDividerModule} from '@angular/material/divider';
+
 
 
 import { AssignmentBoxComponent } from './schedule_view/assignment-box/assignment-box.component';
@@ -46,6 +54,9 @@ import { EditAssistantComponent } from './instance_input/edit-assistant/edit-ass
 import { AssistantPipePipe } from './assistant-pipe.pipe';
 import { NewAssistantDialogComponent } from './instance_input/assistant-input/assistant-input.component';
 import { SchedulePickerPageComponent } from './pages/schedule-picker-page/schedule-picker-page.component';
+import { StatsPageComponent } from './pages/stats-page/stats-page.component';
+
+
 
 @NgModule({
   declarations: [
@@ -75,13 +86,15 @@ import { SchedulePickerPageComponent } from './pages/schedule-picker-page/schedu
     EditAssistantComponent,
     AssistantPipePipe,
     NewAssistantDialogComponent,
-    SchedulePickerPageComponent
+    SchedulePickerPageComponent,
+    StatsPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    GoogleChartsModule,
     MatSliderModule,
     MatButtonModule,
     FlexLayoutModule,
@@ -91,7 +104,12 @@ import { SchedulePickerPageComponent } from './pages/schedule-picker-page/schedu
     MatTabsModule,
     MatFormFieldModule,
     MatOptionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatGridListModule,
+    MatTableModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

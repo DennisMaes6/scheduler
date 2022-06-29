@@ -32,6 +32,26 @@ export interface Schedule {
      * The balance score for the JAEV shifts of this schedule.
      */
     jaev_balance_score: number;
+    /**
+     * The coverage score of this schedule.
+     */
+    Coverage: number;
+    /**
+     * The balance score of this schedule.
+     */
+    Balance: number;
+    /**
+     * The fairness score.
+     */
+    Fairness: number;
+    /**
+     * The total number of shifts that should be assigned.
+     */
+    TotalNbShifts: number;
+    /**
+     * The total number of shifts that are assigned.
+     */
+    TotalNbShiftsAssigned: number;
     individual_schedules?: Array<IndividualSchedule>;
 }
 

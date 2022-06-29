@@ -94,6 +94,7 @@ export class AssistantInputComponent implements OnInit {
       case AssistantType.SaF: return "SA_F"
       case AssistantType.SaNeo: return "SA_N"
       case AssistantType.SaFNeo: return "SA_FN"
+      case AssistantType.Fellows: return "FELLOWS"
     }
     return ""
   }
@@ -199,7 +200,8 @@ export class AssistantInputDialogContent implements OnInit {
   }
 
   addAssistant(): void {
-  
+    
+    console.log("add ass")
     this.data.assistants.push(this.new_assistant)
     this.new_assistant = {
       id: this.id_array?.reduce(function (a, b) {
@@ -252,6 +254,7 @@ export class AssistantInputDialogContent implements OnInit {
       case AssistantType.SaF: return "SA_F"
       case AssistantType.SaNeo: return "SA_N"
       case AssistantType.SaFNeo: return "SA_FN"
+      case AssistantType.Fellows: return "FELLOWS"
     }
     return ""
   }
@@ -375,10 +378,11 @@ export class NewAssistantDialogComponent implements OnInit {
   }
 
   assistantTypeChanged(newAssistantTypeString: string){
-    console.log(newAssistantTypeString)
+      console.log("CHANGE TYPE")
     const newAssistantType = this.getStringType(newAssistantTypeString);
     this.assistantType = this.getStringType(newAssistantTypeString);
 
+    
 
     this.onAssistantTypeChange.emit(this.getStringType(newAssistantTypeString));
 
@@ -394,6 +398,7 @@ export class NewAssistantDialogComponent implements OnInit {
       case "SA_F": return AssistantType.SaF
       case "SA_NEO": return AssistantType.SaNeo
       case "SA_F_NEO": return AssistantType.SaFNeo
+      case "FELLOWS": return AssistantType.Fellows
     }
     return AssistantType.Ja
   }

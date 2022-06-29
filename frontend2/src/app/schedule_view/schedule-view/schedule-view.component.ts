@@ -25,7 +25,12 @@ export class ScheduleViewComponent implements OnInit {
     balance_score: 0,
     jaev_fairness_score: 0,
     jaev_balance_score: 0,
-    individual_schedules: []
+    individual_schedules: [],
+    Coverage: 0,
+    Balance: 0,
+    Fairness: 0,
+    TotalNbShifts: 0,
+    TotalNbShiftsAssigned: 0
   };
   data: InstanceData = {
     assistants: [],
@@ -56,6 +61,7 @@ export class ScheduleViewComponent implements OnInit {
     if(this.schedule?.individual_schedules?.find(s => s.assistant_id === id) == undefined){
       console.log("UNDEFINDED GET IS: ", id );
     }
+
     return this.schedule?.individual_schedules?.find(s => s.assistant_id === id);
   }
 
@@ -72,6 +78,7 @@ export class ScheduleViewComponent implements OnInit {
   getScheduleInput(): void {
     this.instanceInputService.dbScheduleGet().subscribe(schedule => (this.schedule = schedule));
   }
+
 
   constructor(private instanceInputService: DefaultService) { }
 

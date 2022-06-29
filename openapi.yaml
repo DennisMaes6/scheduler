@@ -103,6 +103,11 @@ components:
         - balance_score
         - jaev_fairness_score
         - jaev_balance_score
+        - Coverage
+        - Balance
+        - Fairness 
+        - TotalNbShifts
+        - TotalNbShiftsAssigned
       properties:
         fairness_score:
           type: number
@@ -116,6 +121,21 @@ components:
         jaev_balance_score:
           type: number
           description: The balance score for the JAEV shifts of this schedule.
+        Coverage:
+          type: number
+          description: The coverage score of this schedule.
+        Balance:
+          type: number
+          description: The balance score of this schedule.
+        Fairness:
+          type: number
+          description: The fairness score.
+        TotalNbShifts:
+          type: number
+          description: The total number of shifts that should be assigned.
+        TotalNbShiftsAssigned:
+          type: number
+          description: The total number of shifts that are assigned.
         individual_schedules: 
             type: array
             items:
@@ -139,6 +159,22 @@ components:
           description: Contains all the individual assignments of this individual schedule.
           items: 
             $ref: "#/components/schemas/Assignment"
+        absolute_workload: 
+          type: number
+          description: Sum of all shifts with their weights
+        days_available:
+          type: integer
+          description: Total days available
+        days_worked: 
+          type: integer
+          description: Total days worked
+        days_vacation:
+          type: integer
+          description: Total days vacation
+        avg_days_rest: 
+          type: number
+          description: Average days rest between 2 shifts
+      
     Assignment:
       type: object
       description: Represents a single shift assignment.
@@ -174,6 +210,28 @@ components:
           type: array 
           items:
             $ref: "#/components/schemas/ShiftTypeModelParameters"
+        weights:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeightParameters"
+    WeightParameters:
+      description: Holds the shift type specific model parameters.
+      type: object
+      required:
+        - coverage
+        - balance
+        - fairness
+      properties:
+        coverage:
+          type: number
+          description: The weight of coverage in the fitness function of schedule
+        balance:
+          type: number
+          description: The weight of balance in the fitness function of schedule
+        fairness:
+          type: number
+          description: The weight of fairness in the fitness function of schedule
+
     ShiftTypeModelParameters:
       description: Holds the shift type specific model parameters.
       type: object
@@ -277,6 +335,7 @@ components:
         - SA_F
         - SA_NEO
         - SA_F_NEO 
+        - FELLOWS
     ShiftType:
       type: string
       description: Identifies a specific shift type. Includes the FREE shift type.
@@ -292,6 +351,5 @@ components:
         - TPWE
         - TPHO
         - TPNF
-        - CALL
         - FREE 
           

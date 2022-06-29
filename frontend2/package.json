@@ -26,6 +26,7 @@
     "@tailwindcss/typography": "^0.4.1",
     "cors": "^2.8.5",
     "flex-layout": "^1.0.1",
+    "fs": "^0.0.1-security",
     "get-stream": "^6.0.1",
     "rxjs": "~7.4.0",
     "stream": "^0.0.2",

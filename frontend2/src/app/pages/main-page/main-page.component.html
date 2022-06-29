@@ -1,5 +1,29 @@
 
 
+<div class="flex flex-col"> 
+    <p class="font-semibold text-sm cursor-default"> Weight parameters </p>
+    
+    
+    <div class="flex flex-row space-x-2">
+    
+        <div class="flex flex-col space-y-12 items-center w-2/5">
+            <p  class="mb-5 font-semibold text-s text-black-500  cursor-default"> Coverage </p>
+            <p  class="mb-5 font-semibold text-s text-black-500 cursor-default"> Balance </p>
+            <p  class="mt-1 font-semibold text-s text-black-500 cursor-default"> Fairness </p>
+        </div>
+    
+        <div *ngFor="let item of modelParameters.weights">
+                <div class="flex flex-col space-y-4 items-center w-3/5">
+    
 
+                    <mat-slider [value]="item.coverage" [max]="1" [step]="0.01" (input)="getCoverageChanged($event, item.coverage)"></mat-slider>
+                    <mat-slider [value]="item.balance" [max]="1" [step]="0.01" (input)="getBalanceChanged($event, item.coverage)"></mat-slider>
+                    <mat-slider [value]="item.fairness" [max]="1" [step]="0.01" (input)="getFairnessChanged($event, item.coverage)"></mat-slider>
 
-<button mat-raised-button color="primary" (click)=generateSchedule()>Generate new schedule</button>
+                        
+                </div>
+        </div>
+    </div>
+    <button mat-raised-button color="primary" (click)=generateSchedule()>Generate new schedule</button>
+    <mat-progress-spinner mode="indeterminate" *ngIf="IsWait"></mat-progress-spinner>
+</div>

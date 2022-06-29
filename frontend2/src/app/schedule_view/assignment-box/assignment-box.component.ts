@@ -46,8 +46,6 @@ export class AssignmentBoxComponent implements OnInit {
           return "bg-red-600";
       case ShiftType.Saho:
           return "bg-blue-600";
-      case ShiftType.Call:
-          return "bg-green-600";
       case ShiftType.Tpwe:
           return "bg-red-700";
       case ShiftType.Tpho:

@@ -9,3 +9,4 @@ export * from './modelParameters';
 export * from './schedule';
 export * from './shiftType';
 export * from './shiftTypeModelParameters';
+export * from './weightParameters';

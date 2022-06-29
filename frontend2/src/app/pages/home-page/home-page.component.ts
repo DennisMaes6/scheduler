@@ -12,7 +12,7 @@ export class HomePageComponent implements OnInit {
   activeLinkIndex = -1;
 
   constructor(private router: Router) {
-    this.navLinks = [
+    /*this.navLinks = [
       {
         label: 'HomePage',
         link: '/home-page',
@@ -37,8 +37,29 @@ export class HomePageComponent implements OnInit {
         label: 'SchedulePickerPage',
         link: '/schedule-picker',
         index: 5
+      },  {
+        label: 'StatsPage',
+        link: '/stats-page',
+        index: 6
       }
     ]
+    */
+    this.navLinks = [
+       {
+        label: 'Input Data',
+        link: '/schedule-picker',
+        index: 1
+      },  {
+        label: 'Schedule Viewer',
+        link: '/schedule-view',
+        index: 0
+      }, {
+        label: 'Statistics',
+        link: '/stats-page',
+        index: 2
+      }
+    ]
+
    }
 
   ngOnInit(): void {

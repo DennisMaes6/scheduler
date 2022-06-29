@@ -72,12 +72,6 @@ var initialModelParameters model.ModelParameters = model.ModelParameters{
 			ShiftWorkload: 2,
 			MaxBuffer:     1,
 		},
-		{
-			ShiftType:     model.CALL,
-			ShiftCoverage: 2,
-			ShiftWorkload: 0,
-			MaxBuffer:     1,
-		},
 	},
 }
 

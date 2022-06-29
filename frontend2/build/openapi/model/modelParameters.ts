@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { ShiftTypeModelParameters } from './shiftTypeModelParameters';
+import { WeightParameters } from './weightParameters';
 
 
 /**
@@ -25,5 +26,6 @@ export interface ModelParameters {
      */
     min_balance_jaev?: number;
     shift_type_parameters?: Array<ShiftTypeModelParameters>;
+    weights?: Array<WeightParameters>;
 }
 

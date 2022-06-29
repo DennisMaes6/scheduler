@@ -34,11 +34,15 @@ export class NewAssistantComponent implements OnInit {
 
   assistantTypeChanged(newAssistantTypeString: string){
     const newAssistantType = this.getStringType(newAssistantTypeString);
+
+    console.log("assistant  type change: " , newAssistantType)
+
     this.onAssistantTypeChange.emit(newAssistantType);
   }
 
 
   getStringType(typeString: string): AssistantType {
+    console.log("type: ", typeString)
     switch (typeString) {
       case "JA": return AssistantType.Ja
       case "JA_F": return AssistantType.JaF
@@ -46,6 +50,7 @@ export class NewAssistantComponent implements OnInit {
       case "SA_F": return AssistantType.SaF
       case "SA_N": return AssistantType.SaNeo
       case "SA_FN": return AssistantType.SaFNeo
+      case "FELLOWS": return AssistantType.Fellows
     }
     return AssistantType.Ja
   }

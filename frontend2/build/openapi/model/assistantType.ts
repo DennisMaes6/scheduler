@@ -14,7 +14,7 @@
 /**
  * The skill category of an assistant.
  */
-export type AssistantType = 'JA' | 'JA_F' | 'SA' | 'SA_F' | 'SA_NEO' | 'SA_F_NEO';
+export type AssistantType = 'JA' | 'JA_F' | 'SA' | 'SA_F' | 'SA_NEO' | 'SA_F_NEO' | 'FELLOWS';
 
 export const AssistantType = {
     Ja: 'JA' as AssistantType,
@@ -22,6 +22,7 @@ export const AssistantType = {
     Sa: 'SA' as AssistantType,
     SaF: 'SA_F' as AssistantType,
     SaNeo: 'SA_NEO' as AssistantType,
-    SaFNeo: 'SA_F_NEO' as AssistantType
+    SaFNeo: 'SA_F_NEO' as AssistantType,
+    Fellows: 'FELLOWS' as AssistantType
 };
 

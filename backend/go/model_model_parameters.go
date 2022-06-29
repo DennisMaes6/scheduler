@@ -19,12 +19,19 @@ type ModelParameters struct {
 	MinBalanceJaev int32 `json:"min_balance_jaev,omitempty"`
 
 	ShiftTypeParameters []ShiftTypeModelParameters `json:"shift_type_parameters,omitempty"`
+
+	Weights []WeightParameters `json:"weights,omitempty"`
 }
 
 // AssertModelParametersRequired checks if the required fields are not zero-ed
 func AssertModelParametersRequired(obj ModelParameters) error {
 	for _, el := range obj.ShiftTypeParameters {
 		if err := AssertShiftTypeModelParametersRequired(el); err != nil {
+			return err
+		}
+	}
+	for _, el := range obj.Weights {
+		if err := AssertWeightParametersRequired(el); err != nil {
 			return err
 		}
 	}

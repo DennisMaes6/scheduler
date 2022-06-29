@@ -85,13 +85,23 @@ func createTables(db *sql.DB) error {
 				fairness_score REAL NOT NULL,
 				balance_score REAL NOT NULL,
 				jaev_fairness_score REAL NOT NULL,
-				jaev_balance_score REAL NOT NULL
+				jaev_balance_score REAL NOT NULL,
+				Coverage REAL NOT NULL,
+				Balance REAL NOT NULL,
+				Fairness REAL NOT NULL,
+				TotalNbShifts REAL NOT NULL,
+				TotalNbShiftsAssigned REAL NOT NULL
 			)
 		`,
 		`
 			CREATE TABLE IF NOT EXISTS individual_schedule (
 				assistant_id INTEGER PRIMARY_KEY,
-				workload REAL NOT NULL,
+				absolute_workload REAL NOT NULL,
+				relative_workload REAL NOT NULL,
+				days_available INTEGER NOT NULL,
+				days_worked INTEGER NOT NULL,
+				days_vacation INTEGER NOT NULL,
+				avg_days_rest REAL NOT NULL,
 				FOREIGN KEY (assistant_id) REFERENCES assistant_instance(id) ON DELETE CASCADE
 			)
 		`,
@@ -110,6 +120,14 @@ func createTables(db *sql.DB) error {
 				coverage REAL PRIMARY_KEY,
 				balance REAL NOT NULL,
 				fairness REAL NOT NULL
+			)
+		`,
+		`
+			CREATE TABLE IF NOT EXISTS stats (
+				id INTEGER PRIMARY_KEY,
+				Coverage REAL NOT NULL,
+				Balance REAL NOT NULL,
+				Fairness REAL NOT NULL
 			)
 		`,
 	}
@@ -175,6 +193,12 @@ func initializeData(db *sql.DB) error {
 		VALUES (?, ?, ?)
 	`
 	db.Exec(initWeightsQuery, 1, 1, 1)
+
+	initStatsQuery := `
+		INSERT or IGNORE INTO stats(id, Coverage, Balance, Fairness)
+		VALUES (?, ?, ?, ?)
+	`
+	db.Exec(initStatsQuery, 1, 1, 1, 1)
 
 	return nil
 }

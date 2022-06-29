@@ -24,7 +24,6 @@ const (
 	TPWE ShiftType = "TPWE"
 	TPHO ShiftType = "TPHO"
 	TPNF ShiftType = "TPNF"
-	CALL ShiftType = "CALL"
 	FREE ShiftType = "FREE"
 )
 

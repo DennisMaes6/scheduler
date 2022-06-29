@@ -16,8 +16,14 @@ type firstStageSchedule struct {
 }
 
 type untaggedIndividualSchedule struct {
-	assistantId int32
-	workload    float32
+	assistantId       int32
+	workload          float32
+	absolute_workload float32
+	days_available    int32
+	days_worked       int32
+	days_vacation     int32
+	avg_days_rest     float32
+
 	assignments []untaggedAssignment
 }
 
@@ -225,9 +231,14 @@ func tagIndividualSchedules(iss []untaggedIndividualSchedule, balanceScore int32
 		}
 
 		taggedIndividualSchedule := model.IndividualSchedule{
-			AssistantId: uis.assistantId,
-			Workload:    uis.workload,
-			Assignments: taggedAssignments,
+			AssistantId:      uis.assistantId,
+			Workload:         uis.workload,
+			Assignments:      taggedAssignments,
+			AbsoluteWorkload: uis.absolute_workload,
+			DaysAvailable:    uis.days_available,
+			DaysWorked:       uis.days_worked,
+			DaysVacation:     uis.days_vacation,
+			AvgDaysRest:      uis.avg_days_rest,
 		}
 
 		result = append(result, taggedIndividualSchedule)
